@@ -1,5 +1,5 @@
 # CAT
-Cat library for Yeasu. Currently only the FT-891, but others to come. 
+Cat library for Yaesu. Currently only the FT-891, but others to come. 
 
 This library is for serializing and de serializing the data sent to and received from the Yeasu radios. 
 
