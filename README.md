@@ -51,5 +51,5 @@ MeterType GetMeterType(serial_port& port)
 
 ```
 
-This isn't how I'd recomend writing anything for the radio, it's just the simplest psudocode (real code, really) that illustrates how this library is used, and is useful. 
+This isn't how I'd recommend writing anything for the radio, it's just the simplest pseudocode (real code, really) that illustrates how this library is used, and is useful.
 
