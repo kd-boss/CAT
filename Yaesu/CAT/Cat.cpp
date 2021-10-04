@@ -4,6 +4,21 @@
 namespace Yeasu {
 	namespace FT891 {
 		namespace Commands {
+
+			template<typename T>
+			typename std::enable_if<std::is_enum<T>::value, std::string>::type DisplayOnOffValue(T t)
+			{
+				switch (t)
+				{
+				case T::ON:
+					return "ON";
+				case T::OFF:
+					return "OFF";
+				default:
+					return "";
+				}
+			}
+
 			std::string VFO_A_TO_VFO_B::Set()
 			{
 				return "AB;";
@@ -5583,6 +5598,1469 @@ namespace Yeasu {
 			{
 				return "ZI;";
 			}
+
+
+
+			std::string DisplayFrequency(int freq)
+			{
+				std::string s = fmt::format("{:d}", freq);
+				if (s.length() > 3)
+					s.insert(s.length() - 3, 1, '.');
+				if (s.length() > 7)
+					s.insert(s.length() - 7, 1, '.');
+
+				return s;
+			}
+
+			std::string DisplayCwWeight(int weight)
+			{
+				std::string ret = fmt::format("{:d}", weight);
+				return ret.substr(0, 1) + "." + ret.substr(1, 1);
+			}
+
+			std::string DisplayBand(Band v)
+			{
+				switch (v)
+				{
+				case Band::m160:
+					return "1.8";
+				case Band::m80:
+					return "3.5";
+				case Band::m60:
+					return "5.0";
+				case Band::m40:
+					return "7.0";
+				case Band::m30:
+					return "10";
+				case Band::m20:
+					return "14";
+				case Band::m17:
+					return "18";
+				case Band::m15:
+					return "21";
+				case Band::m12:
+					return "24";
+				case Band::m10:
+					return "28";
+				case Band::m6:
+					return "50";
+				case Band::GEN:
+					return "GEN";
+				case Band::MW:
+					return "MW";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayKeyerType(KeyerTypeValue v)
+			{
+				switch (v)
+				{
+				case KeyerTypeValue::OFF:
+					return "OFF";
+					break;
+				case KeyerTypeValue::BUG:
+					return "BUG";
+					break;
+				case KeyerTypeValue::ELEKEY_A:
+					return "ELEKEY-A";
+					break;
+				case KeyerTypeValue::ELEKEY_B:
+					return "ELEKEY-B";
+					break;
+				case KeyerTypeValue::ELEKEY_Y:
+					return "ELEKEY-Y";
+					break;
+				case KeyerTypeValue::ACS:
+					return "ACS";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayEnableDisable(EnableDisableValue v)
+			{
+				switch (v)
+				{
+				case EnableDisableValue::ENABLE:
+					return "ENABLE";
+				case EnableDisableValue::DISABLE:
+					return "DISABLE";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayPeakHold(PeakHoldType t)
+			{
+				switch (t)
+				{
+				case PeakHoldType::OFF:
+					return "OFF";
+					break;
+				case PeakHoldType::sec05:
+					return "0.5 sec";
+					break;
+				case PeakHoldType::sec10:
+					return "1.0 sec";
+					break;
+				case PeakHoldType::sec20:
+					return "2.0 sec";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayBeaconInterval(int i)
+			{
+				if (i == 0)
+				{
+					return "OFF";
+				}
+				else
+				{
+					return fmt::format("{:03} sec", i);
+				}
+			}
+
+			std::string DisplayNumberStyle(NumberStyleValue v)
+			{
+				switch (v)
+				{
+				case NumberStyleValue::_1290:
+					return "1290";
+					break;
+				case NumberStyleValue::AUNO:
+					return "AUNO";
+					break;
+				case NumberStyleValue::AUNT:
+					return "AUNT";
+					break;
+				case NumberStyleValue::A2NO:
+					return "A2NO";
+					break;
+				case NumberStyleValue::A2NT:
+					return "A2NT";
+					break;
+				case NumberStyleValue::_12NO:
+					return "12NO";
+					break;
+				case NumberStyleValue::_12NT:
+					return "12NT";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayNbWidth(NBWidthValue v)
+			{
+				switch (v)
+				{
+				case NBWidthValue::msec1:
+					return "1 msec";
+					break;
+				case NBWidthValue::msec3:
+					return "3 msec";
+					break;
+				case NBWidthValue::msec10:
+					return "10 msec";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayNbRejection(NBRejectionValue v)
+			{
+				switch (v)
+				{
+				case NBRejectionValue::db10:
+					return "10 db";
+					break;
+				case NBRejectionValue::db30:
+					return "30 db";
+					break;
+				case NBRejectionValue::db50:
+					return "50 db";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayCatRate(CatRateValue v)
+			{
+				switch (v)
+				{
+				case CatRateValue::_4800bps:
+					return "4800 bps";
+					break;
+				case CatRateValue::_9600bps:
+					return "9600 bps";
+					break;
+				case CatRateValue::_19200bps:
+					return "19200 bps";
+					break;
+				case CatRateValue::_38400bps:
+					return "38400 bps";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayCatTOT(CatTOTValue v)
+			{
+				switch (v)
+				{
+				case CatTOTValue::_10msec:
+					return "10 msec";
+					break;
+				case CatTOTValue::_100msec:
+					return "100 msec";
+					break;
+				case CatTOTValue::_1000msec:
+					return "1000 msec";
+					break;
+				case CatTOTValue::_3000msec:
+					return "3000 msec";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayAPO(APOValue v)
+			{
+				switch (v)
+				{
+				case APOValue::OFF:
+					return "OFF";
+					break;
+				case APOValue::hr1:
+					return "1h";
+					break;
+				case APOValue::hr2:
+					return "2h";
+					break;
+				case APOValue::hr4:
+					return "4h";
+					break;
+				case APOValue::hr6:
+					return "6h";
+					break;
+				case APOValue::hr8:
+					return "8h";
+					break;
+				case APOValue::hr10:
+					return "10h";
+					break;
+				case APOValue::hr12:
+					return "12h";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayClarSelect(ClarSelectValue v)
+			{
+				switch (v)
+				{
+				case ClarSelectValue::TX:
+					return "TX";
+					break;
+				case ClarSelectValue::RX:
+					return "RX";
+					break;
+				case ClarSelectValue::TRX:
+					return "TRX";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayFreqLowCut(FreqLowCutValue v)
+			{
+				switch (v)
+				{
+				case FreqLowCutValue::OFF:
+					return "OFF";
+					break;
+				case FreqLowCutValue::_100hz:
+					return "100 Hz";
+					break;
+				case FreqLowCutValue::_150hz:
+					return "150 Hz";
+					break;
+				case FreqLowCutValue::_200hz:
+					return "200 Hz";
+					break;
+				case FreqLowCutValue::_250hz:
+					return "250 Hz";
+					break;
+				case FreqLowCutValue::_300hz:
+					return "300 Hz";
+					break;
+				case FreqLowCutValue::_350hz:
+					return "350 Hz";
+					break;
+				case FreqLowCutValue::_400hz:
+					return "400 Hz";
+					break;
+				case FreqLowCutValue::_450hz:
+					return "450 Hz";
+					break;
+				case FreqLowCutValue::_500hz:
+					return "500 Hz";
+					break;
+				case FreqLowCutValue::_550hz:
+					return "550 Hz";
+					break;
+				case FreqLowCutValue::_600hz:
+					return "600 Hz";
+					break;
+				case FreqLowCutValue::_650hz:
+					return "650 Hz";
+					break;
+				case FreqLowCutValue::_700hz:
+					return "700 Hz";
+					break;
+				case FreqLowCutValue::_750hz:
+					return "750 Hz";
+					break;
+				case FreqLowCutValue::_800hz:
+					return "800 Hz";
+					break;
+				case FreqLowCutValue::_850hz:
+					return "850 Hz";
+					break;
+				case FreqLowCutValue::_900hz:
+					return "900 Hz";
+					break;
+				case FreqLowCutValue::_950hz:
+					return "850 Hz";
+					break;
+				case FreqLowCutValue::_1000hz:
+					return "1000 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayFreqHighCut(FreqHighCutValue v)
+			{
+				switch (v)
+				{
+				case FreqHighCutValue::OFF:
+					return "OFF";
+					break;
+				case FreqHighCutValue::_700hz:
+					return "700 Hz";
+					break;
+				case FreqHighCutValue::_750hz:
+					return "750 Hz";
+					break;
+				case FreqHighCutValue::_800hz:
+					return "800 Hz";
+					break;
+				case FreqHighCutValue::_850hz:
+					return "850 Hz";
+					break;
+				case FreqHighCutValue::_900hz:
+					return "900 Hz";
+					break;
+				case FreqHighCutValue::_950hz:
+					return "950 Hz";
+					break;
+				case FreqHighCutValue::_1000hz:
+					return "1000 Hz";
+					break;
+				case FreqHighCutValue::_1050hz:
+					return "1050 Hz";
+					break;
+				case FreqHighCutValue::_1100hz:
+					return "1100 Hz";
+					break;
+				case FreqHighCutValue::_1150hz:
+					return "1150 Hz";
+					break;
+				case FreqHighCutValue::_2000hz:
+					return "2000 Hz";
+					break;
+				case FreqHighCutValue::_2050hz:
+					return "2050 Hz";
+					break;
+				case FreqHighCutValue::_2100hz:
+					return "2100 Hz";
+					break;
+				case FreqHighCutValue::_2150hz:
+					return "2150 Hz";
+					break;
+				case FreqHighCutValue::_2200hz:
+					return "2200 Hz";
+					break;
+				case FreqHighCutValue::_2250hz:
+					return "2250 Hz";
+					break;
+				case FreqHighCutValue::_2300hz:
+					return "2300 Hz";
+					break;
+				case FreqHighCutValue::_2350hz:
+					return "2350 Hz";
+					break;
+				case FreqHighCutValue::_2400hz:
+					return "2400 Hz";
+					break;
+				case FreqHighCutValue::_2450hz:
+					return "2450 Hz";
+					break;
+				case FreqHighCutValue::_2500hz:
+					return "2500 Hz";
+					break;
+				case FreqHighCutValue::_2550hz:
+					return "2550 Hz";
+					break;
+				case FreqHighCutValue::_2600hz:
+					return "2600 Hz";
+					break;
+				case FreqHighCutValue::_2650hz:
+					return "2650 Hz";
+					break;
+				case FreqHighCutValue::_2700hz:
+					return "2700 Hz";
+					break;
+				case FreqHighCutValue::_2750hz:
+					return "2750 Hz";
+					break;
+				case FreqHighCutValue::_2800hz:
+					return "2800 Hz";
+					break;
+				case FreqHighCutValue::_2850hz:
+					return "2850 Hz";
+					break;
+				case FreqHighCutValue::_2900hz:
+					return "2900 Hz";
+					break;
+				case FreqHighCutValue::_2950hz:
+					return "2950 Hz";
+					break;
+				case FreqHighCutValue::_3000hz:
+					return "3000 Hz";
+					break;
+				case FreqHighCutValue::_3050hz:
+					return "3050 Hz";
+					break;
+				case FreqHighCutValue::_3100hz:
+					return "3100 Hz";
+					break;
+				case FreqHighCutValue::_3150hz:
+					return "3150 Hz";
+					break;
+				case FreqHighCutValue::_3200hz:
+					return "3200 Hz";
+					break;
+				case FreqHighCutValue::_3250hz:
+					return "3250 Hz";
+					break;
+				case FreqHighCutValue::_3300hz:
+					return "3300 Hz";
+					break;
+				case FreqHighCutValue::_3350hz:
+					return "3350 Hz";
+					break;
+				case FreqHighCutValue::_3400hz:
+					return "3400 Hz";
+					break;
+				case FreqHighCutValue::_3450hz:
+					return "3450 Hz";
+					break;
+				case FreqHighCutValue::_3500hz:
+					return "3500 Hz";
+					break;
+				case FreqHighCutValue::_3550hz:
+					return "3550 Hz";
+					break;
+				case FreqHighCutValue::_3600hz:
+					return "3600 Hz";
+					break;
+				case FreqHighCutValue::_3650hz:
+					return "3650 Hz";
+					break;
+				case FreqHighCutValue::_3700hz:
+					return "3700 Hz";
+					break;
+				case FreqHighCutValue::_3750hz:
+					return "3750 Hz";
+					break;
+				case FreqHighCutValue::_3800hz:
+					return "3800 Hz";
+					break;
+				case FreqHighCutValue::_3850hz:
+					return "3850 Hz";
+					break;
+				case FreqHighCutValue::_3900hz:
+					return "3900 Hz";
+					break;
+				case FreqHighCutValue::_3950hz:
+					return "3950 Hz";
+					break;
+				case FreqHighCutValue::_4000hz:
+					return "4000 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayPTTSelect(PTTSelectValue v)
+			{
+				switch (v)
+				{
+				case PTTSelectValue::DAKY:
+					return "DAKY";
+					break;
+				case PTTSelectValue::DTR:
+					return "DTR";
+					break;
+				case PTTSelectValue::RTS:
+					return "RTS";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayCwAutoMode(CwAutoModeValue v)
+			{
+				switch (v)
+				{
+				case CwAutoModeValue::OFF:
+					return "OFF";
+					break;
+				case CwAutoModeValue::ON:
+					return "ON";
+					break;
+				case CwAutoModeValue::_50M:
+					return "50M";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayBFO(BfoValue v)
+			{
+				switch (v)
+				{
+				case BfoValue::USB:
+					return "USB";
+					break;
+				case BfoValue::LSB:
+					return "LSB";
+					break;
+				case BfoValue::AUTO:
+					return "AUTO";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayPCKeying(PCKeyingValue v)
+			{
+				switch (v)
+				{
+				case PCKeyingValue::OFF:
+					return "OFF";
+					break;
+				case PCKeyingValue::DKAY:
+					return "DKAY";
+					break;
+				case PCKeyingValue::RTS:
+					return "RTS";
+					break;
+				case PCKeyingValue::DTR:
+					return "DTR";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayBFO(DataBfoValue v)
+			{
+				switch (v)
+				{
+				case DataBfoValue::USB:
+					return "USB";
+					break;
+				case DataBfoValue::LSB:
+					return "LSB";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayQskDelay(QskDelayTimeValue v)
+			{
+				switch (v)
+				{
+				case QskDelayTimeValue::_15msec:
+					return "15 msec";
+					break;
+				case QskDelayTimeValue::_20msec:
+					return "20 msec";
+					break;
+				case QskDelayTimeValue::_25msec:
+					return "25 msec";
+					break;
+				case QskDelayTimeValue::_30msec:
+					return "30 msec";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayPSKTone(PSKToneValue v)
+			{
+				switch (v)
+				{
+				case PSKToneValue::_1000hz:
+					return "1000 Hz";
+					break;
+				case PSKToneValue::_1500hz:
+					return "1500 Hz";
+					break;
+				case PSKToneValue::_2000hz:
+					return "2000 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayDCSPolarity(DCSPolarityValue v)
+			{
+				switch (v)
+				{
+				case DCSPolarityValue::Tn_Rn:
+					return "Tn-Rn";
+					break;
+				case DCSPolarityValue::Tn_Riv:
+					return "Tn-Riv";
+					break;
+				case DCSPolarityValue::Tiv_Rn:
+					return "Tiv-Rn";
+					break;
+				case DCSPolarityValue::Tiv_Riv:
+					return "Tiv-Riv";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayRTTYShiftPort(RTTYShiftPortValue v)
+			{
+				switch (v)
+				{
+				case RTTYShiftPortValue::SHIFT:
+					return "SHIFT";
+					break;
+				case RTTYShiftPortValue::DTR:
+					return "DTR";
+					break;
+				case RTTYShiftPortValue::RTS:
+					return "RTS";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayRTTYShiftFreq(RTTYShiftFreqValue v)
+			{
+				switch (v)
+				{
+				case RTTYShiftFreqValue::_170hz:
+					return "170 Hz";
+					break;
+				case RTTYShiftFreqValue::_200hz:
+					return "200 Hz";
+					break;
+				case RTTYShiftFreqValue::_425hz:
+					return "425 Hz";
+					break;
+				case RTTYShiftFreqValue::_850hz:
+					return "850 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayRTTYMarkFreq(RTTYMarkFreq v)
+			{
+				switch (v)
+				{
+				case RTTYMarkFreq::_1275hz:
+					return "1275 Hz";
+					break;
+				case RTTYMarkFreq::_2125hz:
+					return "2125 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplaySSBTxBandPass(SSBTXBandPassValue v)
+			{
+				switch (v)
+				{
+				case SSBTXBandPassValue::_100_3000:
+					return "100-3000";
+					break;
+				case SSBTXBandPassValue::_100_2900:
+					return "100-2900";
+					break;
+				case SSBTXBandPassValue::_200_2800:
+					return "200-2800";
+					break;
+				case SSBTXBandPassValue::_300_2700:
+					return "300-2700";
+					break;
+				case SSBTXBandPassValue::_400_2600:
+					return "400-2600";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayAPWidth(APFWidthValue v)
+			{
+				switch (v)
+				{
+				case APFWidthValue::NARROW:
+					return "NARROW";
+					break;
+				case APFWidthValue::MEDIUM:
+					return "MEDIUM";
+					break;
+				case APFWidthValue::WIDE:
+					return "WIDE";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplaySCPStart(SCPStartCycleValue v)
+			{
+				switch (v)
+				{
+				case SCPStartCycleValue::OFF:
+					return "OFF";
+					break;
+				case SCPStartCycleValue::_3sec:
+					return "3 sec";
+					break;
+				case SCPStartCycleValue::_5sec:
+					return "5 sec";
+					break;
+				case SCPStartCycleValue::_10sec:
+					return"10 sec";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplaySCPSpanFreq(SCPSpanFreqValue v)
+			{
+				switch (v)
+				{
+				case SCPSpanFreqValue::_37_5khz:
+					return "37.5 kHz";
+					break;
+				case SCPSpanFreqValue::_75khz:
+					return "75 Khz";
+					break;
+				case SCPSpanFreqValue::_150khz:
+					return "150 kHz";
+					break;
+				case SCPSpanFreqValue::_375khz:
+					return "375 kHz";
+					break;
+				case SCPSpanFreqValue::_750khz:
+					return "750 kHz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayQuickDial(QuickDialValue v)
+			{
+				switch (v)
+				{
+				case QuickDialValue::_50khz:
+					return "50 kHz";
+					break;
+				case QuickDialValue::_100khz:
+					return "100 kHz";
+					break;
+				case QuickDialValue::_500khz:
+					return "500 kHz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplaySSBDialStep(SSBDialStep v)
+			{
+				switch (v)
+				{
+				case SSBDialStep::_2hz:
+					return "2 Hz";
+					break;
+				case SSBDialStep::_5hz:
+					return "5 Hz";
+					break;
+				case SSBDialStep::_10hz:
+					return "10 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayAmFMDialStep(AMDialStep v)
+			{
+				switch (v)
+				{
+				case AMDialStep::_10Hz:
+					return "10 Hz";
+					break;
+				case AMDialStep::_100Hz:
+					return "100 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayAmFMDialStep(FMDialStep v)
+			{
+				switch (v)
+				{
+				case FMDialStep::_10Hz:
+					return "10 Hz";
+					break;
+				case FMDialStep::_100Hz:
+					return "100 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayDialStep(DialStep v)
+			{
+				switch (v)
+				{
+				case DialStep::_2hz:
+					return "2 Hz";
+					break;
+				case DialStep::_5hz:
+					return "5 Hz";
+					break;
+				case DialStep::_10hz:
+					return "10 Hz";
+					break;
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayMonitorFunction(MonitorFunction v)
+			{
+				switch (v)
+				{
+				case MonitorFunction::MontiorLevel:
+					return "Monitor Level";
+				case MonitorFunction::MontiorOnOff:
+					return "Monitor On/Off";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayCTCSSState(CTCSSState v)
+			{
+				switch (v)
+				{
+				case CTCSSState::CTCSS_OFF:
+					return "OFF";				
+				case CTCSSState::CTCSS_ENC_DEC_ON:
+					return "ENC DEC";			
+				case CTCSSState::CTCSS_ENC_ON:
+					return "ENC";			
+				case CTCSSState::CTCSS_DCS_ON:
+					return "DCS";			
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayAMChStep(AMChannelStepValue v)
+			{
+				switch (v)
+				{
+				case AMChannelStepValue::_2_5khz:
+					return "2.5 kHz";
+				case AMChannelStepValue::_5khz:
+					return "5 kHz";
+				case AMChannelStepValue::_9khz:
+					return "9 kHz";
+				case AMChannelStepValue::_10khz:
+					return "10 kHz";
+				case AMChannelStepValue::_12_5khz:
+					return "12.5 kHz";
+				case AMChannelStepValue::_25khz:
+					return "25 kHz";
+				default:
+					return "";
+
+				}
+			}
+
+			std::string DisplayFMChStep(FMChannelStepValue v)
+			{
+				switch (v)
+				{
+				case FMChannelStepValue::_5kHz:
+					return "5 kHz";
+				case FMChannelStepValue::_6_26kHz:
+					return "6.5 kHz";
+				case FMChannelStepValue::_10kHz:
+					return "10 kHz";
+				case FMChannelStepValue::_12_5kHz:
+					return "12.5 kHz";
+				case FMChannelStepValue::_15kHz:
+					return "15 kHz";
+				case FMChannelStepValue::_20kHz:
+					return "20 kHz";
+				case FMChannelStepValue::_25kHz:
+					return "26 kHz";
+				default:
+					return "";
+
+				}
+			}
+
+			std::string DisplayMemoryChannelValue(MemoryChannelValue v)
+			{
+			
+				switch (v)
+				{
+				case MemoryChannelValue::P1L:
+					return "P1L";
+					break;
+				case MemoryChannelValue::P1U:
+					return "P1U";
+					break;
+				case MemoryChannelValue::P2L:
+					return "P2L";
+					break;
+				case MemoryChannelValue::P2U:
+					return "P2U";
+					break;
+				case MemoryChannelValue::P3L:
+					return "P3L";
+					break;
+				case MemoryChannelValue::P3U:
+					return "P3U";
+					break;
+				case MemoryChannelValue::P4L:
+					return "P4L";
+					break;
+				case MemoryChannelValue::P4U:
+					return "P4U";
+					break;
+				case MemoryChannelValue::P5L:
+					return "P5L";
+					break;
+				case MemoryChannelValue::P5U:
+					return "P5U";
+					break;
+				case MemoryChannelValue::P6L:
+					return "P6L";
+					break;
+				case MemoryChannelValue::P6U:
+					return "P6U";
+					break;
+				case MemoryChannelValue::P7L:
+					return "P7L";
+					break;
+				case MemoryChannelValue::P7U:
+					return "P7U";
+					break;
+				case MemoryChannelValue::P8L:
+					return "P8L";
+					break;
+				case MemoryChannelValue::P8U:
+					return "P8U";
+					break;
+				case MemoryChannelValue::P9L:
+					return "P9L";
+					break;
+				case MemoryChannelValue::P9U:
+					return "P9U";
+					break;
+				case MemoryChannelValue::_5351_5mhz:
+					return "5335.5 MHz";
+				case MemoryChannelValue::_5354mhz:
+					return "5354 MHz";
+				case MemoryChannelValue::_5357mhz:
+					return "5357 Mhz";
+				case MemoryChannelValue::_5360mhz:
+					return "5360 Mhz";
+				case MemoryChannelValue::_5363mhz:
+					return "5363 MHz";
+				case MemoryChannelValue::_5366mhz:
+					return "5366 MHz";
+				case MemoryChannelValue::EMG:
+					return "EMG";
+				default:
+					return fmt::format("Channel {:d}", v);
+				}
+			}
+
+			std::string DisplayEQ1Value(EQ1FreqValue v)
+			{
+				switch (v)
+				{
+				case EQ1FreqValue::OFF:
+					return "OFF";
+				case EQ1FreqValue::_100Hz:
+					return "100 Hz";
+				case EQ1FreqValue::_200Hz:
+					return "200 Hz";
+				case EQ1FreqValue::_300Hz:
+					return "300 Hz";
+				case EQ1FreqValue::_400Hz:
+					return "400 Hz";
+				case EQ1FreqValue::_500Hz:
+					return "500 Hz";
+				case EQ1FreqValue::_600Hz:
+					return "600 Hz";
+				case EQ1FreqValue::_700Hz:
+					return "700 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayEQ2Value(EQ2FreqValue v)
+			{
+				switch (v)
+				{
+				case EQ2FreqValue::OFF:
+					return "OFF";
+				case EQ2FreqValue::_700Hz:
+					return "700 Hz";
+				case EQ2FreqValue::_800Hz:
+					return "800 Hz";
+				case EQ2FreqValue::_900Hz:
+					return "900 Hz";
+				case EQ2FreqValue::_1000Hz:
+					return "1000 Hz";
+				case EQ2FreqValue::_1100Hz:
+					return "1100 Hz";
+				case EQ2FreqValue::_1200Hz:
+					return "1200 Hz";
+				case EQ2FreqValue::_1300Hz:
+					return "1300 Hz";
+				case EQ2FreqValue::_1400Hz:
+					return "1400 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayEQ3Value(EQ3FreqValue v)
+			{
+				switch (v)
+				{
+				case EQ3FreqValue::OFF:
+					return "OFF";
+				case EQ3FreqValue::_1500Hz:
+					return "1500 Hz";
+				case EQ3FreqValue::_1600Hz:
+					return "1600 Hz";
+				case EQ3FreqValue::_1700Hz:
+					return "1700 Hz";
+				case EQ3FreqValue::_1800Hz:
+					return "1800 Hz";
+				case EQ3FreqValue::_1900Hz:
+					return "1900 Hz";
+				case EQ3FreqValue::_2000Hz:
+					return "2000 Hz";
+				case EQ3FreqValue::_2100Hz:
+					return "2100 Hz";
+				case EQ3FreqValue::_2200Hz:
+					return "2200 Hz";
+				case EQ3FreqValue::_2300Hz:
+					return "2300 Hz";
+				case EQ3FreqValue::_2400Hz:
+					return "2400 Hz";
+				case EQ3FreqValue::_2500Hz:
+					return "2500 Hz";
+				case EQ3FreqValue::_2600Hz:
+					return "2600 Hz";
+				case EQ3FreqValue::_2700Hz:
+					return "2700 Hz";
+				case EQ3FreqValue::_2800Hz:
+					return "2800 Hz";
+				case EQ3FreqValue::_2900Hz:
+					return "2900 Hz";
+				case EQ3FreqValue::_3000Hz:
+					return "3000 Hz";
+				case EQ3FreqValue::_3100Hz:
+					return "3100 Hz";
+				case EQ3FreqValue::_3200Hz:
+					return "3200 Hz";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayTunerSelect(TunerSelectValue v)
+			{
+				switch (v)
+				{
+				case TunerSelectValue::OFF:
+					return "OFF";
+				case TunerSelectValue::EXTERNAL:
+					return "EXTERNAL";
+				case TunerSelectValue::ATAS:
+					return "ATAS";
+				case TunerSelectValue::LAMP:
+					return "LAMP";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayMenuFunction(Commands::MenuFunction f)
+			{
+				std::string ret = fmt::format("{:04}", f);
+				return ret.substr(0, 2) + "-" + ret.substr(2, 2);
+			}
+
+			std::string DisplayWidthState(WidthState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayScanState(ScanState v)
+			{
+				switch (v)
+				{
+				case ScanState::UP:
+					return "UP";
+				case ScanState::DOWN:
+					return "DOWN";
+				case ScanState::OFF:
+					return "OFF";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayRadioStatus(RadioStatusValue v)
+			{
+				switch (v)
+				{
+				case RadioStatusValue::MENU:
+					return "MENU";
+				case RadioStatusValue::NORMAL:
+					return "NORMAL";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayReadMeterType(ReadMeterType v)
+			{
+				switch (v)
+				{
+					case ReadMeterType::AutoA:
+						return "AUTO";
+					case ReadMeterType::S:
+						return "S";
+					case ReadMeterType::AutoB:
+						return "AUTO";
+					case ReadMeterType::COMP:
+						return "COMP";
+					case ReadMeterType::ALC:
+						return "ALC";
+					case ReadMeterType::PO:
+						return "PO";
+					case ReadMeterType::SWR:
+						return "SWR";
+					case ReadMeterType::ID:
+						return "IDD";
+					default:
+						return "";
+				}
+			}
+
+			std::string DisplayPowerSwitch(PowerSwitchValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplaySpeechProcessorState(SpeechProcessorState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplaySpeechProcessorType(SpeechProcessorType v)
+			{
+				switch (v)
+				{
+				case SpeechProcessorType::ParametricEqualizer:
+					return "Parametric Equalizer";
+				case SpeechProcessorType::Processor:
+					return "Processor";
+				default:
+					return "";						
+				}
+			}
+
+			std::string DisplayMemoryChannelModeValue(MemoryChannelModeValue v)
+			{
+				switch (v)
+				{
+				case MemoryChannelModeValue::AM:
+					return "AM";					
+				case MemoryChannelModeValue::AM_N:
+					return "AM-N";					
+				case MemoryChannelModeValue::CW:
+					return "CW";					
+				case MemoryChannelModeValue::CW_R:
+					return "CW-R";					
+				case MemoryChannelModeValue::DATA_LSB:
+					return "DATA LSB";					
+				case MemoryChannelModeValue::DATA_USB:
+					return "DATA USB";					
+				case MemoryChannelModeValue::FM:
+					return "FM";					
+				case MemoryChannelModeValue::FM_N:
+					return "FM-N";					
+				case MemoryChannelModeValue::LSB:
+					return "LSB";					
+				case MemoryChannelModeValue::USB:
+					return "DATA USB";					
+				case MemoryChannelModeValue::RTTY_LSB:
+					return "RTTY LSB";				
+				case MemoryChannelModeValue::RTTY_USB:
+					return "RTTY USB";					
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayIfShift(IfShiftValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayRFAttenuatorState(RfAttenuatorState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayTagValue(TagValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayMonitorOnOffValue(MonitorOnOffValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayBusyState(BusyState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayClarifierState(ClarifierState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayDialLockValue(DialLockValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayKeyerValue(KeyerValue v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayInformationType(InformationType v)
+			{
+				switch (v)
+				{
+				case InformationType::HI_SWR:
+					return "HIGH SWR";
+				case InformationType::REC:
+					return "REC";
+				case InformationType::PLAY:
+					return "PLAY";
+				case InformationType::TX_LED:
+					return "TX LED";
+				case InformationType::RX_LED:
+					return "RX LED";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayModeValue(ModeValue v)
+			{
+				switch (v)
+				{
+				case ModeValue::SSB_BFOA:
+					return "SSB BFOA";
+				case ModeValue::SSB_BFOB:
+					return "SSB BFOB";
+				case ModeValue::CW:
+					return "CW";
+				case ModeValue::FM:
+					return "FM";
+				case ModeValue::AM:
+					return "AM";
+				case ModeValue::RTTY_BFOA:
+					return "RTTY BFOA";
+				case ModeValue::CW_BFOA:
+					return "CW BFOA";
+				case ModeValue::DATA_BFOA:
+					return "DATA BFOA";
+				case ModeValue::RTTY_BFOB:
+					return "RTTY BFOB";
+				case ModeValue::FM_N:
+					return "FM-N";
+				case ModeValue::DATA_BFOB:
+					return "DATA BFOB";
+				case ModeValue::AM_N:
+					return "AM-N";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayOperationType(OperationType v)
+			{
+				switch (v)
+				{
+				case OperationType::Simplex:
+					return "Simplex";
+					break;
+				case OperationType::MinusShift:
+					return "- Shift";
+					break;
+				case OperationType::PlusShift:
+					return "+ Shift";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayVFOChannelType(VFOChannelTypeValue v)
+			{
+				switch (v)
+				{
+				case VFOChannelTypeValue::VFO:
+					return "VFO";
+				case VFOChannelTypeValue::Memory:
+					return "MEMORY";
+				case VFOChannelTypeValue::MemoryTune:
+					return "MEMORY TUNE";
+				case VFOChannelTypeValue::QuickMemoryBank:
+					return "QMB";
+				case VFOChannelTypeValue::QMB_MT:
+					return "QMB MT";
+				case VFOChannelTypeValue::PMS:
+					return "PMS";
+				case VFOChannelTypeValue::HOME:
+					return "HOME";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayKeyerMemory(KeyerMemoryChannel v)
+			{
+				switch (v) 
+				{
+				case KeyerMemoryChannel::Memory1:
+					return "Memory 1";
+				case KeyerMemoryChannel::Memory2:
+					return "Memory 2";
+				case KeyerMemoryChannel::Memory3:
+					return "Memory 3";
+				case KeyerMemoryChannel::Memory4:
+					return "Memory 4";
+				case KeyerMemoryChannel::Memory5:
+					return "Memory 5";
+				case KeyerMemoryChannel::Message1:
+					return "Message 1";
+				case KeyerMemoryChannel::Message2:
+					return "Message 2";
+				case KeyerMemoryChannel::Message3:
+					return "Message 3";
+				case KeyerMemoryChannel::Message4:
+					return "Message 4";
+				case KeyerMemoryChannel::Message5:
+					return "Message 5";
+				default:
+					return "";
+				}
+			}
+
+			std::string DisplayNotchState(NotchState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayInformationState(InformationState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayBreakInState(BreakInState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
+			std::string DisplayCwSpotState(CWSpotState v)
+			{
+				return DisplayOnOffValue(v);
+			}
+
 		};
 	};
 };

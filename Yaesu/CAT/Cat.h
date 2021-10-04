@@ -2,7 +2,7 @@
 #include<string>
 #include<exception>
 #include<stdexcept>
-
+#include<type_traits>
 //VFOA to VFOB
 namespace Yeasu {
 	namespace FT891 {
@@ -21,6 +21,7 @@ namespace Yeasu {
 				Message4,
 				Message5
 			};
+
 
 			enum class Band : int {
 				m160 = 0,
@@ -62,6 +63,7 @@ namespace Yeasu {
 				ON
 			};
 
+
 			enum class CTCSSState
 			{
 				CTCSS_OFF,
@@ -70,11 +72,13 @@ namespace Yeasu {
 				CTCSS_DCS_ON
 			};
 
+
 			enum class CWSpotState : int
 			{
 				OFF,
 				ON
 			};
+
 
 			enum class EncoderType : int
 			{
@@ -724,23 +728,7 @@ namespace Yeasu {
 				LEVEL
 			};
 
-			enum class BusyState
-			{
-				OFF,
-				ON
-			};
-
-			enum class  ClarifierState : int
-			{
-				OFF,
-				ON
-			};
-
-			enum class UpDownState
-			{
-				UP,
-				DOWN
-			};
+			
 
 			enum class CTCSSModeType : int {
 				CTCSS,
@@ -787,11 +775,7 @@ namespace Yeasu {
 				AUTO_SLOW
 			};
 
-			enum class KeyerValue
-			{
-				OFF,
-				ON
-			};
+			
 
 			enum class KeyPitchValue
 			{
@@ -935,12 +919,6 @@ namespace Yeasu {
 				_60wpm
 			};
 
-			enum class DialLockValue
-			{
-				OFF,
-				ON
-			};
-
 			enum class DVSRecordingValue
 			{
 				STOP,
@@ -955,14 +933,7 @@ namespace Yeasu {
 			{
 				MontiorOnOff,
 				MontiorLevel
-			};
-
-			enum class MonitorOnOffValue : int
-			{
-				OFF,
-				ON
-			};
-
+			};			
 			enum class MeterType
 			{
 				COMP,
@@ -971,12 +942,10 @@ namespace Yeasu {
 				SWR,
 				ID
 			};
-
 			enum class TagValue {
 				OFF,
 				ON
 			};
-
 			enum class VFOChannelTypeValue
 			{
 				VFO,
@@ -987,14 +956,12 @@ namespace Yeasu {
 				PMS,
 				HOME
 			};
-
 			enum class OperationType
 			{
 				Simplex,
 				PlusShift,
 				MinusShift
 			};
-
 			enum class ModeValue
 			{
 				SSB_BFOA = 1,
@@ -1010,31 +977,31 @@ namespace Yeasu {
 				DATA_BFOB,
 				AM_N
 			};
-
+			enum class UpDownState
+			{
+				UP,
+				DOWN
+			};
 			enum class IfShiftValue
 			{
 				OFF,
 				ON
 			};
-
 			enum class SpeechProcessorType
 			{
 				Processor,
 				ParametricEqualizer
 			};
-
 			enum class SpeechProcessorState
 			{
 				OFF,
 				ON
-			};
-
+			};			
 			enum PowerSwitchValue
 			{
 				OFF,
 				ON
-			};
-
+			};	
 			enum class ReadMeterType
 			{
 				AutoA,
@@ -1046,26 +1013,22 @@ namespace Yeasu {
 				SWR,
 				ID
 			};
-
 			enum class RadioStatusValue
 			{
 				NORMAL,
 				MENU
 			};
-
 			enum class ScanState
 			{
 				OFF,
 				UP,
 				DOWN
 			};
-
 			enum class WidthState
 			{
 				OFF,
-				On
+				ON
 			};
-
 			enum class MemoryChannelModeValue : int
 			{
 				LSB = 1,
@@ -1081,7 +1044,6 @@ namespace Yeasu {
 				DATA_USB,
 				AM_N
 			};
-
 			enum class MemoryChannelValue
 			{
 				_1 = 1,
@@ -1209,7 +1171,6 @@ namespace Yeasu {
 				_5366mhz,
 				EMG = 600
 			};
-
 			enum class InformationType {
 				HI_SWR,
 				REC = 3,
@@ -1217,12 +1178,109 @@ namespace Yeasu {
 				TX_LED = 10,
 				RX_LED
 			};
-
 			enum class RfAttenuatorState
 			{
 				OFF,
 				ON
 			};
+			enum class BusyState
+			{
+				OFF,
+				ON
+			};
+			enum class  ClarifierState : int
+			{
+				OFF,
+				ON
+			};
+			enum class MonitorOnOffValue : int
+			{
+				OFF,
+				ON
+			};
+			enum class DialLockValue
+			{
+				OFF,
+				ON
+			};
+			enum class KeyerValue
+			{
+				OFF,
+				ON
+			};
+
+
+			std::string DisplayMonitorFunction(MonitorFunction v);
+			std::string DisplayNotchState(NotchState v);
+			std::string DisplayKeyerMemory(KeyerMemoryChannel v);
+			std::string DisplayInformationState(InformationState v);
+			std::string DisplayBreakInState(BreakInState v);
+			std::string DisplayCTCSSState(CTCSSState v);
+			std::string DisplayCwSpotState(CWSpotState v);
+			std::string DisplayMemoryChannelValue(MemoryChannelValue v);
+			std::string DisplayInformationType(InformationType v);
+			std::string DisplayBusyState(BusyState v);
+			std::string DisplayClarifierState(ClarifierState v);
+			std::string DisplayDialLockValue(DialLockValue v);
+			std::string DisplayKeyerValue(KeyerValue v);
+			std::string DisplayVFOChannelType(VFOChannelTypeValue v);
+			std::string DisplayOperationType(OperationType v);
+			std::string DisplayModeValue(ModeValue v);
+			std::string DisplayMonitorOnOffValue(MonitorOnOffValue v);
+			std::string DisplayTagValue(TagValue v);
+			std::string DisplayRFAttenuatorState(RfAttenuatorState v);
+			std::string DisplayIfShift(IfShiftValue v);
+			std::string DisplaySpeechProcessorType(SpeechProcessorType v);
+			std::string DisplaySpeechProcessorState(SpeechProcessorState v);
+			std::string DisplayPowerSwitch(PowerSwitchValue v);
+			std::string DisplayReadMeterType(ReadMeterType v);
+			std::string DisplayRadioStatus(RadioStatusValue v);
+			std::string DisplayMemoryChannelModeValue(MemoryChannelModeValue v);
+			std::string DisplayScanState(ScanState v);
+			std::string DisplayWidthState(WidthState v);
+			std::string DisplayMenuFunction(MenuFunction f);
+			std::string DisplayTunerSelect(TunerSelectValue v);
+			std::string DisplayEQ3Value(EQ3FreqValue v);
+			std::string DisplayEQ2Value(EQ2FreqValue v);
+			std::string DisplayEQ1Value(EQ1FreqValue v);
+			std::string DisplayFMChStep(FMChannelStepValue v);
+			std::string DisplayAMChStep(AMChannelStepValue v);
+			std::string DisplayDialStep(DialStep v);
+			std::string DisplayAmFMDialStep(FMDialStep v);
+			std::string DisplayAmFMDialStep(AMDialStep v);
+			std::string DisplaySSBDialStep(SSBDialStep v);
+			std::string DisplayQuickDial(QuickDialValue v);
+			std::string DisplaySCPSpanFreq(SCPSpanFreqValue v);
+			std::string DisplaySCPStart(SCPStartCycleValue v);
+			std::string DisplayAPWidth(APFWidthValue v);
+			std::string DisplaySSBTxBandPass(SSBTXBandPassValue v);
+			std::string DisplayRTTYMarkFreq(RTTYMarkFreq v);
+			std::string DisplayRTTYShiftFreq(RTTYShiftFreqValue v);
+			std::string DisplayRTTYShiftPort(RTTYShiftPortValue v);
+			std::string DisplayDCSPolarity(DCSPolarityValue v);
+			std::string DisplayPSKTone(PSKToneValue v);
+			std::string DisplayQskDelay(QskDelayTimeValue v);
+			std::string DisplayBFO(DataBfoValue v);
+			std::string DisplayPCKeying(PCKeyingValue v);
+			std::string DisplayBFO(BfoValue v);
+			std::string DisplayCwAutoMode(CwAutoModeValue v);
+			std::string DisplayPTTSelect(PTTSelectValue v);
+			std::string DisplayFreqHighCut(FreqHighCutValue v);
+			std::string DisplayFreqLowCut(FreqLowCutValue v);
+			std::string DisplayClarSelect(ClarSelectValue v);
+			std::string DisplayAPO(APOValue v);
+			std::string DisplayCatTOT(CatTOTValue v);
+			std::string DisplayCatRate(CatRateValue v);
+			std::string DisplayNbRejection(NBRejectionValue v);
+			std::string DisplayNbWidth(NBWidthValue v);
+			std::string DisplayNumberStyle(NumberStyleValue v);
+			std::string DisplayBeaconInterval(int i);
+			std::string DisplayPeakHold(PeakHoldType t);
+			std::string DisplayEnableDisable(EnableDisableValue v);
+			std::string DisplayKeyerType(KeyerTypeValue v);
+			std::string DisplayBand(Band v);
+			std::string DisplayCwWeight(int weight);
+			std::string DisplayFrequency(int freq);
 
 			struct ManualNotchValue
 			{
