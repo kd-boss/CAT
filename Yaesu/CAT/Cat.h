@@ -1,6 +1,7 @@
 
 #include<string>
 #include<exception>
+#include<stdexcept>
 
 //VFOA to VFOB
 namespace Yeasu {
@@ -24,6 +25,7 @@ namespace Yeasu {
 			enum class Band : int {
 				m160 = 0,
 				m80 = 1,
+				m60 = 2,
 				m40 = 3,
 				m30 = 4,
 				m20 = 5,
@@ -55,7 +57,7 @@ namespace Yeasu {
 				ON
 			};
 
-			enum class BreakInState : char {
+			enum class BreakInState : int {
 				OFF,
 				ON
 			};
@@ -68,7 +70,7 @@ namespace Yeasu {
 				CTCSS_DCS_ON
 			};
 
-			enum class CWSpotState : char
+			enum class CWSpotState : int
 			{
 				OFF,
 				ON
@@ -728,7 +730,7 @@ namespace Yeasu {
 				ON
 			};
 
-			enum class  ClarifierState : char
+			enum class  ClarifierState : int
 			{
 				OFF,
 				ON
@@ -740,12 +742,12 @@ namespace Yeasu {
 				DOWN
 			};
 
-			enum class CTCSSModeType : char {
+			enum class CTCSSModeType : int {
 				CTCSS,
 				DCS
 			};
 
-			enum class ContourType : char
+			enum class ContourType : int
 			{
 				ContourOnOff,
 				ContourFrequency,
@@ -874,7 +876,7 @@ namespace Yeasu {
 
 			enum class KeyerSpeedVal
 			{
-				_4wpm,
+				_4wpm = 4,
 				_5wpm,
 				_6wpm,
 				_7wpm,
@@ -1064,7 +1066,7 @@ namespace Yeasu {
 				On
 			};
 
-			enum class MemoryChannelModeValue : char
+			enum class MemoryChannelModeValue : int
 			{
 				LSB = 1,
 				USB,
@@ -1408,7 +1410,6 @@ namespace Yeasu {
 				static std::string Set();
 			};
 
-
 			class BreakIn
 			{
 			public:
@@ -1418,7 +1419,6 @@ namespace Yeasu {
 				static BreakInState Answer(std::string data);
 			};
 
-
 			class ManualNotch
 			{
 			public:
@@ -1426,7 +1426,6 @@ namespace Yeasu {
 				static std::string Read();
 				static ManualNotchValue Answer(std::string data);
 			};
-
 
 			class BandSelect
 			{
@@ -1467,7 +1466,6 @@ namespace Yeasu {
 
 				static std::string Set(UpDownState Value);
 			};
-
 
 			class CTCSSToneFrequency
 			{
@@ -1519,8 +1517,6 @@ namespace Yeasu {
 				static std::string Set();
 			};
 
-
-
 			class EncoderDown
 			{
 			public:
@@ -1540,7 +1536,6 @@ namespace Yeasu {
 			public:
 				static std::string Set(EncoderType enc, int Steps);
 			};
-
 
 			class BadMenuItemException : public std::runtime_error
 			{
@@ -3152,6 +3147,8 @@ namespace Yeasu {
 			public:
 				static std::string Set();
 			};
+
+
 		}; //end Commands
 	}; //end FT891
 }; //end Yeasu

@@ -11,7 +11,7 @@ namespace Yeasu {
 
 			std::string AntennaTunerControl::Set(TunerState state)
 			{
-				std::string str = fmt::format("AC00{};", (int)state);
+				std::string str = fmt::format("AC00{};", state);
 				return str.c_str();
 			}
 
@@ -27,6 +27,8 @@ namespace Yeasu {
 
 			std::string VolumeLevel::Set(int Value)
 			{
+				Value = Value > 100 ? 100 : Value;
+				Value = Value < 0 ? 0 : Value;
 				return fmt::format("AG0{:0>3};", Value);
 			}
 
@@ -37,7 +39,7 @@ namespace Yeasu {
 
 			int VolumeLevel::Answer(std::string data)
 			{
-				return std::stoi(&data[3]);
+				return std::stoi(data.substr(3,1));
 			}
 
 			std::string AutoInformation::Set(InformationState Value)
@@ -86,7 +88,7 @@ namespace Yeasu {
 
 			std::string BreakIn::Set(BreakInState Value)
 			{
-				std::string str = fmt::format("BI{};", (char)Value);
+				std::string str = fmt::format("BI{:01};", Value);
 				return str.c_str();
 			}
 
@@ -94,7 +96,7 @@ namespace Yeasu {
 
 			BreakInState BreakIn::Answer(std::string data)
 			{
-				return (BreakInState)data[2];
+				return (BreakInState)std::stoi(data.substr(2,1));
 			}
 
 			std::string ManualNotch::Set(ManualNotchValue val)
@@ -120,7 +122,7 @@ namespace Yeasu {
 
 			std::string BandSelect::Set(Band Value)
 			{
-				std::string str = fmt::format("BS{:0>2};", (int)Value);
+				std::string str = fmt::format("BS{:0>2};", Value);
 				return str.c_str();
 			}
 
@@ -231,7 +233,7 @@ namespace Yeasu {
 			std::string Dimmer::set(DimmerValues val)
 			{
 				std::string str = "DA";
-				str += fmt::format("{:0>2}{:0>2}{:0>2}{:0>2};", (int)val.LCD_Contrast, (int)val.BacklightLevel, (int)val.LCD_Level, (int)val.TX_Indicator);
+				str += fmt::format("{:0>2}{:0>2}{:0>2}{:0>2};", val.LCD_Contrast, val.BacklightLevel, val.LCD_Level, val.TX_Indicator);
 				return str.c_str();
 			}
 
@@ -272,7 +274,7 @@ namespace Yeasu {
 			{
 				if (Steps > 99) Steps = 99;
 				if (Steps < 1) Steps = 1;
-				std::string str = fmt::format("EU{}{:0>2};", (char)enc, Steps);
+				std::string str = fmt::format("EU{:d}{:0>2};", enc, Steps);
 				return str.c_str();
 			}
 
@@ -718,7 +720,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWMemory1(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_1, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_1, val);
 				return set(s);
 			}
 
@@ -740,7 +742,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWMemory2(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_2, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_2, val);
 
 				return set(s);
 			}
@@ -763,7 +765,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWMemory3(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_3, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_3, val);
 
 				return set(s);
 			}
@@ -786,7 +788,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWMemory4(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_4, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_4, val);
 				return set(s);
 			}
 
@@ -808,7 +810,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWMemory5(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_5, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_5, val);
 
 				return set(s);
 			}
@@ -832,7 +834,7 @@ namespace Yeasu {
 
 			std::string Menu::SetNbWidth(NBWidthValue value)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_WIDTH, (int)value);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_WIDTH, value);
 				return set(s);
 			}
 
@@ -854,7 +856,7 @@ namespace Yeasu {
 
 			std::string Menu::SetNbRejection(NBRejectionValue value)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_REJECTION, (int)value);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_REJECTION, value);
 				return set(s);
 			}
 
@@ -922,7 +924,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRfSqlVr(RfSqlVrValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::BEEP_LEVEL, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::BEEP_LEVEL, val);
 				return set(s);
 			}
 
@@ -944,7 +946,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCatRate(CatRateValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RATE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RATE, val);
 				return set(s);
 			}
 
@@ -966,7 +968,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCatTOT(CatTOTValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_TOT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_TOT, val);
 				return set(s);
 			}
 
@@ -988,7 +990,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCatRTS(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RTS, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RTS, val);
 				return set(s);
 			}
 
@@ -1010,7 +1012,7 @@ namespace Yeasu {
 
 			std::string Menu::SetMemGroup(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MEM_GROUP, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::MEM_GROUP, val);
 				return set(s);
 			}
 
@@ -1032,7 +1034,7 @@ namespace Yeasu {
 
 			std::string Menu::SetFMSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_SETTING, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_SETTING, val);
 				return set(s);
 			}
 
@@ -1055,7 +1057,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRecSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::REC_SETTING, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::REC_SETTING, val);
 				return set(s);
 			}
 
@@ -1077,7 +1079,7 @@ namespace Yeasu {
 
 			std::string Menu::SetATASSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::ATAS_SETTING, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::ATAS_SETTING, val);
 				return set(s);
 			}
 
@@ -1102,7 +1104,7 @@ namespace Yeasu {
 				val = val > 20 ? 20 : val;
 				val = val < -20 ? -20 : val;
 
-				std::string s = fmt::format("{:04}{:+d}", MenuFunction::QUICK_SPL_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:+d}", MenuFunction::QUICK_SPL_FREQ, val);
 				return set(s);
 			}
 
@@ -1126,7 +1128,7 @@ namespace Yeasu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 30 ? 30 : val;
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::TX_TOT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::TX_TOT, val);
 				return set(s);
 			}
 
@@ -1148,7 +1150,7 @@ namespace Yeasu {
 
 			std::string Menu::SetMicScan(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN, val);
 				return set(s);
 			}
 
@@ -1170,7 +1172,7 @@ namespace Yeasu {
 
 			std::string Menu::SetMicScanResume(MicScanResumeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN_RESUME, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN_RESUME, val);
 				return set(s);
 			}
 
@@ -1195,7 +1197,7 @@ namespace Yeasu {
 				val = val < -25 ? -25 : val;
 				val = val > 25 ? 25 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::REF_FEQ_ADJ, (int)val);
+				std::string s = fmt::format("{:04}{:+03}", MenuFunction::REF_FEQ_ADJ, val);
 				return set(s);
 			}
 
@@ -1217,7 +1219,7 @@ namespace Yeasu {
 
 			std::string Menu::SetClarSelect(ClarSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CLAR_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CLAR_SELECT, val);
 				return set(s);
 			}
 
@@ -1239,7 +1241,7 @@ namespace Yeasu {
 
 			std::string Menu::SetApo(APOValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::APO, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::APO, val);
 				return set(s);
 			}
 
@@ -1261,7 +1263,7 @@ namespace Yeasu {
 
 			std::string Menu::SetFanControl(FanControlValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FAN_CONTROL, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::FAN_CONTROL, val);
 				return set(s);
 			}
 
@@ -1283,7 +1285,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_LCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_LCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1305,7 +1307,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_LCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_LCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1327,7 +1329,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_HCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_HCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1349,7 +1351,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_HCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_HCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1371,7 +1373,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_MIC_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_MIC_SELECT, val);
 				return set(s);
 			}
 
@@ -1395,7 +1397,7 @@ namespace Yeasu {
 			{
 				val = val > 100 ? 100 : val;
 				val = val < 0 ? 0 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_OUT_LEVEL, (int)val);
+				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_OUT_LEVEL, val);
 				return set(s);
 			}
 
@@ -1421,7 +1423,7 @@ namespace Yeasu {
 			{
 				val = val > 100 ? 100 : val;
 				val = val < 0 ? 0 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_MIC_GAIN, (int)val);
+				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_MIC_GAIN, val);
 				return set(s);
 			}
 
@@ -1444,7 +1446,7 @@ namespace Yeasu {
 
 			std::string Menu::SetAMPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_PTT_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_PTT_SELECT, val);
 				return set(s);
 			}
 
@@ -1466,7 +1468,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_LCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_LCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1488,7 +1490,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_LCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_LCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1511,7 +1513,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_HCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_HCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1533,7 +1535,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_HCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_HCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1579,7 +1581,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWAutoMode(CwAutoModeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_AUTO_MODE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_AUTO_MODE, val);
 				return set(s);
 			}
 
@@ -1603,7 +1605,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWBFO(BfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BFO, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BFO, val);
 				return set(s);
 			}
 
@@ -1625,7 +1627,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWBreakkInType(CwBreakInType val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BK_IN_TYPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BK_IN_TYPE, val);
 				return set(s);
 			}
 
@@ -1672,7 +1674,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWWaveShape(CwWaveShapeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_WAVE_SHAPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_WAVE_SHAPE, val);
 				return set(s);
 			}
 
@@ -1694,7 +1696,7 @@ namespace Yeasu {
 
 			std::string Menu::SetCWFreqDisplay(CwFreqDisplayValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_FREQ_DISPLAY, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_FREQ_DISPLAY, val);
 				return set(s);
 			}
 
@@ -1716,7 +1718,7 @@ namespace Yeasu {
 
 			std::string Menu::SetPCKeying(PCKeyingValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PC_KEYING, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::PC_KEYING, val);
 				return set(s);
 			}
 
@@ -1738,7 +1740,7 @@ namespace Yeasu {
 
 			std::string Menu::SetQSKDelayTime(QskDelayTimeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::QSK_DELAY_TIME, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::QSK_DELAY_TIME, val);
 				return set(s);
 			}
 
@@ -1760,7 +1762,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDataMode(DataModeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_MODE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_MODE, val);
 				return set(s);
 			}
 
@@ -1782,7 +1784,7 @@ namespace Yeasu {
 
 			std::string Menu::SetPSKTone(PSKToneValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PSK_TONE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::PSK_TONE, val);
 				return set(s);
 			}
 
@@ -1855,7 +1857,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATALowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_LCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_LCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1877,7 +1879,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATALowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_LCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_LCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1899,7 +1901,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATAHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_HCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_HCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -1921,7 +1923,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATAHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_HCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_HCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -1943,7 +1945,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATAInSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_IN_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_IN_SELECT, val);
 				return set(s);
 			}
 
@@ -1965,7 +1967,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATAPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_PTT_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_PTT_SELECT, val);
 				return set(s);
 			}
 
@@ -1991,7 +1993,7 @@ namespace Yeasu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_OUT_LEVEL, (int)val);
+				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_OUT_LEVEL, val);
 				return set(s);
 			}
 
@@ -2013,7 +2015,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDATABFO(DataBfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_BFO, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_BFO, val);
 				return set(s);
 			}
 
@@ -2035,7 +2037,7 @@ namespace Yeasu {
 
 			std::string Menu::SetFMMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_MIC_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_MIC_SELECT, val);
 				return set(s);
 			}
 
@@ -2057,7 +2059,7 @@ namespace Yeasu {
 
 			std::string Menu::SetFMOutLevel(int val)
 			{
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::FM_OUT_LEVEL, (int)val);
+				std::string s = fmt::format("{:04}{:03}", MenuFunction::FM_OUT_LEVEL, val);
 				return set(s);
 			}
 
@@ -2079,7 +2081,7 @@ namespace Yeasu {
 
 			std::string Menu::SetPktPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PKT_PTT_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::PKT_PTT_SELECT, val);
 				return set(s);
 			}
 
@@ -2149,7 +2151,7 @@ namespace Yeasu {
 
 			std::string Menu::SetDCSPolarity(DCSPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DCS_POLARITY, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::DCS_POLARITY, val);
 				return set(s);
 			}
 
@@ -2171,7 +2173,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_LCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_LCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -2193,7 +2195,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_LCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_LCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -2215,7 +2217,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_HCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_HCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -2237,7 +2239,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_HCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_HCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -2259,7 +2261,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYShiftPort(RTTYShiftPortValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_PORT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_PORT, val);
 				return set(s);
 			}
 
@@ -2281,7 +2283,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYPolarityR(RTTYPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_R, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_R, val);
 				return set(s);
 			}
 
@@ -2303,7 +2305,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYPolarityT(RTTYPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_T, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_T, val);
 				return set(s);
 			}
 
@@ -2350,7 +2352,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYShiftFreq(RTTYShiftFreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_FREQ, val);
 				return set(s);
 			}
 
@@ -2372,7 +2374,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYMarkFreq(RTTYMarkFreq val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_MARK_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_MARK_FREQ, val);
 				return set(s);
 			}
 
@@ -2394,7 +2396,7 @@ namespace Yeasu {
 
 			std::string Menu::SetRTTYBFO(DataBfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_BFO, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_BFO, val);
 				return set(s);
 			}
 
@@ -2416,7 +2418,7 @@ namespace Yeasu {
 
 			std::string Menu::SetSSBLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_LCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_LCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -2438,7 +2440,7 @@ namespace Yeasu {
 
 			std::string Menu::SetSSBLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_LCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_LCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -2460,7 +2462,7 @@ namespace Yeasu {
 
 			std::string Menu::SetSSBHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_HCUT_FREQ, (int)val);
+				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_HCUT_FREQ, val);
 				return set(s);
 			}
 
@@ -2482,7 +2484,7 @@ namespace Yeasu {
 
 			std::string Menu::SetSSBHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_HCUT_SLOPE, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_HCUT_SLOPE, val);
 				return set(s);
 			}
 
@@ -2504,7 +2506,7 @@ namespace Yeasu {
 
 			std::string Menu::SetSSBMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_MIC_SELECT, (int)val);
+				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_MIC_SELECT, val);
 				return set(s);
 			}
 
@@ -2529,7 +2531,7 @@ namespace Yeasu {
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
 
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_OUT_LEVEL, (int)val);
+				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_OUT_LEVEL, val);
 				return set(s);
 			}
 
@@ -3943,6 +3945,9 @@ namespace Yeasu {
 
 			std::string VFO_A_FREQ::Set(int val)
 			{
+				val = val < 30000 ? 30000 : val;
+				val = val > 56000000 ? 56000000 : val;
+
 				return fmt::format("FA{:09};", val);
 			}
 			std::string VFO_A_FREQ::Read()
@@ -3957,6 +3962,9 @@ namespace Yeasu {
 
 			std::string VFO_B_FREQ::Set(int val)
 			{
+				val = val < 30000 ? 30000 : val;
+				val = val > 56000000 ? 56000000 : val;
+
 				return fmt::format("FB{:09};", val);
 			}
 			std::string VFO_B_FREQ::Read()
@@ -4010,6 +4018,9 @@ namespace Yeasu {
 
 			std::string IF_SHIFT::Set(IfShiftValue val, int freq)
 			{
+				freq = freq > 1200 ? 1200 : freq;
+				freq = freq < 0 ? 0 : freq;
+				freq = freq - (freq % 20);
 				return fmt::format("IS0{}{:+05};", val, freq);
 			}
 
@@ -4075,8 +4086,6 @@ namespace Yeasu {
 
 			std::string KeyerSpeed::Set(KeyerSpeedVal val)
 			{
-
-
 				return fmt::format("KS{:03};", val);
 			}
 
@@ -4350,6 +4359,8 @@ namespace Yeasu {
 
 			std::string MonitorLevel::Set(MonitorLevelValue val)
 			{
+				val.val.iVal = val.val.iVal > 100 ? 100 : val.val.iVal;
+				val.val.iVal = val.val.iVal < 0 ? 0 : val.val.iVal;
 				return fmt::format("ML{:d}{:03};", val.f, val.val.iVal);
 			}
 			std::string MonitorLevel::Read(MonitorFunction val)
@@ -4480,7 +4491,7 @@ namespace Yeasu {
 				retVal.ClarifierFreq = std::stoi(data.substr(14, 5));
 				retVal.Clarifier = (ClarifierState)std::stoi(data.substr(19, 1));
 				retVal.Mode = (ModeValue)std::stoi(data.substr(21, 1));
-				retVal.VFO = (VFOChannelTypeValue)data[22];
+				retVal.VFO = (VFOChannelTypeValue)std::stoi(data.substr(22,1));
 				retVal.CTCSS = (CTCSSState)std::stoi(data.substr(23, 1));
 				retVal.Operation = (OperationType)std::stoi(data.substr(26, 1));
 
@@ -4773,11 +4784,11 @@ namespace Yeasu {
 					retStr,
 					val.VFOAFreq,
 					val.ClarifierFreq,
-					(int)val.Clarifier,
-					(int)val.Mode,
-					(int)val.CTCSS,
-					(int)val.Operation,
-					(int)val.TAG,
+					val.Clarifier,
+					val.Mode,
+					val.CTCSS,
+					val.Operation,
+					val.TAG,
 					val.TagString.substr(0, 12));
 
 				return ret;
@@ -5411,6 +5422,8 @@ namespace Yeasu {
 
 			std::string Width::Set(WidthValue val)
 			{
+				val.WidthCommand = val.WidthCommand > 21 ? 21 : val.WidthCommand;
+				val.WidthCommand = val.WidthCommand < 0 ? 0 : val.WidthCommand;
 				return fmt::format("SH{:d}{:03};", val.State, val.WidthCommand);
 			}
 			std::string Width::Read()
