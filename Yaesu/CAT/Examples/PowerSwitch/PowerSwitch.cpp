@@ -13,7 +13,7 @@ using namespace asio;
 string port = "COM10";
 int baud = 4800; //factory default baud rate of the rig. Modify if yours is different. 
 
-string dummydata = "alslkdkinckdlikse;"; //sufficently long enough garbate data for a dummy command to set the radio into it's error state (it replies with "?;")
+string dummydata = "alslkdkinckdlikse;"; //sufficently long enough garbage data for a dummy command to set the radio into it's error state (it replies with "?;")
 
 void PowerDown(serial_port& port)
 {
