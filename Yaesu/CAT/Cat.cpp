@@ -4352,7 +4352,7 @@ namespace Yeasu {
 
 			ModeValue OperatingMode::Answer(std::string data)
 			{
-				return (ModeValue)std::stoi(data.substr(3, 1));
+				return (ModeValue)std::stoi(data.substr(3, 1), nullptr, 16);
 			}
 
 			std::string MicGain::Set(int val)
