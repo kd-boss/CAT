@@ -1,7 +1,7 @@
 #include "Cat.h"
 #include <fmt/core.h>
 
-namespace Yeasu {
+namespace Yaesu {
 	namespace FT891 {
 		namespace Commands {
 
