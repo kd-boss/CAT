@@ -4,7 +4,7 @@
 #include<stdexcept>
 #include<type_traits>
 //VFOA to VFOB
-namespace Yeasu {
+namespace Yaesu {
 	namespace FT891 {
 		namespace Commands {
 
