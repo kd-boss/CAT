@@ -1,7 +1,7 @@
 #include "Cat.h"
 #include <fmt/core.h>
 
-namespace Yeasu {
+namespace Yaesu {
 	namespace FT891 {
 		namespace Commands {
 
@@ -4352,7 +4352,7 @@ namespace Yeasu {
 
 			ModeValue OperatingMode::Answer(std::string data)
 			{
-				return (ModeValue)std::stoi(data.substr(3, 1));
+				return (ModeValue)std::stoi(data.substr(3, 1),nullptr,16);
 			}
 
 			std::string MicGain::Set(int val)
@@ -4505,7 +4505,7 @@ namespace Yeasu {
 				retVal.VFOAFreq = std::stoi(data.substr(5, 9));
 				retVal.ClarifierFreq = std::stoi(data.substr(14, 5));
 				retVal.Clarifier = (ClarifierState)std::stoi(data.substr(19, 1));
-				retVal.Mode = (ModeValue)std::stoi(data.substr(21, 1));
+				retVal.Mode = (ModeValue)std::stoi(data.substr(21, 1),nullptr,16);
 				retVal.VFO = (VFOChannelTypeValue)std::stoi(data.substr(22,1));
 				retVal.CTCSS = (CTCSSState)std::stoi(data.substr(23, 1));
 				retVal.Operation = (OperationType)std::stoi(data.substr(26, 1));
@@ -5172,9 +5172,123 @@ namespace Yeasu {
 			{
 				return "OI;";
 			}
-			InformationValue OppositeBandInformation::Answer(std::string data)
+			OppositeInformationValue OppositeBandInformation::Answer(std::string data)
 			{
-				return INFORMATION::Answer(data);
+				OppositeInformationValue retVal;
+				std::string chStr = data.substr(2, 3);
+				if (chStr == "EMG") {
+					retVal.MemoryChannel = MemoryChannelValue::EMG;
+				}
+				else if (chStr[0] == 'P') {
+					bool upper = chStr[2] == 'U';
+					switch (std::stoi(chStr.substr(1, 1)))
+					{
+					case 1:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P1U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P1L;
+						}
+						break;
+					case 2:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P2U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P2L;
+						}
+						break;
+					case 3:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P3U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P3L;
+						}
+						break;
+					case 4:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P4U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P4L;
+						}
+						break;
+					case 5:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P5U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P5L;
+						}
+						break;
+					case 6:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P6U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P6L;
+						}
+						break;
+					case 7:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P7U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P7L;
+						}
+						break;
+					case 8:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P8U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P8L;
+						}
+						break;
+					case 9:
+						if (upper)
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P9U;
+						}
+						else
+						{
+							retVal.MemoryChannel = MemoryChannelValue::P9L;
+						}
+						break;
+					}
+
+				}
+				else {
+					retVal.MemoryChannel = (MemoryChannelValue)std::stoi(chStr);
+				}
+
+				retVal.VFOBFreq = std::stoi(data.substr(5, 9));
+				retVal.ClarifierFreq = std::stoi(data.substr(14, 5));
+				retVal.Clarifier = (ClarifierState)std::stoi(data.substr(19, 1));
+				retVal.Mode = (ModeValue)std::stoi(data.substr(21, 1), nullptr, 16);
+				retVal.VFO = (VFOChannelTypeValue)std::stoi(data.substr(22,1));
+				retVal.CTCSS = (CTCSSState)std::stoi(data.substr(23, 1));
+				retVal.Operation = (OperationType)std::stoi(data.substr(26, 1));
+
+				return retVal;
 			}
 
 			std::string OffSet::Set(OperationType val)

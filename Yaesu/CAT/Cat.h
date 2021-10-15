@@ -4,7 +4,7 @@
 #include<stdexcept>
 #include<type_traits>
 //VFOA to VFOB
-namespace Yeasu {
+namespace Yaesu {
 	namespace FT891 {
 		namespace Commands {
 
@@ -1326,6 +1326,17 @@ namespace Yeasu {
 				OperationType Operation;
 			};
 
+			struct OppisateInformationValue {
+				MemoryChannelValue MemoryChannel;
+				int VFOBFreq;
+				int ClarifierFreq;
+				ClarifierState Clarifier;
+				ModeValue Mode;
+				VFOChannelTypeValue VFO;
+				CTCSSState CTCSS;
+				OperationType Operation;
+			};
+
 			struct IfShiftResultValue
 			{
 				IfShiftValue State;
@@ -1503,9 +1514,9 @@ namespace Yeasu {
 			{
 			public:
 
-				std::string Read(BusyState Value);
+				static std::string Read(BusyState Value);
 
-				BusyState Answer(std::string data);
+				static BusyState Answer(std::string data);
 
 			};
 
@@ -2852,7 +2863,7 @@ namespace Yeasu {
 			{
 			public:
 				static std::string Read();
-				static InformationValue Answer(std::string data);
+				static OppisateInformationValue Answer(std::string data);
 			};
 
 			class OffSet
