@@ -4,7 +4,7 @@
 #include "../../Cat.h"
 
 using namespace std;
-using namespace Yeasu::FT891::Commands;
+using namespace Yaesu::FT891::Commands;
 using namespace boost;
 using namespace posix_time;
 using namespace asio;
