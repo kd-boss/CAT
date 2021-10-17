@@ -1326,7 +1326,7 @@ namespace Yaesu {
 				OperationType Operation;
 			};
 
-			struct OppisateInformationValue {
+			struct OppositeInformationValue {
 				MemoryChannelValue MemoryChannel;
 				int VFOBFreq;
 				int ClarifierFreq;
@@ -1427,8 +1427,6 @@ namespace Yaesu {
 			class AntennaTunerControl
 			{
 			public:
-
-
 				static std::string Set(TunerState state);
 				static std::string Read();
 				static TunerState Answer(std::string data);
@@ -2863,7 +2861,7 @@ namespace Yaesu {
 			{
 			public:
 				static std::string Read();
-				static OppisateInformationValue Answer(std::string data);
+				static OppositeInformationValue Answer(std::string data);
 			};
 
 			class OffSet

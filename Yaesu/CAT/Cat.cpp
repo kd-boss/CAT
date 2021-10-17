@@ -4352,7 +4352,7 @@ namespace Yaesu {
 
 			ModeValue OperatingMode::Answer(std::string data)
 			{
-				return (ModeValue)std::stoi(data.substr(3, 1), nullptr,16);
+				return (ModeValue)std::stoi(data.substr(3, 1),nullptr,16);
 			}
 
 			std::string MicGain::Set(int val)
@@ -5553,17 +5553,18 @@ namespace Yaesu {
 			{
 				val.WidthCommand = val.WidthCommand > 21 ? 21 : val.WidthCommand;
 				val.WidthCommand = val.WidthCommand < 0 ? 0 : val.WidthCommand;
-				return fmt::format("SH{:d}{:03};", val.State, val.WidthCommand);
+				std::string ret = fmt::format("SH0{:01}{:02};", val.State, val.WidthCommand);
+				return ret;
 			}
 			std::string Width::Read()
 			{
-				return "SH;";
+				return "SH0;";
 			}
 			WidthValue Width::Answer(std::string data)
 			{
 				WidthValue val;
-				val.State = (WidthState)std::stoi(data.substr(2, 1));
-				val.WidthCommand = std::stoi(data.substr(3, 3));
+				val.State = (WidthState)std::stoi(data.substr(3, 1));
+				val.WidthCommand = std::stoi(data.substr(4, 2));
 				return val;
 			}
 
