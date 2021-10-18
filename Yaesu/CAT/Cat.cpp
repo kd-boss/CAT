@@ -44,7 +44,7 @@ namespace Yaesu {
 			{
 				Value = Value > 100 ? 100 : Value;
 				Value = Value < 0 ? 0 : Value;
-				return fmt::format("AG0{:0>3};", Value);
+				return fmt::format("AG0{:03};", Value);
 			}
 
 			std::string VolumeLevel::Read()
@@ -54,7 +54,7 @@ namespace Yaesu {
 
 			int VolumeLevel::Answer(std::string data)
 			{
-				return std::stoi(data.substr(3,1));
+				return std::stoi(data.substr(3,3));
 			}
 
 			std::string AutoInformation::Set(InformationState Value)
