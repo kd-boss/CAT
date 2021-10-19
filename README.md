@@ -10,7 +10,7 @@ It's in standard C++, the only prerequisites for building the library into your 
 
 The library has a standard structure. 
 
-there's Set, Read, and Answer for all of the commands of the radio. 
+there's Set, Read, and Answer for all of the commands of the radio that support each function. Some functions only have a Set, such as switching between VFOA and VFOB. 
 
 Set generates the data to be sent to the radio to change a setting, such as VFO, and the commands all have an appropriate type.
 
