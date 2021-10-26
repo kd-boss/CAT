@@ -42,7 +42,7 @@ namespace Yaesu {
 
 			std::string VolumeLevel::Set(int Value)
 			{
-				Value = Value > 100 ? 100 : Value;
+				Value = Value > 255 ? 255 : Value;
 				Value = Value < 0 ? 0 : Value;
 				return fmt::format("AG0{:03};", Value);
 			}
