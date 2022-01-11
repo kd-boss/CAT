@@ -467,7 +467,7 @@ namespace Yaesu {
 
 			enum class CwWaveShapeValue : int
 			{
-				_2msec,
+				_2msec = 1,
 				_4msec
 			};
 

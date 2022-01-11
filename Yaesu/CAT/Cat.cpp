@@ -26,7 +26,7 @@ namespace Yaesu {
 
 			std::string AntennaTunerControl::Set(TunerState state)
 			{
-				std::string str = fmt::format("AC00{};", state);
+				std::string str = fmt::format("AC00{:d};", state);
 				return str.c_str();
 			}
 
@@ -37,7 +37,7 @@ namespace Yaesu {
 
 			TunerState AntennaTunerControl::Answer(std::string data)
 			{
-				return (TunerState)std::stoi(data.substr(4, 1));
+				return (TunerState)std::stoi(data.substr(3, 1));
 			}
 
 			std::string VolumeLevel::Set(int Value)
@@ -5368,12 +5368,12 @@ namespace Yaesu {
 
 			std::string SpeechProcessor::Set(SpeechProcessorSetting val)
 			{
-				return fmt::format("PR{:d}{:d};", val.type, val.state);
+				return fmt::format("PR{:01}{:01};", val.type, val.state);
 			}
 
 			std::string SpeechProcessor::Read(SpeechProcessorType type)
 			{
-				return fmt::format("PR{:d};", type);
+				return fmt::format("PR{:01};", type);
 			}
 
 			SpeechProcessorSetting SpeechProcessor::Answer(std::string data)
@@ -5457,7 +5457,7 @@ namespace Yaesu {
 
 			std::string RadioInformation::Read(StateType type)
 			{
-				return fmt::format("RI{:0A};", type);
+				return fmt::format("RI{:0x};", type);
 			}
 
 			RadioInfoVal RadioInformation::Answer(std::string data)
@@ -5624,8 +5624,8 @@ namespace Yaesu {
 			}
 
 			TXWValue TXW::Answer(std::string data)
-			{
-				return (TXWValue)std::stoi(data.substr(2, 1));
+			{			
+				return (TXWValue)(std::stoi(data.substr(2, 1)) == 2? 1 : 0);
 			}
 
 			std::string TxSet::Set(TxSetValue val)
