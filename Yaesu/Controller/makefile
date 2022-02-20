@@ -18,7 +18,7 @@ Cat.o:
 	$(CXX) $(CXXFLAGS) -c ../CAT/Cat.cpp -o ./Cat.o
 
 link: objects
-	$(CXX) -o FT891.exe FT891.o Cat.o AsyncSerial.o -lfltk -lfmt -lwsock32 -lws2_32 -lboost_system-mt -lboost_thread-mt -lboost_program_options-mt
+	$(CXX) -o FT891.exe FT891.o Cat.o AsyncSerial.o -lfltk -lfmt -lwsock32 -lws2_32 -lboost_system-mt -lboost_thread-mt -lboost_program_options-mt -mwindows
 
 clean:
 	rm -rf *.o

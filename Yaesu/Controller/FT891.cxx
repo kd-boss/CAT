@@ -679,22 +679,30 @@ void FT891::readCallback(const char* c, int v)
 		else if(cmdtype == "PR")
 		{
 			SpeechProcessorSetting sp = SpeechProcessor::Answer(cmd);
+			switch(sp.state)
+			{
+				case SpeechProcessorState::ON:
+					PRC->color(FL_GREEN);
+					m_port.writeString(SpeechProcessorLevel::Read());
+					PRC->redraw();
+				break;
+				case SpeechProcessorState::OFF:
+					PRC->color(FL_BACKGROUND_COLOR);
+					PRC->redraw();
+				break;
+			}
 			switch(sp.type)
 			{
 				case SpeechProcessorType::Processor:
-					switch(sp.state)
-					{
-						case SpeechProcessorState::ON:
-							PRC->color(FL_GREEN);
-							m_port.writeString(SpeechProcessorLevel::Read());
-						break;
-						case SpeechProcessorState::OFF:
-							PRC->color(FL_BACKGROUND_COLOR);
-						break;
-					}
+				{
+					
+					break;
+				}
 				case SpeechProcessorType::ParametricEqualizer:
-					///todo
-				break;
+				{
+
+					break;
+				}					
 			}
 			continue;
 		}
@@ -3691,6 +3699,8 @@ int arg_parser( int argc, char** argv, int &i ) {
 
 int main(int argc, char** argv)
 {
+		std::string port = "COM10";
+		int baud = 38400;
 	try
 	{
 		namespace po = boost::program_options;
@@ -3701,8 +3711,6 @@ int main(int argc, char** argv)
 		po::variables_map vm;
 		po::store(po::parse_command_line(argc, argv, desc), vm);
 		po::notify(vm);
-		std::string port = "COM10";
-		int baud = 38400;
 		if (vm.count("Port")) {
 			port = vm["Port"].as<string>();
 		}
@@ -3721,6 +3729,19 @@ int main(int argc, char** argv)
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		 std::string msg = e.what();
+		 if(msg.find("could not find port") != string::npos)
+		 {
+			 MessageBox(nullptr,"The port provided doesn't exist on your machine. Please ensure that the radio has a proper connection to the computer","FT891", MB_OK | MB_ICONERROR);
+		 }
+		 else if(msg.find("Access is denied") != string::npos)
+		 {
+			 MessageBox(nullptr,"The com port provided is in use. Either there's another instance of this application running, or some other application has control over the com port.", "FT891", MB_OK | MB_ICONERROR);
+		 }
+		 else
+		 {
+			 msg = msg.replace(msg.find("open:"), strlen("open:"), port);			 
+			 MessageBox(nullptr,msg.c_str(),"FT891", MB_OK | MB_ICONERROR );
+		 }
 	}
 }
