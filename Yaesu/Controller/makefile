@@ -5,6 +5,7 @@ all: link
 	
 debug: CXXFLAGS = -std=c++20 -DDEBUG -g
 debug: link
+
 release: CXXFLAGS = -std=c++20 -s -O2
 release: link
 	
