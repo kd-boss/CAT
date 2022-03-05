@@ -386,18 +386,28 @@ void FT891::SetBand()
 
 void FT891::readCallback(const char* c, int v)
 {
+	Fl::lock();
 	buff.append(c,v);
 	std::string delim = ";";
 	size_t pos = 0;
-
-	Fl::lock();
-	while((pos = buff.find(";")) != string::npos)
+	try
+	{
+	while((pos = buff.find(delim)) != string::npos)
 	{
 		string cmd = buff.substr(0, (pos + 1));
 		cmd.erase(0,cmd.find_first_not_of('\0'));
 		buff.erase(0,pos + 1);
-		string cmdtype = cmd.substr(0,2);
-		
+		string cmdtype;
+		if(cmd.length() >= 2)
+		{
+			cmdtype = cmd.substr(0,2);
+		}
+		else
+		{
+			std::cout << "malformed  data: " << cmd << std::endl;
+			continue;
+		}
+
 		if(cmdtype == "?;")
 		{
 			#ifdef DEBUG
@@ -412,14 +422,17 @@ void FT891::readCallback(const char* c, int v)
 			
 			switch(iv.VFO)
 			{
+				
 				case  VFOChannelTypeValue::Memory:		
 					if(static_cast<int>(iv.MemoryChannel) < 500)
 					{							
-						ChannelLabel->label(fmt::format("M{:02}",static_cast<int>(iv.MemoryChannel)).c_str());										
+						labelText = fmt::format("M{:02}",static_cast<int>(iv.MemoryChannel));
+						ChannelLabel->label(labelText.c_str());										
 					}
 					else
 					{
-						ChannelLabel->label(fmt::format("{:d}",static_cast<int>(iv.MemoryChannel)).c_str());										
+						labelText = fmt::format("{:d}",static_cast<int>(iv.MemoryChannel));
+						ChannelLabel->label(labelText.c_str());										
 					}
 				break;
 				case VFOChannelTypeValue::MemoryTune:
@@ -429,6 +442,7 @@ void FT891::readCallback(const char* c, int v)
 					ChannelLabel->label("QMB");					
 				break;
 				case VFOChannelTypeValue::PMS:
+					ChannelLabel->label("PMS");
 				break;
 				case VFOChannelTypeValue::VFO:				
 					ChannelLabel->label("A");					
@@ -459,13 +473,14 @@ void FT891::readCallback(const char* c, int v)
 			#ifdef DEBUG
 			cout << dispval << endl;
 			#endif
+			
 		
 			continue;
 		}
 		else if(cmdtype == "TX")
 		{
-			string dispval;
-			int tVFOAFreq = 0;
+			
+			tVFOAFreq = 0;
 			switch(TXW::Answer(cmd))
 			{
 				case TXWValue::ON:
@@ -655,7 +670,8 @@ void FT891::readCallback(const char* c, int v)
 		}
 		else if(cmdtype == "AG")
 		{
-			Volume->value(VolumeLevel::Answer(cmd));
+			VolumeLevel = VolumeLevel::Answer(cmd);
+			Volume->value(VolumeLevel);
 			Volume->redraw();
 			continue;
 		}
@@ -753,94 +769,62 @@ void FT891::readCallback(const char* c, int v)
 		}		
 		else if(cmdtype == "GT")
 		{
-			AGCReadValue val = AGC_FUNCTION::Answer(cmd);
-			
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
+			AGCReadVal = AGC_FUNCTION::Answer(cmd);	
+
 			continue;
 		}
 		else if(cmdtype == "MD")
 		{
-		    ModeValue mv = OperatingMode::Answer(cmd);
-			
+		    mv = OperatingMode::Answer(cmd);			
 			CalcMode(mv);
-			
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
 			continue;
 		}
 		else if(cmdtype == "SH")
 		{
-			WidthValue wv = Width::Answer(cmd);
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
-			CalculateWidth(wv);
+			WidthVal = Width::Answer(cmd);	
+			CalculateWidth(WidthVal);
 			continue;
 		}
 		else if(cmdtype == "PC")
 		{
-			int val = PowerControl::Answer(cmd);
-			PowerButton->value(val);
-			PowerButton->redraw();
-			
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
-			continue;
-			
+			PowerControlValue = PowerControl::Answer(cmd);
+			PowerButton->value(PowerControlValue);
+			PowerButton->redraw();					
+			continue;			
 		}
 		else if(cmdtype == "MS") //meterSw
 		{
-			MeterType t = MeterSW::Answer(cmd);
-			DisplayMode->value((int)t);
+			MeterTypeValue = MeterSW::Answer(cmd);
+			DisplayMode->value(static_cast<int>(MeterTypeValue));
 			DisplayMode->redraw();
 			
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
 			continue;
 		}
 		else if(cmdtype == "MG")
-		{
-			if(!MicGain->changed()){
-				MicGain->value(MicGain::Answer(cmd));
-				MicGain->redraw();				
-			}	
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
+		{			
+			MicGainValue = MicGain::Answer(cmd);
+			MicGain->value(MicGainValue);
+			MicGain->redraw();				
 			continue;
 		}
 		else if(cmdtype == "RG")
 		{			
-				RFGain->value(RFGain::Answer(cmd));						
-				#ifdef DEBUG
-			cout << cmd << endl;
-			#endif	
-				continue;		
+			RFGainValue = RFGain::Answer(cmd);
+			RFGain->value(RFGainValue);						
+			continue;		
 		}
 		else if(cmdtype == "SQ")
 		{
-			if(!Squelch->changed()){
-				Squelch->value(SquelchLevel::Answer(cmd));
-				Squelch->redraw();				
-			}
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
+			SquelchLevelValue = SquelchLevel::Answer(cmd);
+			Squelch->value(SquelchLevelValue);
+			Squelch->redraw();				
 			continue;
 		}
 		else if(cmdtype == "KS")
 		{
-			KeyerSpeedVal v = KeyerSpeed::Answer(cmd);
-			KeyerSpeed->value(static_cast<int>(v));	
+			KeyerSpeedValue = KeyerSpeed::Answer(cmd);
+			KeyerSpeed->value(static_cast<int>(KeyerSpeedValue));	
 			KeyerSpeed->redraw();
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
 			continue;
 		}
 		else if(cmdtype == "KR")
@@ -860,19 +844,13 @@ void FT891::readCallback(const char* c, int v)
 			}
 			Keyer->redraw();
 			KeyerSpeed->redraw();
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
 			continue;
 		}
 		else if(cmdtype == "KP")
 		{
 			KeyPitchValue v = KeyPitch::Answer(cmd);
-			KeyerPitch->value((int) (300 + (static_cast<int>(v) * 10)));		
+			KeyerPitch->value( (300 + (static_cast<int>(v) * 10)));		
 			KeyerPitch->redraw();
-			#ifdef DEBUG
-			cout << cmd << endl;
-			#endif
 			continue;
 		}
 		else if(cmdtype == "BI")
@@ -909,12 +887,14 @@ void FT891::readCallback(const char* c, int v)
 		}	
 		else if(cmdtype == "VG")
 		{
-			VoxGainLevel->value(VoxGain::Answer(cmd));
+			VoxGainLevelValue = VoxGain::Answer(cmd);
+			VoxGainLevel->value(VoxGainLevelValue);
 			continue;
 		}
 		else if(cmdtype == "VD")
 		{
-			VoxDelayTime->value(VoxDelayTime::Answer(cmd));
+			VoxDelayTimeValue = VoxDelayTime::Answer(cmd);
+			VoxDelayTime->value(VoxDelayTimeValue);
 			continue;
 		}
 		else if(cmdtype == "LK")
@@ -953,23 +933,28 @@ void FT891::readCallback(const char* c, int v)
 			switch(v.ChannelNumber)
 			{
 				case 1:
-					CWMemoryValue1->value(v.Message.c_str());
+					CWMemory1Value = v;
+					CWMemoryValue1->value(CWMemory1Value.Message.c_str());
 					CWMemoryValue1->redraw();
 				break;
 				case 2:
-					CWMemoryValue2->value(v.Message.c_str());
+					CWMemory2Value = v;
+					CWMemoryValue2->value(CWMemory2Value.Message.c_str());
 					CWMemoryValue2->redraw();
 				break;
 				case 3:
-					CWMemoryValue3->value(v.Message.c_str());
+					CWMemory3Value = v;
+					CWMemoryValue3->value(CWMemory3Value.Message.c_str());
 					CWMemoryValue3->redraw();
 				break;
 				case 4:
-					CWMemoryValue4->value(v.Message.c_str());
+					CWMemory4Value =  v;
+					CWMemoryValue4->value(CWMemory4Value.Message.c_str());
 					CWMemoryValue4->redraw();
 				break;
 				case 5:
-					CWMemoryValue5->value(v.Message.c_str());
+					CWMemory5Value = v;
+					CWMemoryValue5->value(CWMemory5Value.Message.c_str());
 					CWMemoryValue5->redraw();
 				break;
 			}
@@ -983,6 +968,27 @@ void FT891::readCallback(const char* c, int v)
 			int val = 0;
 			switch(mf)
 			{
+				
+				case MenuFunction::AM_PTT_SELECT:
+					AMPTTSelectValue = Menu::AnswerAMPTTSelect(cmd);
+					AMPTTSelect->value(static_cast<int>(AMPTTSelectValue));
+					AMPTTSelect->redraw();
+				break;
+				case MenuFunction::SSB_PTT_SELECT:
+					SSBPTTSelectValue = Menu::AnswerSSBPTTSelect(cmd);
+					SSBPTTSelect->value(static_cast<int>(SSBPTTSelectValue));
+					SSBPTTSelect->redraw();
+				break;
+				case MenuFunction::PKT_PTT_SELECT:
+					PktPTTSelectValue = Menu::AnswerPktPTTSelect(cmd);
+					PktPTTSelect->value(static_cast<int>(PktPTTSelectValue));
+					PktPTTSelect->redraw();
+				break;
+				case MenuFunction::DATA_PTT_SELECT:
+					DATAPTTSelectValue = Menu::AnswerDATAPTTSelect(cmd);
+					DATAPTTSelect->value(static_cast<int>(DATAPTTSelectValue));
+					DATAPTTSelect->redraw();
+				break;
 				case MenuFunction::SSB_BFO:
 					SSBbfo = Menu::AnswerSSBBFO(cmd);
 				break;
@@ -1000,328 +1006,399 @@ void FT891::readCallback(const char* c, int v)
 				break;
 				
 				case MenuFunction::DIMMER_BACKLIT:
-					Backlight->value(Menu::AnswerBackliteDimmer(cmd));
+					dimmerBacklightval = Menu::AnswerBackliteDimmer(cmd);
+					Backlight->value(dimmerBacklightval);
 					Backlight->redraw();	
 				break;
 				
-				case MenuFunction::HF_PWR:
-					HFPower->value(Menu::AnswerHfPwr(cmd));
+				case MenuFunction::HF_PWR:				
+					hfPowerval = Menu::AnswerHfPwr(cmd);
+					HFPower->value(hfPowerval);
 					HFPower->redraw();					
 				break;
 				
 				case MenuFunction::HF_AM_PWR:
-					HFAMPower->value(Menu::AnswerHfAmPwr(cmd));
+					HFAmPowerval = Menu::AnswerHfAmPwr(cmd);
+					HFAMPower->value(HFAmPowerval);
 					HFAMPower->redraw();					
 				break;
 				
 				case MenuFunction::HF_SSB_PWR:
-					HFSSBPower->value(Menu::AnswerHfSsbPwr(cmd));
+					HFSsbPowerval = Menu::AnswerHfSsbPwr(cmd);
+					HFSSBPower->value(HFSsbPowerval);
 					HFSSBPower->redraw();					
 				break;
 				
 				case MenuFunction::VHF_PWR:
-					VHFPower->value(Menu::Answer50mPwr(cmd));
+					vhfpowerval = Menu::Answer50mPwr(cmd);
+					VHFPower->value(vhfpowerval);
 					VHFAMPower->redraw();					
 				break;
 				
 				case MenuFunction::SSB_POWER_50M:
-					VHFSSBPower->value(Menu::Answer50mSsbPwr(cmd));
+					vhfssbpowerval = Menu::Answer50mSsbPwr(cmd);
+					VHFSSBPower->value(vhfssbpowerval);
 					VHFSSBPower->redraw();					
 				break;
 				
 				case MenuFunction::AM_POWER_50M:
-					VHFAMPower->value(Menu::Answer50mAmPwr(cmd));
+					vhfampowerval = Menu::Answer50mAmPwr(cmd);
+					VHFAMPower->value(vhfampowerval);
 					VHFAMPower->redraw();					
 				break;
 
 				case MenuFunction::LCD_CONTRAST:
-					LCDContrast->value(Menu::AnswerLcdContrast(cmd));
+					lcdcontrastval = Menu::AnswerLcdContrast(cmd);
+					LCDContrast->value(lcdcontrastval);
 					LCDContrast->redraw();
 				break;
 
 				case MenuFunction::DIMMER_LCD:
-					LCD->value(Menu::AnswerLcdDimmer(cmd));
+					dimmerval = Menu::AnswerLcdDimmer(cmd); 
+					LCD->value(dimmerval);
 					LCD->redraw();
 				break;
 				case MenuFunction::DIMMER_TX_BUSY:
-					TxBusy->value(Menu::AnswerTxBusyDimmer(cmd));
+					dimmmertxbusyval = Menu::AnswerTxBusyDimmer(cmd); 
+					TxBusy->value(dimmmertxbusyval);
 					TxBusy->redraw();
 				break;
 				
 				case MenuFunction::AM_LCUT_FREQ:
-					AMLCUTFreq->value((int)Menu::AnswerAMLowCutFreq(cmd));
+					AMLCUTFreqValue = Menu::AnswerAMLowCutFreq(cmd);
+					AMLCUTFreq->value(static_cast<int>(AMLCUTFreqValue));
 					AMLCUTFreq->redraw();
 				break;
 
 				case MenuFunction::AM_LCUT_SLOPE:
-					AMLCUTSlope->value((int)Menu::AnswerAMLowCutSlope(cmd));
+					AMLCUTSlopeValue = Menu::AnswerAMLowCutSlope(cmd);
+					AMLCUTSlope->value(static_cast<int>(AMLCUTSlopeValue));
 					AMLCUTSlope->redraw();
 				break;
 
 				case MenuFunction::AM_OUT_LEVEL:
-					AMOutLevel->value((int)Menu::AnswerAMOutLevel(cmd));
+					AMOutLevelValue = Menu::AnswerAMOutLevel(cmd);
+					AMOutLevel->value(AMOutLevelValue);
 					AMOutLevel->redraw();
 				break;
 
 				case MenuFunction::CW_LCUT_FREQ:
-					CWLCUTFreq->value((int)Menu::AnswerCWLowCutFreq(cmd));
+					CWLCUTFreqValue = Menu::AnswerCWLowCutFreq(cmd);
+					CWLCUTFreq->value(static_cast<int>(CWLCUTFreqValue));
 					CWLCUTFreq->redraw();
 				break;
 
 				case MenuFunction::CW_LCUT_SLOPE:
-					CWLCUTSlope->value((int)Menu::AnswerCWLowCutSlope(cmd));
+					CWLCUTSlopeValue = Menu::AnswerCWLowCutSlope(cmd);
+					CWLCUTSlope->value(static_cast<int>(CWLCUTSlopeValue));
 					CWLCUTSlope->redraw();
 				break;
 
 				case MenuFunction::CW_OUT_LEVEL:
-					CWOutLevel->value((int)Menu::AnswerCWOutLevel(cmd));
+					CWOutLevelValue = Menu::AnswerCWOutLevel(cmd);
+					CWOutLevel->value(CWOutLevelValue);
 					CWOutLevel->redraw();
 				break;
 				
 				case MenuFunction::RTTY_LCUT_FREQ:
-					RTTYLCUTFreq->value((int)Menu::AnswerRTTYLowCutFreq(cmd));
+					RTTYLCUTFreqValue = Menu::AnswerRTTYLowCutFreq(cmd);
+					RTTYLCUTFreq->value(static_cast<int>(RTTYLCUTFreqValue));
 					RTTYLCUTFreq->redraw();
 				break;
 
 				case MenuFunction::RTTY_LCUT_SLOPE:
-					RTTYLCUTSlope->value((int)Menu::AnswerRTTYLowCutSlope(cmd));
+					RTTYLCUTSlopeValue = Menu::AnswerRTTYLowCutSlope(cmd);
+					RTTYLCUTSlope->value(static_cast<int>(RTTYLCUTSlopeValue));
 					RTTYLCUTSlope->redraw();
 				break;
 
 				case MenuFunction::RTTY_OUT_LEVEL:
-					RTTYOutLevel->value((int)Menu::AnswerRTTYOutLevel(cmd));
+					RTTYOutLevelValue = Menu::AnswerRTTYOutLevel(cmd);
+					RTTYOutLevel->value(RTTYOutLevelValue);
 					RTTYOutLevel->redraw();
 				break;
 
 				case MenuFunction::DATA_LCUT_FREQ:
-					DATALCUTFreq->value((int)Menu::AnswerDATALowCutFreq(cmd));
+					DATALCUTFreqValue = Menu::AnswerDATALowCutFreq(cmd);
+					DATALCUTFreq->value(static_cast<int>(DATALCUTFreqValue));
 					DATALCUTFreq->redraw();
 				break;
 
 				case MenuFunction::DATA_LCUT_SLOPE:
-					DATALCUTSlope->value((int)Menu::AnswerDATALowCutSlope(cmd));
+					DATALCUTSlopeValue = Menu::AnswerDATALowCutSlope(cmd);
+					DATALCUTSlope->value(static_cast<int>(DATALCUTSlopeValue));
 					DATALCUTSlope->redraw();
 				break;
 
 				case MenuFunction::DATA_OUT_LEVEL:
-					DATAOutLevel->value((int)Menu::AnswerDATAOutLevel(cmd));
+					DATAOutLevelValue = Menu::AnswerDATAOutLevel(cmd);
+					DATAOutLevel->value(DATAOutLevelValue);
 					DATAOutLevel->redraw();
 				break;
 
 				case MenuFunction::SSB_LCUT_FREQ:
-					SSBLCUTFreq->value((int)Menu::AnswerSSBLowCutFreq(cmd));
+					SSBLCUTFreqValue = Menu::AnswerSSBLowCutFreq(cmd);
+					SSBLCUTFreq->value(static_cast<int>(SSBLCUTFreqValue));
 					SSBLCUTFreq->redraw();
 				break;
 
 				case MenuFunction::SSB_LCUT_SLOPE:
-					SSBLCUTSlope->value((int)Menu::AnswerSSBLowCutSlope(cmd));
+					SSBLCUTSlopeValue = Menu::AnswerSSBLowCutSlope(cmd);
+					SSBLCUTSlope->value(static_cast<int>(SSBLCUTSlopeValue));
 					SSBLCUTSlope->redraw();
 				break;
 
 				case MenuFunction::SSB_OUT_LEVEL:
-					SSBOutLevel->value((int)Menu::AnswerSSBOutLevel(cmd));
+					SSBOutLevelValue = Menu::AnswerSSBOutLevel(cmd);
+					SSBOutLevel->value(SSBOutLevelValue);
 					SSBOutLevel->redraw();
 				break;
 				
 				case MenuFunction::CLAR_SELECT:
-					ClarifierType->value((int)Menu::AnswerClarSelect(cmd));
+					ClarifierTypeValue = Menu::AnswerClarSelect(cmd);
+					ClarifierType->value(static_cast<int>(ClarifierTypeValue));
 					ClarifierType->redraw();
 				break;
 				case MenuFunction::EQ1_FREQ:
-					val = (int)Menu::AnswerEQ1Freq(cmd);
-					MicCenterFreq1->value(val);
+					MicCenterFreq1Value = Menu::AnswerEQ1Freq(cmd);
+					MicCenterFreq1->value(static_cast<int>(MicCenterFreq1Value));
 					MicCenterFreq1->redraw();
-					m_port.writeString(Menu::ReadEQ1Level());
-					m_port.writeString(Menu::ReadEQ1Bwth());
+					
 				break;
-				case MenuFunction::EQ1_BWTH:
-					MicBandWidth1->value(Menu::AnswerEQ1Bwth(cmd));
+				case MenuFunction::EQ1_BWTH:			
+					MicBandWidth1Value = Menu::AnswerEQ1Bwth(cmd);		
+					MicBandWidth1->value(MicBandWidth1Value);
 					MicBandWidth1->redraw();
 				break;
 				case MenuFunction::EQ1_LEVEL:
-					MicEQLevel1->value(Menu::AnswerEQ1Level(cmd));
+					MicEq1LevelValue = Menu::AnswerEQ1Level(cmd);
+					MicEQLevel1->value(MicEq1LevelValue);
 					MicEQLevel1->redraw();
 				break;
 				case MenuFunction::EQ2_FREQ:
-					MicCenterFreq2->value(static_cast<int>(Menu::AnswerEQ2Freq(cmd)));
+					MicCenterFreq2Value = Menu::AnswerEQ2Freq(cmd);
+					MicCenterFreq2->value(static_cast<int>(MicCenterFreq2Value));
 					MicCenterFreq2->redraw();
-					m_port.writeString(Menu::ReadEQ2Level());
-					m_port.writeString(Menu::ReadEQ2Bwth());
 				break;
 				case MenuFunction::EQ2_BWTH:
-					MicBandWidth2->value(Menu::AnswerEQ2Bwth(cmd));
+				    MicBandWidth2Value = Menu::AnswerEQ2Bwth(cmd);
+					MicBandWidth2->value(MicBandWidth2Value);
 					MicBandWidth2->redraw();
 				break;
 				case MenuFunction::EQ2_LEVEL:
-					MicEQLevel2->value(Menu::AnswerEQ2Level(cmd));
+					MicEq2LevelValue = Menu::AnswerEQ2Level(cmd);
+					MicEQLevel2->value(MicEq2LevelValue);
 					MicEQLevel2->redraw();
 				break;
 				case MenuFunction::EQ3_FREQ:
-					MicCenterFreq3->value(static_cast<int>(Menu::AnswerEQ3Freq(cmd)));
+					MicCenterFreq3Value = Menu::AnswerEQ3Freq(cmd);
+					MicCenterFreq3->value(static_cast<int>(MicCenterFreq3Value));
 					MicCenterFreq3->redraw();
 					m_port.writeString(Menu::ReadEQ3Level());
 					m_port.writeString(Menu::ReadEQ3Bwth());
 				break;
 				case MenuFunction::EQ3_BWTH:
-					MicBandWidth3->value(Menu::AnswerEQ3Bwth(cmd));
+					MicBandWidth3Value = Menu::AnswerEQ3Bwth(cmd);
+					MicBandWidth3->value(MicBandWidth3Value);
 					MicBandWidth3->redraw();
 				break;
 				case MenuFunction::EQ3_LEVEL:
-					MicEQLevel3->value(Menu::AnswerEQ3Level(cmd));
+					MicEq3LevelValue = Menu::AnswerEQ3Level(cmd);
+					MicEQLevel3->value(MicEq3LevelValue);
 					MicEQLevel3->redraw();
 				break;
 				case MenuFunction::P_EQ1_FREQ:
-					MicPCenterFreq1->value(static_cast<int>(Menu::AnswerPEQ1Freq(cmd)));
+					MicPCenterFreq1Value = Menu::AnswerPEQ1Freq(cmd);
+					MicPCenterFreq1->value(static_cast<int>(MicPCenterFreq1Value));
 					MicPCenterFreq1->redraw();
-					m_port.writeString(Menu::ReadPEQ1Level());
-					m_port.writeString(Menu::ReadPEQ1Bwth());
 				break;
 				case MenuFunction::P_EQ1_BWTH:
-					MicPBandWidth1->value(Menu::AnswerPEQ1Bwth(cmd));
+					MicPBandWidth1Value = Menu::AnswerPEQ1Bwth(cmd);
+					MicPBandWidth1->value(MicPBandWidth1Value);
 					MicPBandWidth1->redraw();
 				break;
 				case MenuFunction::P_EQ1_LEVEL:
-					MicPEQLevel1->value(Menu::AnswerPEQ1Level(cmd));
+					MicPEq1LevelValue = Menu::AnswerPEQ1Level(cmd);
+					MicPEQLevel1->value(MicPEq1LevelValue);
 					MicPEQLevel1->redraw();
 				break;
 				case MenuFunction::P_EQ2_FREQ:
-					MicPCenterFreq2->value(static_cast<int>(Menu::AnswerPEQ2Freq(cmd)));
+					MicPCenterFreq2Value = Menu::AnswerPEQ2Freq(cmd);
+					MicPCenterFreq2->value(static_cast<int>(MicPCenterFreq2Value));
 					MicPCenterFreq2->redraw();
-					m_port.writeString(Menu::ReadPEQ2Level());
-					m_port.writeString(Menu::ReadPEQ2Bwth());
 				break;
 				case MenuFunction::P_EQ2_BWTH:
-					MicPBandWidth2->value(Menu::AnswerPEQ2Bwth(cmd));
+					MicPBandWidth2Value = Menu::AnswerPEQ2Bwth(cmd);
+					MicPBandWidth2->value(MicPBandWidth2Value);
 					MicPBandWidth2->redraw();
 				break;
 				case MenuFunction::P_EQ2_LEVEL:
-					MicPEQLevel2->value(Menu::AnswerPEQ2Level(cmd));
+					MicPEq2LevelValue = Menu::AnswerPEQ2Level(cmd);
+					MicPEQLevel2->value(MicPEq2LevelValue);
 					MicPEQLevel2->redraw();
 				break;
 				case MenuFunction::P_EQ3_FREQ:
-					MicPCenterFreq3->value(static_cast<int>(Menu::AnswerPEQ3Freq(cmd)));
+					MicPCenterFreq3Value = Menu::AnswerPEQ3Freq(cmd);
+					MicPCenterFreq3->value(static_cast<int>(MicPCenterFreq3Value));
 					MicPCenterFreq3->redraw();
-					m_port.writeString(Menu::ReadPEQ3Level());
-					m_port.writeString(Menu::ReadPEQ3Bwth());
+
 				break;
 				case MenuFunction::P_EQ3_BWTH:
-					MicPBandWidth3->value(Menu::AnswerPEQ3Bwth(cmd));
+					MicPBandWidth3Value = Menu::AnswerPEQ3Bwth(cmd);
+					MicPBandWidth3->value(MicPBandWidth3Value);
 					MicPBandWidth3->redraw();
 				break;
 				case MenuFunction::P_EQ3_LEVEL:
-					MicPEQLevel3->value(Menu::AnswerPEQ3Level(cmd));
+					MicPEq3LevelValue = Menu::AnswerPEQ3Level(cmd);
+					MicPEQLevel3->value(MicPEq3LevelValue);
 					MicPEQLevel3->redraw();
 				break;
 				case MenuFunction::APO:
-					APO->value((int)Menu::AnswerApo(cmd));
+					APOVal = Menu::AnswerApo(cmd);
+					APO->value(static_cast<int>(APOVal));
 					APO->redraw();
 				break;
 				case MenuFunction::FAN_CONTROL:
-					FanControl->value(static_cast<int>(Menu::AnswerFanControl(cmd)));
+					FanControlVal = Menu::AnswerFanControl(cmd);
+					FanControl->value(static_cast<int>(FanControlVal));
 					FanControl->redraw();
 				break;
 				case MenuFunction::MEM_GROUP:
-					MemGroup->value(static_cast<int>(Menu::AnswerMemGroup(cmd)));
+					MemoryGroupValue = Menu::AnswerMemGroup(cmd);
+					MemGroup->value(static_cast<int>(MemoryGroupValue));
 					MemGroup->redraw();
 				break;
 				case MenuFunction::FM_SETTING:
-					FMSetting->value(static_cast<int>(Menu::AnswerFMSetting(cmd)));
+					FMSettingValue = Menu::AnswerFMSetting(cmd);
+					FMSetting->value(static_cast<int>(FMSettingValue));
 					FMSetting->redraw();
 				break;
 				case MenuFunction::REC_SETTING:
-					RECSetting->value(static_cast<int>(Menu::AnswerRecSetting(cmd)));
+					RecSettingValue = Menu::AnswerRecSetting(cmd);
+					RECSetting->value(static_cast<int>(RecSettingValue));
 					RECSetting->redraw();
 				break;
 				case MenuFunction::ATAS_SETTING:
-					ATASSetting->value(static_cast<int>(Menu::AnswerATASSetting(cmd)));
+					ATASSettingValue = Menu::AnswerATASSetting(cmd);
+					ATASSetting->value(static_cast<int>(ATASSettingValue));
 					ATASSetting->redraw();
 				break;
 				case MenuFunction::TX_TOT:
-					TXTot->value(Menu::AnswerTXTOT(cmd));
+					TXTOTValue = Menu::AnswerTXTOT(cmd);
+					TXTot->value(TXTOTValue);
 					TXTot->redraw();
 				break;
 				case MenuFunction::MIC_SCAN:
-					MicScan->value(static_cast<int>(Menu::AnswerMicScan(cmd)));
+					MicScanValue = Menu::AnswerMicScan(cmd);
+					MicScan->value(static_cast<int>(MicScanValue));
 					MicScan->redraw();
 				break;
 				case MenuFunction::MIC_SCAN_RESUME:
-					MicScanResume->value(static_cast<int>(Menu::AnswerMicScanResume(cmd)));
+					MicScanResumeVal = Menu::AnswerMicScanResume(cmd);
+					MicScanResume->value(static_cast<int>(MicScanResumeVal));
 					MicScanResume->redraw();
 				break;
 				case MenuFunction::CW_BK_IN_TYPE:
-					CWBreakInType->value(static_cast<int>(Menu::AnswerCWBreakInType(cmd)));
+					CWBreakInTypeValue = Menu::AnswerCWBreakInType(cmd);
+					CWBreakInType->value(static_cast<int>(CWBreakInTypeValue));
 					CWBreakInType->redraw();
 				break;
 				case MenuFunction::CW_WAVE_SHAPE: 
 				{
-					auto r = static_cast<int>(Menu::AnswerCWWaveShape(cmd));
-					CWWaveShape->value(r - 1);
+					CwWaveShapeVal = Menu::AnswerCWWaveShape(cmd);					
+					CWWaveShape->value(static_cast<int>(CwWaveShapeVal) - 1);
 					CWWaveShape->redraw();
 				}
 				break;
 				case MenuFunction::CW_FREQ_DISPLAY:
-					CWFreqDisplay->value(static_cast<int>(Menu::AnswerCWFreqDisplay(cmd)));
+					CWFreqDisplayVal = Menu::AnswerCWFreqDisplay(cmd);
+					CWFreqDisplay->value(static_cast<int>(CWFreqDisplayVal));
 					CWFreqDisplay->redraw();
 				break;
 				case MenuFunction::PC_KEYING:
-					PCKeying->value(static_cast<int>(Menu::AnswerPCKeying(cmd)));
+					PCKeyingVal = Menu::AnswerPCKeying(cmd);
+					PCKeying->value(static_cast<int>(PCKeyingVal));
 					PCKeying->redraw();
 				break;
 				case MenuFunction::QSK_DELAY_TIME:
-					QSKDelayTime->value(static_cast<int>(Menu::AnswerQSKDelayTime(cmd)));
+					QSKDelayTimeVal = Menu::AnswerQSKDelayTime(cmd);
+					QSKDelayTime->value(static_cast<int>(QSKDelayTimeVal));
 					QSKDelayTime->redraw();
 				break;
 				case MenuFunction::DATA_MODE:
-					DataMode->value(static_cast<int>(Menu::AnswerDataMode(cmd)));
+					DataModeVal = Menu::AnswerDataMode(cmd);
+					DataMode->value(static_cast<int>(DataModeVal));
 					DataMode->redraw();
 				break;
 				case MenuFunction::PSK_TONE:
-					PSKTone->value(static_cast<int>(Menu::AnswerPSKTone(cmd)));
+					PSKToneVal = Menu::AnswerPSKTone(cmd);
+					PSKTone->value(static_cast<int>(PSKToneVal));
 					PSKTone->redraw();
 				break;
 				case MenuFunction::AGC_FAST_DELAY:
-					AGCFastDelay->value(Menu::AnswerAgcFastDelay(cmd));
+					AGCFastDelayValue = Menu::AnswerAgcFastDelay(cmd);
+					AGCFastDelay->value(AGCFastDelayValue);
 					AGCFastDelay->redraw();
 				break;
 				case MenuFunction::AGC_MID_DELAY:
-					AGCMidDelay->value(Menu::AnswerAgcMidDelay(cmd));
+					AGCMidDelayValue = Menu::AnswerAgcMidDelay(cmd);
+					AGCMidDelay->value(AGCMidDelayValue);
 					AGCMidDelay->redraw();
 				break;
 				case MenuFunction::AGC_SLOW_DELAY:
-					AGCSlowDelay->value(Menu::AnswerAgcSlowDelay(cmd));
+					AGCSlowDelayValue = Menu::AnswerAgcSlowDelay(cmd);
+					AGCSlowDelay->value(AGCSlowDelayValue);
 					AGCSlowDelay->redraw();
 				break;
 				case MenuFunction::KEYER_TYPE:
-					KeyerType->value(static_cast<int>(Menu::AnswerKeyerType(cmd)));
+					KeyerTypeVal = Menu::AnswerKeyerType(cmd);
+					KeyerType->value(static_cast<int>(KeyerTypeVal));
 					KeyerType->redraw();
 				break;
 				case MenuFunction::KEYER_DOT_DASH_ORDER:
-					KeyerDotDash->value(static_cast<int>(Menu::AnswerKeyerDotDash(cmd)));
+					KeyerDotDashVal = Menu::AnswerKeyerDotDash(cmd);
+					KeyerDotDash->value(static_cast<int>(KeyerDotDashVal));
 					KeyerDotDash->redraw();
 				break;
 				case MenuFunction::CW_WEIGHT:
-					CWWeight->value(static_cast<int>(Menu::AnswerCwWeight(cmd) - 25));
+					CWWeightValue = Menu::AnswerCwWeight(cmd) - 25;
+					CWWeight->value(CWWeightValue);
 					CWWeight->redraw();
 				break;
 				case MenuFunction::CW_MEMORY_1:
-					CWMemory1Setting->value(static_cast<int>(Menu::AnswerCWMemory1(cmd)));
+					CWMemory1Val = 	Menu::AnswerCWMemory1(cmd);
+					CWMemory1Setting->value(static_cast<int>(CWMemory1Val));
 					CWMemory1Setting->redraw();
 				break;
 				case MenuFunction::CW_MEMORY_2:
-					CWMemory2Setting->value(static_cast<int>(Menu::AnswerCWMemory2(cmd)));
+					CWMemory2Val = Menu::AnswerCWMemory2(cmd);
+					CWMemory2Setting->value(static_cast<int>(CWMemory2Val));
 					CWMemory2Setting->redraw();
 				break;
 				case MenuFunction::CW_MEMORY_3:
-					CWMemory3Setting->value(static_cast<int>(Menu::AnswerCWMemory3(cmd)));
+					CWMemory3Val = Menu::AnswerCWMemory3(cmd);
+					CWMemory3Setting->value(static_cast<int>(CWMemory3Val));
 					CWMemory3Setting->redraw();
 				break;
 				case MenuFunction::CW_MEMORY_4:
-					CWMemory4Setting->value(static_cast<int>(Menu::AnswerCWMemory4(cmd)));
+					CWMemory4Val = Menu::AnswerCWMemory4(cmd);
+					CWMemory4Setting->value(static_cast<int>(CWMemory4Val));
 					CWMemory4Setting->redraw();
 				break;
 				case MenuFunction::CW_MEMORY_5:
-					CWMemory5Setting->value(static_cast<int>(Menu::AnswerCWMemory5(cmd)));
+					CWMemory5Val = Menu::AnswerCWMemory5(cmd);
+					CWMemory5Setting->value(static_cast<int>(CWMemory5Val));
 					CWMemory5Setting->redraw();
+				break;
+				case MenuFunction::CAT_RATE:
+					CatRateSelectValue = Menu::AnswerCatRate(cmd);
+					CatRateSelect->value(static_cast<int>(CatRateSelectValue));
+					CatRateSelect->redraw();
+				break;
+				case MenuFunction::CAT_TOT:
+					CatTOTSelectValue = Menu::AnswerCatTOT(cmd);
+					CatTOTSelect->value(static_cast<int>(CatTOTSelectValue));
+					CatTOTSelect->redraw();
 				break;
 			}
 			continue;
@@ -1334,10 +1411,9 @@ void FT891::readCallback(const char* c, int v)
 			continue;
 		}	
 	}
-	try
-	{
-		this->flush(true);
-		Fl::unlock();	
+	
+		this->flush(true);	    
+		Fl::unlock();
 		Fl::awake();
 	}
 	catch(std::exception& e)
@@ -1748,6 +1824,35 @@ void FT891::SetMeterType(Fl_Widget* pitem, void*)
 	{
 		m_port.writeString(Menu::SetCWMemory5(static_cast<CWMemoryTypeValue>(CWMemory5Setting->value())));
 	}
+	else if(pitem == AMPTTSelect)
+	{
+		m_port.writeString(Menu::SetAMPTTSelect(static_cast<PTTSelectValue>(AMPTTSelect->value())));
+	}
+	else if(pitem == SSBPTTSelect)
+	{
+		m_port.writeString(Menu::SetSSBPTTSelect(static_cast<PTTSelectValue>(SSBPTTSelect->value())));
+	}
+	else if(pitem == DATAPTTSelect)
+	{
+		m_port.writeString(Menu::SetDATAPTTSelect(static_cast<PTTSelectValue>(DATAPTTSelect->value())));
+	}
+	else if(pitem == PCKeying)
+	{
+		m_port.writeString(Menu::SetPCKeying(static_cast<PCKeyingValue>(PCKeying->value())));
+	}
+	else if(pitem == PktPTTSelect)
+	{
+		m_port.writeString(Menu::SetPktPTTSelect(static_cast<PTTSelectValue>(PktPTTSelect->value())));
+	}
+	else if(pitem == CatRateSelect)
+	{
+		m_port.writeString(Menu::SetCatRate(static_cast<CatRateValue>(CatRateSelect->value())));
+	}
+	else if(pitem == CatTOTSelect)
+	{
+		m_port.writeString(Menu::SetCatTOT(static_cast<CatTOTValue>(CatTOTSelect->value())));
+	}
+    
 }
 
 void FT891::OnScroll(Fl_Value_Slider* o, void* v)
@@ -3041,16 +3146,9 @@ void FT891::BuildLightingGroup(int w, int h)
 
 	
 	
-	PCKeying = new Fl_Choice(APO->x() , MicScanResume->y() + choiceHeight + 20, choiceWidth, choiceHeight, "PC Keying");
-	PCKeying->add("OFF", 0, OnChoice, this, 0);
-	PCKeying->add("DAKY", 0, OnChoice, this, 0);
-	PCKeying->add("RTS", 0, OnChoice, this, 0);
-	PCKeying->add("DTR", 0, OnChoice, this, 0);
-	PCKeying->align(FL_ALIGN_TOP);
 
 
-
-	DataMode = new Fl_Choice(PCKeying->x() + choiceWidth + 20, PCKeying->y() , choiceWidth, choiceHeight, "Data Mode");
+	DataMode = new Fl_Choice(MicScanResume->x() + choiceWidth + 20, MicScanResume->y() , choiceWidth, choiceHeight, "Data Mode");
 	DataMode->add("PSK", 0, OnChoice, this, 0);
 	DataMode->add("OTHERS", 0, OnChoice, this, 0);
 	DataMode->align(FL_ALIGN_TOP);
@@ -3546,23 +3644,52 @@ void FT891::BuildTXEQGroup(int w, int h)
 
 }
 
-void FT891::Init()
+void OnTabChanged(Fl_Tabs* obj, void* cls)
 {
-		m_port.writeString(AutoInformation::Set(InformationState::ON));
-		m_port.writeString(Menu::ReadSSBBFO());
-		m_port.writeString(Menu::ReadCWBFO());
-		m_port.writeString(Menu::ReadDATABFO());
-		m_port.writeString(Menu::ReadRTTYBFO());
-    	m_port.writeString(Menu::ReadHfPwr());
-		m_port.writeString(Menu::ReadHfAmPwr());
-		m_port.writeString(Menu::ReadHfSsbPwr());
-		m_port.writeString(Menu::Read50mPwr());
-		m_port.writeString(Menu::Read50mAmPwr());
-		m_port.writeString(Menu::Read50mSsbPwr());
-		m_port.writeString(Menu::ReadBackliteDimmer());	
-		m_port.writeString(Menu::ReadLcdDimmer());	
-		m_port.writeString(Menu::ReadTxBusyDimmer());
-		m_port.writeString(Menu::ReadLcdContrast());	
+	FT891* pthis = (FT891*)cls;
+	pthis->OnTabChanged(obj);
+}
+
+void FT891::OnTabChanged(Fl_Tabs* tabs)
+{
+	
+	if(tabs->value() == CatSettingsTab & CatSettingsLoaded == false)
+	{
+		CatSettingsLoaded = true;
+		m_port.writeString(Menu::ReadSSBPTTSelect());
+		m_port.writeString(Menu::ReadAMPTTSelect());
+		m_port.writeString(Menu::ReadPktPTTSelect());
+		m_port.writeString(Menu::ReadDATAPTTSelect());
+		m_port.writeString(Menu::ReadCatRate());		
+		m_port.writeString(Menu::ReadCatTOT());
+		m_port.writeString(Menu::ReadCatTOT());
+		m_port.writeString(Menu::ReadPCKeying());
+	}
+	else if(tabs->value() == TXEQGroup & TXEQGroupLoaded == false)
+	{
+		TXEQGroupLoaded = true;
+		m_port.writeString(Menu::ReadEQ1Freq());
+		m_port.writeString(Menu::ReadEQ1Bwth());
+		m_port.writeString(Menu::ReadEQ1Level());			
+		m_port.writeString(Menu::ReadEQ2Freq());
+		m_port.writeString(Menu::ReadEQ2Bwth());
+		m_port.writeString(Menu::ReadEQ2Level());		
+		m_port.writeString(Menu::ReadEQ3Freq());	
+		m_port.writeString(Menu::ReadEQ3Bwth());
+		m_port.writeString(Menu::ReadEQ3Level());		
+		m_port.writeString(Menu::ReadPEQ1Freq());	
+		m_port.writeString(Menu::ReadPEQ2Freq());
+		m_port.writeString(Menu::ReadPEQ3Freq());		
+		m_port.writeString(Menu::ReadPEQ1Bwth());
+		m_port.writeString(Menu::ReadPEQ2Bwth());
+		m_port.writeString(Menu::ReadPEQ3Bwth());	
+		m_port.writeString(Menu::ReadPEQ1Level());
+		m_port.writeString(Menu::ReadPEQ2Level());
+		m_port.writeString(Menu::ReadPEQ3Level());
+	}
+	else if(tabs->value() == EQGroup & EQGroupLoaded == false)
+	{
+		EQGroupLoaded = true;
 		m_port.writeString(Menu::ReadAMLowCutFreq());
 		m_port.writeString(Menu::ReadAMLowCutSlope());
 		m_port.writeString(Menu::ReadAMHighCutFreq());
@@ -3588,33 +3715,14 @@ void FT891::Init()
 		m_port.writeString(Menu::ReadSSBHighCutFreq());
 		m_port.writeString(Menu::ReadSSBHighCutSlope());
 		m_port.writeString(Menu::ReadSSBOutLevel());
-		m_port.writeString(Menu::ReadClarSelect());
-		m_port.writeString(Menu::ReadEQ1Freq());	
-		m_port.writeString(Menu::ReadEQ2Freq());
-		m_port.writeString(Menu::ReadEQ3Freq());	
-		m_port.writeString(Menu::ReadPEQ1Freq());	
-		m_port.writeString(Menu::ReadPEQ2Freq());
-		m_port.writeString(Menu::ReadPEQ3Freq());
-		m_port.writeString(Menu::ReadApo());
-		m_port.writeString(Menu::ReadLcdDimmer());
-		m_port.writeString(Menu::ReadFanControl());
-		m_port.writeString(Menu::ReadMemGroup());
-		m_port.writeString(Menu::ReadFMSetting());
-		m_port.writeString(Menu::ReadRecSetting());
-		m_port.writeString(Menu::ReadATASSetting());
-		m_port.writeString(Menu::ReadTXTOT());
-		m_port.writeString(Menu::ReadMicScan());
-		m_port.writeString(Menu::ReadMicScanResume());
+	}
+	else if(tabs->value() == CWSettingsTab & CWGroupLoaded == false)
+	{
+		CWGroupLoaded = true;
+		m_port.writeString(Menu::ReadQSKDelayTime());
 		m_port.writeString(Menu::ReadCWBreakInType());
 		m_port.writeString(Menu::ReadCWWaveShape());
 		m_port.writeString(Menu::ReadCWFreqDisplay());
-		m_port.writeString(Menu::ReadPCKeying());
-		m_port.writeString(Menu::ReadQSKDelayTime());
-		m_port.writeString(Menu::ReadDataMode());
-		m_port.writeString(Menu::ReadPSKTone());
-		m_port.writeString(Menu::ReadAgcFastDelay());
-		m_port.writeString(Menu::ReadAgcMidDelay());
-		m_port.writeString(Menu::ReadAgcSlowDelay());
 		m_port.writeString(Menu::ReadKeyerType());
 		m_port.writeString(Menu::ReadKeyerDotDash());
 		m_port.writeString(Menu::ReadCwWeight());
@@ -3627,7 +3735,118 @@ void FT891::Init()
 		m_port.writeString(KeyerMemory::Read(2));
 		m_port.writeString(KeyerMemory::Read(3));
 		m_port.writeString(KeyerMemory::Read(4));
-		m_port.writeString(KeyerMemory::Read(5));		
+		m_port.writeString(KeyerMemory::Read(5));	
+	}
+	else if(tabs->value() == OutputPowerG & PowerGroupLoaded == false  )
+	{
+		PowerGroupLoaded = true;
+		m_port.writeString(Menu::ReadHfPwr());
+		m_port.writeString(Menu::ReadHfAmPwr());
+		m_port.writeString(Menu::ReadHfSsbPwr());
+		m_port.writeString(Menu::Read50mPwr());
+		m_port.writeString(Menu::Read50mAmPwr());
+		m_port.writeString(Menu::Read50mSsbPwr());
+	}
+	else if(tabs->value() == Lighting & LightingGrouploaded == false)
+	{
+		LightingGrouploaded = true;
+		m_port.writeString(Menu::ReadBackliteDimmer());	
+		m_port.writeString(Menu::ReadLcdDimmer());	
+		m_port.writeString(Menu::ReadTxBusyDimmer());
+		m_port.writeString(Menu::ReadLcdContrast());	
+		m_port.writeString(Menu::ReadApo());
+		m_port.writeString(Menu::ReadLcdDimmer());
+		m_port.writeString(Menu::ReadFanControl());
+		m_port.writeString(Menu::ReadMemGroup());
+		m_port.writeString(Menu::ReadFMSetting());
+		m_port.writeString(Menu::ReadRecSetting());
+		m_port.writeString(Menu::ReadATASSetting());
+		m_port.writeString(Menu::ReadTXTOT());
+		m_port.writeString(Menu::ReadMicScan());
+		m_port.writeString(Menu::ReadMicScanResume());		
+		m_port.writeString(Menu::ReadDataMode());
+		m_port.writeString(Menu::ReadPSKTone());
+		m_port.writeString(Menu::ReadAgcFastDelay());
+		m_port.writeString(Menu::ReadAgcMidDelay());
+		m_port.writeString(Menu::ReadAgcSlowDelay());
+	}
+
+}
+void FT891::BuildCatSettings(int w, int h)
+{
+	int y = 60;
+	int iStart = 15;
+  	int sliderTop = (h - y - 320);
+  	int slidery =  h - 320 - 15;
+	int sliderHeight = 320;
+	int sliderWidth = 45;	
+  	int sliderGap = 20 + sliderWidth;
+	int choiceWidth = (sliderWidth * 2) + 5;
+	int choiceHeight = 30;
+	int choiceX = iStart;
+
+	CatSettingsTab = new Fl_Group(0, y, w, (h - y), "Cat Settings");
+
+	
+    y += choiceHeight;
+	AMPTTSelect = new Fl_Choice(iStart,y,choiceWidth,choiceHeight,"AM PTT");
+	AMPTTSelect->add("DAKY", 0, OnChoice, this, 0);
+	AMPTTSelect->add("RTS", 0, OnChoice, this, 0);
+	AMPTTSelect->add("DTR", 0, OnChoice, this, 0);
+	AMPTTSelect->align(FL_ALIGN_TOP);
+	
+	DATAPTTSelect = new Fl_Choice(AMPTTSelect->x() + choiceWidth + 20,y,choiceWidth,choiceHeight,"DATA PTT");
+	DATAPTTSelect->add("DAKY", 0, OnChoice, this, 0);
+	DATAPTTSelect->add("RTS", 0, OnChoice, this, 0);
+	DATAPTTSelect->add("DTR", 0, OnChoice, this, 0);
+	DATAPTTSelect->align(FL_ALIGN_TOP);
+
+	PktPTTSelect = new Fl_Choice(DATAPTTSelect->x() + choiceWidth + 20,y,choiceWidth,choiceHeight,"PKT PTT");
+	PktPTTSelect->add("DAKY", 0, OnChoice, this, 0);
+	PktPTTSelect->add("RTS", 0, OnChoice, this, 0);
+	PktPTTSelect->add("DTR", 0, OnChoice, this, 0);
+	PktPTTSelect->align(FL_ALIGN_TOP);
+
+	PCKeying = new Fl_Choice(PktPTTSelect->x() + choiceWidth + 20, PktPTTSelect->y() , choiceWidth, choiceHeight, "PC Keying");
+	PCKeying->add("OFF", 0, OnChoice, this, 0);
+	PCKeying->add("DAKY", 0, OnChoice, this, 0);
+	PCKeying->add("RTS", 0, OnChoice, this, 0);
+	PCKeying->add("DTR", 0, OnChoice, this, 0);
+	PCKeying->align(FL_ALIGN_TOP);
+
+	SSBPTTSelect = new Fl_Choice(PCKeying->x() + choiceWidth + 20,y,choiceWidth,choiceHeight,"PKT PTT");
+	SSBPTTSelect->add("DAKY", 0, OnChoice, this, 0);
+	SSBPTTSelect->add("RTS", 0, OnChoice, this, 0);
+	SSBPTTSelect->add("DTR", 0, OnChoice, this, 0);
+	SSBPTTSelect->align(FL_ALIGN_TOP);
+
+	CatRateSelect = new Fl_Choice(SSBPTTSelect->x() + choiceWidth + 20, y, choiceWidth, choiceHeight, "CAT Rate");
+	CatRateSelect->add("4800 bps", 0, OnChoice, this, 0);
+	CatRateSelect->add("9600 bps", 0, OnChoice, this, 0);
+	CatRateSelect->add("19200 bps", 0, OnChoice, this, 0);
+	CatRateSelect->add("38400 bps", 0, OnChoice, this, 0);
+	CatRateSelect->align(FL_ALIGN_TOP);
+
+	y += choiceHeight + 20;
+
+	CatTOTSelect = new Fl_Choice(AMPTTSelect->x(), y, choiceWidth, choiceHeight,"CAT TOT");
+	CatTOTSelect->add("10 ms", 0, OnChoice, this, 0);
+	CatTOTSelect->add("100 ms", 0, OnChoice, this, 0);
+	CatTOTSelect->add("1000 ms", 0, OnChoice, this, 0);
+	CatTOTSelect->add("3000 ms", 0, OnChoice, this, 0);
+	CatTOTSelect->align(FL_ALIGN_TOP);
+
+
+}
+
+void FT891::Init()
+{
+		m_port.writeString(AutoInformation::Set(InformationState::ON));
+		m_port.writeString(Menu::ReadSSBBFO());
+		m_port.writeString(Menu::ReadCWBFO());
+		m_port.writeString(Menu::ReadDATABFO());
+		m_port.writeString(Menu::ReadRTTYBFO());
+		m_port.writeString(Menu::ReadClarSelect());
 		m_port.writeString(INFORMATION::Read());
 		m_port.writeString(VFO_B_FREQ::Read());
 		m_port.writeString(MeterSW::Read());
@@ -3654,12 +3873,14 @@ void FT891::BuildUI(int w, int h)
 {
 	this->label("FT-891 Control");
 	Tabs = new Fl_Tabs(0, 15, w, (h - 15),"");
+	Tabs->callback((Fl_Callback*)&::OnTabChanged, this);
   	BuildGeneralGroup(w,h);
   	BuildPowerGroup(w,h);
 	BuildLightingGroup(w,h);
 	BuildRxEQGroup(w,h);
 	BuildTXEQGroup(w,h);
 	BuildCWSettings(w,h);
+	BuildCatSettings(w, h);
 	Tabs->show();
 	Tabs->end();
 	end();
@@ -3672,8 +3893,25 @@ FT891::FT891(int w, int h) : Fl_Double_Window(w, h), m_port("COM10", 38400)
 	ReadPowerSwitch();	
 }
 
-FT891::FT891(int w, int h, string prt, int speed) : Fl_Double_Window(w, h), m_port(prt, speed)
+FT891::FT891(int w, int h, string prt, int speed) : Fl_Double_Window(w, h), 
+m_port(prt, speed),
+CatSettingsLoaded(false),
+TXEQGroupLoaded(false),
+EQGroupLoaded(false),
+CWGroupLoaded(false),
+LightingGrouploaded(false),
+PowerGroupLoaded(false)
 {
+
+	if(m_port.isOpen())
+	{
+		std::fstream fs("FT891.ini", std::ios::out);
+		fs << "[PORTSETTINGS]" << std::endl;
+		fs << "Port = " << prt << std::endl;
+		fs << "Baud = " << speed << std::endl;
+		fs.flush();
+		fs.close();
+	}
 	BuildUI(w,h);
 	m_port.setCallback(std::bind(&FT891::readCallback, this, _1, _2));
 	ReadPowerSwitch();	
@@ -3693,39 +3931,109 @@ void FT891::OnPowerButtonClick(Fl_Light_Button* o, void* v)
 	}
 }
 
+void OnOk(Fl_Button* o, void* v)
+{
+	ComPortDialog* pthis = (ComPortDialog*)v;
+	pthis->OkClicked();
+}
+
+void OnCatChoice(Fl_Widget* pitem, void* v)
+{
+
+}
+ComPortDialog::ComPortDialog() : Fl_Window(300,200)
+{
+	this->label("Port Settings");
+	PortName = new Fl_Input(150,20,100,30,"Port Name:");
+	PortName->align(FL_ALIGN_LEFT);
+	CatRateChoice = new Fl_Choice(150,70, 100, 30, "Baud Rate:");
+	CatRateChoice->add("4800 bps", 0,OnCatChoice , this, 0);
+	CatRateChoice->add("9600 bps", 0,OnCatChoice , this, 0);
+	CatRateChoice->add("19200 bps", 0, OnCatChoice, this, 0);
+	CatRateChoice->add("38400 bps", 0, OnCatChoice, this, 0);
+	Ok = new Fl_Button(300 - 50, 200 - 30, 50, 30, "OK");
+	Ok->callback((Fl_Callback*)&::OnOk,this);
+}
+
+void ComPortDialog::OkClicked()
+{
+	Rate = static_cast<Yaesu::FT891::Commands::CatRateValue>(CatRateChoice->value());
+	m_PortName = PortName->value();
+	this->hide();
+}
+
+
 int arg_parser( int argc, char** argv, int &i ) {
   return 0;
 }
 
 int main(int argc, char** argv)
 {
-		std::string port = "COM10";
-		int baud = 38400;
+		std::string port ;
+		int baud = 0;
 	try
-	{
-		namespace po = boost::program_options;
-		po::options_description desc("Allowed Options");
-		desc.add_options()
-		("Port", po::value<string>(), "set com port for radio")
-		("Baud", po::value<int>(), "set baud rate for com port");
-		po::variables_map vm;
-		po::store(po::parse_command_line(argc, argv, desc), vm);
-		po::notify(vm);
-		if (vm.count("Port")) {
-			port = vm["Port"].as<string>();
-		}
-
-		if (vm.count("Baud"))
+	{	
+			std::fstream fs("FT891.ini"); 
+			if(!fs.is_open())
+			{
+				ComPortDialog* dlg = new ComPortDialog();
+				dlg->set_modal();
+				dlg->show();
+				while(dlg->shown()) Fl::wait();
+				port = dlg->m_PortName;
+				switch(dlg->Rate)
+				{
+					case Yaesu::FT891::Commands::CatRateValue::_19200bps:
+					baud = 19200;
+					break;
+					case Yaesu::FT891::Commands::CatRateValue::_38400bps:
+					baud = 38400;
+					break;
+					case Yaesu::FT891::Commands::CatRateValue::_4800bps:
+					baud = 4800;
+					break;
+					case Yaesu::FT891::Commands::CatRateValue::_9600bps:
+					baud = 9600;
+					break;
+				}
+			}
+			else
+			{
+				fs.close();
+				using boost::property_tree::ptree;
+    			ptree pt;
+    			read_ini("FT891.ini", pt);
+				for (auto& section : pt)
+    			{
+					if(section.first.find("PORTSETTINGS") != string::npos)
+					{
+						for(auto& key : section.second)
+						{
+							if(key.first.find("Port")  != string::npos)
+							{
+								port = key.second.get_value<std::string>();
+							}
+							if(key.first.find("Baud") != string::npos)
+							{
+								baud = key.second.get_value<int>();
+							}
+						}
+					}
+				}
+			}
+		if(!port.empty())
 		{
-			baud = vm["Baud"].as<int>();
+			FT891* MyWindow = new FT891(700, 600, port, baud);
+			int arg_i;
+			Fl::args( argc, argv, arg_i, &arg_parser );
+			MyWindow->show(argc, argv);
+			return Fl::run();
 		}
-	    
-		FT891* MyWindow = new FT891(700, 600, port, baud);
-		int arg_i;
-		Fl::args( argc, argv, arg_i, &arg_parser );
-		MyWindow->show(argc, argv);
-		
-		return Fl::run();
+		else
+		{
+			 std::string msg = "No Port provided";
+			 MessageBox(nullptr,msg.c_str(),"FT891", MB_OK | MB_ICONERROR );
+		}
 	}
 	catch(const std::exception& e)
 	{

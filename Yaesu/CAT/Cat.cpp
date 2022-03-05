@@ -26,7 +26,7 @@ namespace Yaesu {
 
 			std::string AntennaTunerControl::Set(TunerState state)
 			{
-				std::string str = fmt::format("AC00{:d};", state);
+				std::string str = fmt::format("AC00{:d};", static_cast<int>(state));
 				return str.c_str();
 			}
 
@@ -59,7 +59,7 @@ namespace Yaesu {
 
 			std::string AutoInformation::Set(InformationState Value)
 			{
-				std::string str = fmt::format("AI{};", Value);
+				std::string str = fmt::format("AI{};", static_cast<int>(Value));
 				return str;
 			}
 
@@ -85,7 +85,7 @@ namespace Yaesu {
 
 			std::string AutoNotch::Set(NotchState Value)
 			{
-				std::string str = fmt::format("BC0{:d};", Value);
+				std::string str = fmt::format("BC0{:d};", static_cast<int>(Value));
 				return str;
 			}
 
@@ -103,7 +103,7 @@ namespace Yaesu {
 
 			std::string BreakIn::Set(BreakInState Value)
 			{
-				std::string str = fmt::format("BI{:01};", Value);
+				std::string str = fmt::format("BI{:01};", static_cast<int>(Value));
 				return str.c_str();
 			}
 
@@ -117,7 +117,7 @@ namespace Yaesu {
 			std::string ManualNotch::Set(ManualNotchValue val)
 			{
 
-				std::string str = fmt::format("BP0{:d}{:0>3};", val.Command, val.Value.iValue);
+				std::string str = fmt::format("BP0{:d}{:0>3};", static_cast<int>(val.Command), val.Value.iValue);
 				return str.c_str();
 			}
 
@@ -137,13 +137,13 @@ namespace Yaesu {
 
 			std::string BandSelect::Set(Band Value)
 			{
-				std::string str = fmt::format("BS{:0>2};", Value);
+				std::string str = fmt::format("BS{:0>2};", static_cast<int>(Value));
 				return str.c_str();
 			}
 
 			std::string BandUP::Set() { return "BU0;"; }
 
-			std::string Busy::Read(BusyState Value)
+			std::string Busy::Read()
 			{
 				return "BY;";
 			}
@@ -155,7 +155,7 @@ namespace Yaesu {
 
 			std::string Clarifier::Set(ClarifierState Value)
 			{
-				std::string str = fmt::format("CF0{:d}0;", Value);
+				std::string str = fmt::format("CF0{:d}0;", static_cast<int>(Value));
 				return str.c_str();
 			}
 
@@ -171,19 +171,19 @@ namespace Yaesu {
 
 			std::string Channel_Up_Down::Set(UpDownState Value)
 			{
-				std::string str = fmt::format("CH{:d};", Value);
+				std::string str = fmt::format("CH{:d};", static_cast<int>(Value));
 				return str.c_str();
 			}
 
 			std::string CTCSSToneFrequency::Set(CTCSSToneFreqencyValue val)
 			{
-				std::string str = fmt::format("CN0{:d}{:0>3};", val.Mode, val.Value);
+				std::string str = fmt::format("CN0{:d}{:0>3};", static_cast<int>(val.Mode), val.Value);
 				return str.c_str();
 			}
 
 			std::string CTCSSToneFrequency::Read(CTCSSModeType Mode)
 			{
-				std::string str = fmt::format("CN0{:d};", Mode);
+				std::string str = fmt::format("CN0{:d};", static_cast<int>(Mode));
 				return str;
 			}
 
@@ -198,13 +198,13 @@ namespace Yaesu {
 
 			std::string Contour::Set(ContourValue val)
 			{
-				std::string str = fmt::format("CO0{:d}{:04};", val.Type, val.Value.Freq);
+				std::string str = fmt::format("CO0{:d}{:04};", static_cast<int>(val.Type), val.Value.Freq);
 				return str;
 			}
 
 			std::string Contour::Read(ContourValue Type)
 			{
-				std::string str = fmt::format("CO0{:d};", Type.Type);
+				std::string str = fmt::format("CO0{:d};", static_cast<int>(Type.Type));
 				return str;
 			}
 
@@ -218,7 +218,7 @@ namespace Yaesu {
 
 			std::string CWSpot::Set(CWSpotState Value)
 			{
-				std::string str = fmt::format("CS{:d};", Value);
+				std::string str = fmt::format("CS{:d};", static_cast<int>(Value));
 				return str;
 			}
 
@@ -231,7 +231,7 @@ namespace Yaesu {
 
 			std::string CTCSS::Set(CTCSSState Value)
 			{
-				std::string str = fmt::format("CT0{:d};", Value);
+				std::string str = fmt::format("CT0{:d};", static_cast<int>(Value));
 				return str;
 			}
 
@@ -276,10 +276,8 @@ namespace Yaesu {
 			std::string EncoderDown::Set(EncoderType enc, int Steps)
 			{
 				if (Steps > 99) Steps = 99;
-				if (Steps < 1) Steps = 1;
-				std::string str = "ED";
-				str += (char)enc;
-				str += fmt::format("{:0>2};", Steps);
+				if (Steps < 1) Steps = 1;				
+				std::string str = fmt::format("ED{:d}{:0>2};",static_cast<int>(enc), Steps);
 				return str.c_str();
 			}
 
@@ -289,7 +287,7 @@ namespace Yaesu {
 			{
 				if (Steps > 99) Steps = 99;
 				if (Steps < 1) Steps = 1;
-				std::string str = fmt::format("EU{:d}{:0>2};", enc, Steps);
+				std::string str = fmt::format("EU{:d}{:0>2};", static_cast<int>(enc), Steps);
 				return str.c_str();
 			}
 
@@ -303,13 +301,13 @@ namespace Yaesu {
 			{
 				msecs = msecs - (msecs % 20);
 				msecs = msecs > 4000 ? 4000 : msecs;
-				std::string val = fmt::format("{:04}{:03}", MenuFunction::AGC_FAST_DELAY, msecs);
+				std::string val = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AGC_FAST_DELAY), msecs);
 				return set(val);
 			}
 
 			std::string Menu::ReadAgcFastDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AGC_FAST_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AGC_FAST_DELAY));
 				return set(s);
 			}
 
@@ -328,13 +326,13 @@ namespace Yaesu {
 			{
 				msecs = msecs - (msecs % 20);
 				msecs = msecs > 4000 ? 4000 : msecs;
-				std::string val = fmt::format("{:04}{:0>3}", MenuFunction::AGC_MID_DELAY, msecs);
+				std::string val = fmt::format("{:04}{:0>3}", static_cast<int>(MenuFunction::AGC_MID_DELAY), msecs);
 				return set(val);
 			}
 
 			std::string Menu::ReadAgcMidDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AGC_MID_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AGC_MID_DELAY));
 				return set(s);
 			}
 
@@ -352,13 +350,13 @@ namespace Yaesu {
 			{
 				msecs = msecs - (msecs % 20);
 				msecs = msecs > 4000 ? 4000 : msecs;
-				std::string val = fmt::format("{:04}{:04}", MenuFunction::AGC_SLOW_DELAY, msecs);
+				std::string val = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::AGC_SLOW_DELAY), msecs);
 				return set(val);
 			}
 
 			std::string Menu::ReadAgcSlowDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AGC_SLOW_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AGC_SLOW_DELAY));
 				return set(s);
 			}
 
@@ -376,13 +374,13 @@ namespace Yaesu {
 			{
 				if (level > 15) level = 15;
 				if (level < 1) level = 1;
-				std::string val = fmt::format("{:04}{:0>2}", MenuFunction::LCD_CONTRAST, level);
+				std::string val = fmt::format("{:04}{:0>2}", static_cast<int>(MenuFunction::LCD_CONTRAST), level);
 				return set(val);
 			}
 
 			std::string Menu::ReadLcdContrast()
 			{
-				std::string val = fmt::format("{:04}", MenuFunction::LCD_CONTRAST);
+				std::string val = fmt::format("{:04}", static_cast<int>(MenuFunction::LCD_CONTRAST));
 				return set(val);
 			}
 
@@ -400,13 +398,13 @@ namespace Yaesu {
 			{
 				if (level > 15) level = 15;
 				if (level < 1) level = 1;
-				std::string val = fmt::format("{:04}{:0>2}", MenuFunction::DIMMER_BACKLIT, level);
+				std::string val = fmt::format("{:04}{:0>2}", static_cast<int>(MenuFunction::DIMMER_BACKLIT), level);
 				return set(val);
 			}
 
 			std::string Menu::ReadBackliteDimmer()
 			{
-				std::string val = fmt::format("{:04}", MenuFunction::DIMMER_BACKLIT);
+				std::string val = fmt::format("{:04}", static_cast<int>(MenuFunction::DIMMER_BACKLIT));
 				return set(val);
 			}
 
@@ -424,14 +422,14 @@ namespace Yaesu {
 			{
 				if (level > 15) level = 15;
 				if (level < 1) level = 1;
-				std::string val = fmt::format("{:04}{:0>2}", MenuFunction::DIMMER_LCD, level);
+				std::string val = fmt::format("{:04}{:0>2}", static_cast<int>(MenuFunction::DIMMER_LCD), level);
 
 				return set(val);
 			}
 
 			std::string Menu::ReadLcdDimmer()
 			{
-				std::string val = fmt::format("{:04}", MenuFunction::DIMMER_LCD);
+				std::string val = fmt::format("{:04}", static_cast<int>(MenuFunction::DIMMER_LCD));
 				return set(val);
 			}
 
@@ -449,14 +447,14 @@ namespace Yaesu {
 			{
 				if (level > 15) level = 15;
 				if (level < 1) level = 1;
-				std::string val = fmt::format("{:04}{:02}", MenuFunction::DIMMER_TX_BUSY, level);
+				std::string val = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::DIMMER_TX_BUSY), level);
 
 				return set(val);
 			}
 
 			std::string Menu::ReadTxBusyDimmer()
 			{
-				std::string val = fmt::format("{:04}", MenuFunction::DIMMER_TX_BUSY);
+				std::string val = fmt::format("{:04}", static_cast<int>(MenuFunction::DIMMER_TX_BUSY));
 				return set(val);
 			}
 
@@ -473,7 +471,7 @@ namespace Yaesu {
 
 			std::string Menu::SetPeakHold(PeakHoldType value)
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::PEAK_HOLD);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::PEAK_HOLD));
 				switch (value)
 				{
 				case PeakHoldType::OFF:
@@ -494,7 +492,7 @@ namespace Yaesu {
 
 			std::string Menu::ReadPeakHold()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::PEAK_HOLD);
+				std::string s = fmt::format("{:04}",static_cast<int>( MenuFunction::PEAK_HOLD));
 				return set(s);
 			}
 
@@ -510,14 +508,14 @@ namespace Yaesu {
 
 			std::string Menu::SetZinLed(EnableDisableValue value)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::ZIN_LED, value);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::ZIN_LED), static_cast<int>(value));
 
 				return set(s);
 			}
 
 			std::string Menu::ReadZinLed()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::ZIN_LED);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::ZIN_LED));
 				return set(s);
 			}
 
@@ -533,14 +531,14 @@ namespace Yaesu {
 
 			std::string Menu::SetPopupMenuStyle(PopUpMenuStyle style)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::POPUP_MENU, style);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::POPUP_MENU), static_cast<int>(style));
 
 				return set(s);
 			}
 
 			std::string Menu::ReadPopupMenuStyle()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::POPUP_MENU);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::POPUP_MENU));
 				return set(s);
 			}
 
@@ -556,13 +554,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDvsRxOutLevel(int Level)
 			{
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DVS_RX_OUT_LVL, Level);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DVS_RX_OUT_LVL), Level);
 				return set(s);
 			}
 
 			std::string Menu::ReadDvsRxOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DVS_RX_OUT_LVL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DVS_RX_OUT_LVL));
 				return set(s);
 			}
 
@@ -578,14 +576,14 @@ namespace Yaesu {
 
 			std::string Menu::SetDvsTxOutLevel(int Level)
 			{
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DVS_TX_OUT_LVL, Level);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DVS_TX_OUT_LVL), Level);
 
 				return set(s);
 			}
 
 			std::string Menu::ReadDvsTxOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DVS_TX_OUT_LVL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DVS_TX_OUT_LVL));
 				return set(s);
 			}
 
@@ -601,13 +599,13 @@ namespace Yaesu {
 
 			std::string Menu::SetKeyerType(KeyerTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::KEYER_TYPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::KEYER_TYPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadKeyerType()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::KEYER_TYPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::KEYER_TYPE));
 				return set(s);
 			}
 
@@ -623,13 +621,13 @@ namespace Yaesu {
 
 			std::string Menu::SetKeyerDotDash(KeyerDotDashValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::KEYER_DOT_DASH_ORDER, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::KEYER_DOT_DASH_ORDER), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadKeyerDotDash()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::KEYER_DOT_DASH_ORDER);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::KEYER_DOT_DASH_ORDER));
 				return set(s);
 			}
 
@@ -647,13 +645,13 @@ namespace Yaesu {
 			{
 				if (Weight < 25) Weight = 25;
 				if (Weight > 45) Weight = 45;
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_WEIGHT, Weight);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::CW_WEIGHT), Weight);
 				return set(s);
 			}
 
 			std::string Menu::ReadCwWeight()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_WEIGHT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_WEIGHT));
 				return set(s);
 			}
 
@@ -669,13 +667,13 @@ namespace Yaesu {
 
 			std::string Menu::SetBeaconInterval(int value)
 			{
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::BEACON_INTERVAL, value);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::BEACON_INTERVAL), value);
 				return set(s);
 			}
 
 			std::string Menu::ReadBeaconInterval()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::BEACON_INTERVAL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::BEACON_INTERVAL));
 				return set(s);
 			}
 
@@ -691,13 +689,13 @@ namespace Yaesu {
 
 			std::string Menu::SetNumberStyle(NumberStyleValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NUMBER_STYLE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::NUMBER_STYLE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadNumberStyle()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::NUMBER_STYLE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::NUMBER_STYLE));
 				return set(s);
 			}
 
@@ -713,13 +711,13 @@ namespace Yaesu {
 
 			std::string Menu::SetContestNumber(int Value)
 			{
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::CONTEST_NUMBER, Value);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::CONTEST_NUMBER), Value);
 				return set(s);
 			}
 
 			std::string Menu::ReadContestNumber()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CONTEST_NUMBER);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CONTEST_NUMBER));
 				return set(s);
 			}
 
@@ -735,13 +733,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWMemory1(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_1, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_MEMORY_1), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWMemory1()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_MEMORY_1);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_MEMORY_1));
 				return set(s);
 			}
 
@@ -757,14 +755,14 @@ namespace Yaesu {
 
 			std::string Menu::SetCWMemory2(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_2, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_MEMORY_2), static_cast<int>(val));
 
 				return set(s);
 			}
 
 			std::string Menu::ReadCWMemory2()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_MEMORY_2);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_MEMORY_2));
 				return set(s);
 			}
 
@@ -780,14 +778,14 @@ namespace Yaesu {
 
 			std::string Menu::SetCWMemory3(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_3, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_MEMORY_3), static_cast<int>(val));
 
 				return set(s);
 			}
 
 			std::string Menu::ReadCWMemory3()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_MEMORY_3);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_MEMORY_3));
 				return set(s);
 			}
 
@@ -803,13 +801,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWMemory4(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_4, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_MEMORY_4), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWMemory4()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_MEMORY_4);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_MEMORY_4));
 				return set(s);
 			}
 
@@ -825,14 +823,14 @@ namespace Yaesu {
 
 			std::string Menu::SetCWMemory5(CWMemoryTypeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_MEMORY_5, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_MEMORY_5), static_cast<int>(val));
 
 				return set(s);
 			}
 
 			std::string Menu::ReadCWMemory5()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_MEMORY_5);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_MEMORY_5));
 				return set(s);
 			}
 
@@ -849,13 +847,13 @@ namespace Yaesu {
 
 			std::string Menu::SetNbWidth(NBWidthValue value)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_WIDTH, value);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::NB_WIDTH), static_cast<int>(value));
 				return set(s);
 			}
 
 			std::string Menu::ReadNbWidth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::NB_WIDTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::NB_WIDTH));
 				return set(s);
 			}
 
@@ -871,13 +869,13 @@ namespace Yaesu {
 
 			std::string Menu::SetNbRejection(NBRejectionValue value)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_REJECTION, value);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::NB_REJECTION), static_cast<int>(value));
 				return set(s);
 			}
 
 			std::string Menu::ReadNbRejection()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::NB_REJECTION);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::NB_REJECTION));
 				return set(s);
 			}
 
@@ -894,13 +892,13 @@ namespace Yaesu {
 			std::string Menu::SetNbLevel(int level)
 			{
 				level = level > 10 ? 10 : level;
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::NB_LEVEL, level);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::NB_LEVEL), static_cast<int>(level));
 				return set(s);
 			}
 
 			std::string Menu::ReadNbLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::NB_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::NB_LEVEL));
 				return set(s);
 			}
 
@@ -917,13 +915,13 @@ namespace Yaesu {
 			std::string Menu::SetBeepLevel(int level)
 			{
 				level = level > 100 ? 100 : level;
-				std::string s = fmt::format("{:04}{:0>3}", MenuFunction::BEEP_LEVEL, level);
+				std::string s = fmt::format("{:04}{:0>3}", static_cast<int>(MenuFunction::BEEP_LEVEL), static_cast<int>(level));
 				return set(s);
 			}
 
 			std::string Menu::ReadBeepLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::BEEP_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::BEEP_LEVEL));
 				return set(s);
 			}
 
@@ -939,13 +937,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRfSqlVr(RfSqlVrValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::BEEP_LEVEL, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::BEEP_LEVEL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRfSqlVr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::BEEP_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::BEEP_LEVEL));
 				return set(s);
 			}
 
@@ -961,13 +959,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCatRate(CatRateValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RATE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CAT_RATE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCatRate()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CAT_RATE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CAT_RATE));
 				return set(s);
 			}
 
@@ -983,13 +981,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCatTOT(CatTOTValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_TOT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CAT_TOT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCatTOT()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CAT_TOT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CAT_TOT));
 				return set(s);
 			}
 
@@ -1005,13 +1003,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCatRTS(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CAT_RTS, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CAT_RTS), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCatRTS()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CAT_RTS);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CAT_RTS));
 				return set(s);
 			}
 
@@ -1027,13 +1025,13 @@ namespace Yaesu {
 
 			std::string Menu::SetMemGroup(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MEM_GROUP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::MEM_GROUP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadMemGroup()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::MEM_GROUP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::MEM_GROUP));
 				return set(s);
 			}
 
@@ -1049,13 +1047,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFMSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_SETTING, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::FM_SETTING), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFMSetting()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_SETTING);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_SETTING));
 				return set(s);
 			}
 
@@ -1072,13 +1070,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRecSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::REC_SETTING, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::REC_SETTING), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRecSetting()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::REC_SETTING);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::REC_SETTING));
 				return set(s);
 			}
 
@@ -1094,13 +1092,13 @@ namespace Yaesu {
 
 			std::string Menu::SetATASSetting(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::ATAS_SETTING, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::ATAS_SETTING), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadATASSetting()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::ATAS_SETTING);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::ATAS_SETTING));
 				return set(s);
 			}
 
@@ -1119,13 +1117,13 @@ namespace Yaesu {
 				val = val > 20 ? 20 : val;
 				val = val < -20 ? -20 : val;
 
-				std::string s = fmt::format("{:04}{:+d}", MenuFunction::QUICK_SPL_FREQ, val);
+				std::string s = fmt::format("{:04}{:+d}", static_cast<int>(MenuFunction::QUICK_SPL_FREQ), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadQuickSplitFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::QUICK_SPL_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::QUICK_SPL_FREQ));
 				return set(s);
 			}
 
@@ -1143,13 +1141,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 30 ? 30 : val;
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::TX_TOT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::TX_TOT), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadTXTOT()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::TX_TOT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::TX_TOT));
 				return set(s);
 			}
 
@@ -1165,13 +1163,13 @@ namespace Yaesu {
 
 			std::string Menu::SetMicScan(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::MIC_SCAN), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadMicScan()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::MIC_SCAN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::MIC_SCAN));
 				return set(s);
 			}
 
@@ -1187,13 +1185,13 @@ namespace Yaesu {
 
 			std::string Menu::SetMicScanResume(MicScanResumeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::MIC_SCAN_RESUME, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::MIC_SCAN_RESUME), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadMicScanResume()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::MIC_SCAN_RESUME);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::MIC_SCAN_RESUME));
 				return set(s);
 			}
 
@@ -1212,13 +1210,13 @@ namespace Yaesu {
 				val = val < -25 ? -25 : val;
 				val = val > 25 ? 25 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::REF_FEQ_ADJ, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::REF_FEQ_ADJ), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadRefFreqAdjust()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::REF_FEQ_ADJ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::REF_FEQ_ADJ));
 				return set(s);
 			}
 
@@ -1234,13 +1232,13 @@ namespace Yaesu {
 
 			std::string Menu::SetClarSelect(ClarSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CLAR_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CLAR_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadClarSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CLAR_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CLAR_SELECT));
 				return set(s);
 			}
 
@@ -1256,13 +1254,13 @@ namespace Yaesu {
 
 			std::string Menu::SetApo(APOValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::APO, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::APO), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadApo()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::APO);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::APO));
 				return set(s);
 			}
 
@@ -1278,13 +1276,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFanControl(FanControlValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FAN_CONTROL, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::FAN_CONTROL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFanControl()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FAN_CONTROL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FAN_CONTROL));
 				return set(s);
 			}
 
@@ -1300,13 +1298,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_LCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::AM_LCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMLowCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_LCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_LCUT_FREQ));
 				return set(s);
 			}
 
@@ -1322,13 +1320,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_LCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_LCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMLowCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_LCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_LCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1344,13 +1342,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::AM_HCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::AM_HCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMHighCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_HCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_HCUT_FREQ));
 				return set(s);
 			}
 
@@ -1366,13 +1364,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_HCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_HCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMHighCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_HCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_HCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1388,13 +1386,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_MIC_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_MIC_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMMicSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_MIC_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_MIC_SELECT));
 				return set(s);
 			}
 
@@ -1412,13 +1410,13 @@ namespace Yaesu {
 			{
 				val = val > 100 ? 100 : val;
 				val = val < 0 ? 0 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AM_OUT_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadAMOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -1438,13 +1436,13 @@ namespace Yaesu {
 			{
 				val = val > 100 ? 100 : val;
 				val = val < 0 ? 0 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_MIC_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AM_MIC_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadAMMicLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_MIC_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_MIC_GAIN));
 				return set(s);
 			}
 
@@ -1461,13 +1459,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_PTT_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_PTT_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMPTTSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_PTT_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_PTT_SELECT));
 				return set(s);
 			}
 
@@ -1483,13 +1481,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_LCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::CW_LCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWLowCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_LCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_LCUT_FREQ));
 				return set(s);
 			}
 
@@ -1505,14 +1503,14 @@ namespace Yaesu {
 
 			std::string Menu::SetCWLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_LCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_LCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWLowCutSlope()
 			{
 
-				std::string s = fmt::format("{:04}", MenuFunction::CW_LCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_LCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1528,13 +1526,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CW_HCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::CW_HCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWHighCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_HCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_HCUT_FREQ));
 				return set(s);
 			}
 
@@ -1550,13 +1548,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_HCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_HCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWHighCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_HCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_HCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1574,13 +1572,13 @@ namespace Yaesu {
 			{
 				val = val > 100 ? 100 : val;
 				val = val < 0 ? 0 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::CW_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::CW_OUT_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadCWOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -1596,7 +1594,7 @@ namespace Yaesu {
 
 			std::string Menu::SetCWAutoMode(CwAutoModeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_AUTO_MODE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_AUTO_MODE), static_cast<int>(val));
 				return set(s);
 			}
 
@@ -1604,7 +1602,7 @@ namespace Yaesu {
 			std::string Menu::ReadCWAutoMode()
 			{
 
-				std::string s = fmt::format("{:04}", MenuFunction::CW_AUTO_MODE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_AUTO_MODE));
 				return set(s);
 			}
 
@@ -1620,13 +1618,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWBFO(BfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BFO, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_BFO), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWBFO()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_BFO);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_BFO));
 				return set(s);
 			}
 
@@ -1642,13 +1640,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWBreakkInType(CwBreakInType val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_BK_IN_TYPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_BK_IN_TYPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWBreakInType()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_BK_IN_TYPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_BK_IN_TYPE));
 				return set(s);
 			}
 
@@ -1667,13 +1665,13 @@ namespace Yaesu {
 				val = (val % 10) == 0 ? val : val - (val % 10);
 				val = val > 3000 ? 3000 : val;
 				val = val < 30 ? 30 : val;
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::CW_BK_IN_DELAY, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::CW_BK_IN_DELAY), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadCWBreakInDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_BK_IN_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_BK_IN_DELAY));
 				return set(s);
 			}
 
@@ -1689,13 +1687,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWWaveShape(CwWaveShapeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_WAVE_SHAPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_WAVE_SHAPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWWaveShape()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_WAVE_SHAPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_WAVE_SHAPE));
 				return set(s);
 			}
 
@@ -1711,13 +1709,13 @@ namespace Yaesu {
 
 			std::string Menu::SetCWFreqDisplay(CwFreqDisplayValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::CW_FREQ_DISPLAY, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::CW_FREQ_DISPLAY), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadCWFreqDisplay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CW_FREQ_DISPLAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CW_FREQ_DISPLAY));
 				return set(s);
 			}
 
@@ -1733,13 +1731,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPCKeying(PCKeyingValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PC_KEYING, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::PC_KEYING), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPCKeying()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::PC_KEYING);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::PC_KEYING));
 				return set(s);
 			}
 
@@ -1755,13 +1753,13 @@ namespace Yaesu {
 
 			std::string Menu::SetQSKDelayTime(QskDelayTimeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::QSK_DELAY_TIME, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::QSK_DELAY_TIME), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadQSKDelayTime()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::QSK_DELAY_TIME);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::QSK_DELAY_TIME));
 				return set(s);
 			}
 
@@ -1777,13 +1775,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDataMode(DataModeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_MODE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_MODE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDataMode()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_MODE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_MODE));
 				return set(s);
 			}
 
@@ -1799,13 +1797,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPSKTone(PSKToneValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PSK_TONE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::PSK_TONE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPSKTone()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::PSK_TONE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::PSK_TONE));
 				return set(s);
 			}
 
@@ -1824,13 +1822,13 @@ namespace Yaesu {
 				val = val < -3000 ? -3000 : val;
 				val = val > 3000 ? 3000 : val;
 				val = (val % 10) == 0 ? val : val - (val % 10);
-				std::string s = fmt::format("{:04}{:+05}", MenuFunction::OTHER_DISP, val);
+				std::string s = fmt::format("{:04}{:+05}", static_cast<int>(MenuFunction::OTHER_DISP), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadOtherDisp()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::OTHER_DISP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::OTHER_DISP));
 				return set(s);
 			}
 
@@ -1849,14 +1847,14 @@ namespace Yaesu {
 				val = val < -3000 ? -3000 : val;
 				val = val > 3000 ? 3000 : val;
 				val = (val % 10) == 0 ? val : val - (val % 10);
-				std::string s = fmt::format("{:04}{:+05}", MenuFunction::OTHER_SHIFT, val);
+				std::string s = fmt::format("{:04}{:+05}", static_cast<int>(MenuFunction::OTHER_SHIFT), static_cast<int>(val));
 				return set(s);
 
 			}
 
 			std::string Menu::ReadOtherShift()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::OTHER_SHIFT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::OTHER_SHIFT));
 				return set(s);
 			}
 
@@ -1872,13 +1870,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATALowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_LCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::DATA_LCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATALowCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_LCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_LCUT_FREQ));
 				return set(s);
 			}
 
@@ -1894,13 +1892,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATALowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_LCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_LCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATALowCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_LCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_LCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1916,13 +1914,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATAHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::DATA_HCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::DATA_HCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAHighCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_HCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_HCUT_FREQ));
 				return set(s);
 			}
 
@@ -1938,13 +1936,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATAHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_HCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_HCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAHighCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_HCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_HCUT_SLOPE));
 				return set(s);
 			}
 
@@ -1960,13 +1958,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATAInSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_IN_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_IN_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAInSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_IN_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_IN_SELECT));
 				return set(s);
 			}
 
@@ -1982,13 +1980,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATAPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_PTT_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_PTT_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAPTTSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_PTT_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_PTT_SELECT));
 				return set(s);
 			}
 
@@ -2008,13 +2006,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DATA_OUT_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -2030,13 +2028,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDATABFO(DataBfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DATA_BFO, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DATA_BFO), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDATABFO()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_BFO);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_BFO));
 				return set(s);
 			}
 
@@ -2052,13 +2050,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFMMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_MIC_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::FM_MIC_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFMMicSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_MIC_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_MIC_SELECT));
 				return set(s);
 			}
 
@@ -2074,13 +2072,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFMOutLevel(int val)
 			{
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::FM_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::FM_OUT_LEVEL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFMOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -2096,13 +2094,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPktPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::PKT_PTT_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::PKT_PTT_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPktPTTSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::PKT_PTT_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::PKT_PTT_SELECT));
 				return set(s);
 			}
 
@@ -2120,13 +2118,13 @@ namespace Yaesu {
 			{
 				val = val > 1000 ? 1000 : val;
 				val = (val % 10) == 0 ? val : val - (val % 10);
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::RPT_SHIFT_28MHZ, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::RPT_SHIFT_28MHZ), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadRptShift28MHZ()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RPT_SHIFT_28MHZ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RPT_SHIFT_28MHZ));
 				return set(s);
 			}
 
@@ -2144,13 +2142,13 @@ namespace Yaesu {
 			{
 				val = val > 4000 ? 4000 : val;
 				val = (val % 10) == 0 ? val : val - (val % 10);
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::RPT_SHIFT_50MHZ, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::RPT_SHIFT_50MHZ), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadRptShift50MHZ()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RPT_SHIFT_50MHZ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RPT_SHIFT_50MHZ));
 				return set(s);
 			}
 
@@ -2166,13 +2164,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDCSPolarity(DCSPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DCS_POLARITY, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DCS_POLARITY), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDCSPolarity()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DCS_POLARITY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DCS_POLARITY));
 				return set(s);
 			}
 
@@ -2188,13 +2186,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_LCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::RTTY_LCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYLowCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_LCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_LCUT_FREQ));
 				return set(s);
 			}
 
@@ -2210,13 +2208,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_LCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_LCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYLowCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_LCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_LCUT_SLOPE));
 				return set(s);
 			}
 
@@ -2232,13 +2230,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::RTTY_HCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::RTTY_HCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYHighCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_HCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_HCUT_FREQ));
 				return set(s);
 			}
 
@@ -2254,13 +2252,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_HCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_HCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYHighCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_HCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_HCUT_SLOPE));
 				return set(s);
 			}
 
@@ -2276,13 +2274,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYShiftPort(RTTYShiftPortValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_PORT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_SHIFT_PORT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYShiftPort()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_SHIFT_PORT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_SHIFT_PORT));
 				return set(s);
 			}
 
@@ -2298,13 +2296,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYPolarityR(RTTYPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_R, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_POLARITY_R), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYPolarityR()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_POLARITY_R);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_POLARITY_R));
 				return set(s);
 			}
 
@@ -2320,13 +2318,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYPolarityT(RTTYPolarityValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_POLARITY_T, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_POLARITY_T), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYPolarityT()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_POLARITY_T);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_POLARITY_T));
 				return set(s);
 			}
 
@@ -2345,13 +2343,13 @@ namespace Yaesu {
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
 
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::RTTY_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::RTTY_OUT_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -2367,13 +2365,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYShiftFreq(RTTYShiftFreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_SHIFT_FREQ, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_SHIFT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYShiftFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_SHIFT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_SHIFT_FREQ));
 				return set(s);
 			}
 
@@ -2389,13 +2387,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYMarkFreq(RTTYMarkFreq val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_MARK_FREQ, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_MARK_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYMarkFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_MARK_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_MARK_FREQ));
 				return set(s);
 			}
 
@@ -2411,13 +2409,13 @@ namespace Yaesu {
 
 			std::string Menu::SetRTTYBFO(DataBfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::RTTY_BFO, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RTTY_BFO), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadRTTYBFO()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::RTTY_BFO);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RTTY_BFO));
 				return set(s);
 			}
 
@@ -2433,13 +2431,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBLowCutFreq(FreqLowCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_LCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::SSB_LCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBLowCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_LCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_LCUT_FREQ));
 				return set(s);
 			}
 
@@ -2455,13 +2453,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBLowCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_LCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_LCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBLowCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_LCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_LCUT_SLOPE));
 				return set(s);
 			}
 
@@ -2477,13 +2475,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBHighCutFreq(FreqHighCutValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::SSB_HCUT_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::SSB_HCUT_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBHighCutFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_HCUT_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_HCUT_FREQ));
 				return set(s);
 			}
 
@@ -2499,13 +2497,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBHighCutSlope(FreqSlopeValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_HCUT_SLOPE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_HCUT_SLOPE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBHighCutSlope()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_HCUT_SLOPE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_HCUT_SLOPE));
 				return set(s);
 			}
 
@@ -2521,13 +2519,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBMicSelect(AudioInputValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_MIC_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_MIC_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBMicSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_MIC_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_MIC_SELECT));
 				return set(s);
 			}
 
@@ -2546,13 +2544,13 @@ namespace Yaesu {
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
 
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_OUT_LEVEL, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::SSB_OUT_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBOutLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_OUT_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_OUT_LEVEL));
 				return set(s);
 			}
 
@@ -2568,13 +2566,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBBFO(BfoValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_BFO, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_BFO), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBBFO()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_BFO);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_BFO));
 				return set(s);
 			}
 
@@ -2590,13 +2588,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBPTTSelect(PTTSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_PTT_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_PTT_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBPTTSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_PTT_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_PTT_SELECT));
 				return set(s);
 			}
 
@@ -2612,13 +2610,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBTxBPF(SSBTXBandPassValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_TX_BPF, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_TX_BPF), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBTxBPF()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_TX_BPF);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_TX_BPF));
 				return set(s);
 			}
 
@@ -2634,13 +2632,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAPFWidth(APFWidthValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::APF_WIDTH, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::APF_WIDTH), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAPFWidth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::APF_WIDTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::APF_WIDTH));
 				return set(s);
 			}
 
@@ -2658,13 +2656,13 @@ namespace Yaesu {
 			{
 				val = val < -40 ? -40 : val;
 				val = val > 20 ? 20 : val;
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::CONTOUR_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::CONTOUR_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadCountourLevel()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CONTOUR_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CONTOUR_LEVEL));
 				return set(s);
 			}
 
@@ -2682,13 +2680,13 @@ namespace Yaesu {
 			{
 				val = val < 1 ? 1 : val;
 				val = val > 11 ? 11 : val;
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::CONTOUR_WIDTH, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::CONTOUR_WIDTH), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadCountourWidth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::CONTOUR_WIDTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::CONTOUR_WIDTH));
 				return set(s);
 			}
 
@@ -2704,13 +2702,13 @@ namespace Yaesu {
 
 			std::string Menu::SetIFNotchWidth(IFNotchWidthValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::IF_NOTCH_WIDTH, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::IF_NOTCH_WIDTH), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadIFNotchWidth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::IF_NOTCH_WIDTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::IF_NOTCH_WIDTH));
 				return set(s);
 			}
 
@@ -2726,13 +2724,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSCPStartCycle(SCPStartCycleValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SCP_START_CYCLE, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SCP_START_CYCLE), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSCPStartCycle()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SCP_START_CYCLE);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SCP_START_CYCLE));
 				return set(s);
 			}
 
@@ -2748,13 +2746,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSCPSpanFreq(SCPSpanFreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SCP_SPAN_FREQ, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SCP_SPAN_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSCPSpanFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SCP_SPAN_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SCP_SPAN_FREQ));
 				return set(s);
 			}
 
@@ -2770,13 +2768,13 @@ namespace Yaesu {
 
 			std::string Menu::SetQuickDial(QuickDialValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::QUICK_DIAL, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::QUICK_DIAL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadQuickDial()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::QUICK_DIAL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::QUICK_DIAL));
 				return set(s);
 			}
 
@@ -2792,13 +2790,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAMDialStep(AMDialStep val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_DIAL_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_DIAL_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAMDialStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_DIAL_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_DIAL_STEP));
 				return set(s);
 			}
 
@@ -2814,13 +2812,13 @@ namespace Yaesu {
 
 			std::string Menu::SetSSBDialStep(SSBDialStep val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::SSB_DIAL_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::SSB_DIAL_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBDialStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_DIAL_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_DIAL_STEP));
 				return set(s);
 			}
 
@@ -2836,13 +2834,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFMDialStep(FMDialStep val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_DIAL_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::FM_DIAL_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFMDialStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_DIAL_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_DIAL_STEP));
 				return set(s);
 			}
 
@@ -2858,13 +2856,13 @@ namespace Yaesu {
 
 			std::string Menu::SetDialStep(DialStep val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::DIAL_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::DIAL_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadDialStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DIAL_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DIAL_STEP));
 				return set(s);
 			}
 
@@ -2880,13 +2878,13 @@ namespace Yaesu {
 
 			std::string Menu::SetAmChStep(AMChannelStepValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::AM_CH_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::AM_CH_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadAmChStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_CH_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_CH_STEP));
 				return set(s);
 			}
 
@@ -2902,13 +2900,13 @@ namespace Yaesu {
 
 			std::string Menu::SetFmChStep(FMChannelStepValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::FM_CH_STEP, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::FM_CH_STEP), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadFmChStep()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_CH_STEP);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_CH_STEP));
 				return set(s);
 			}
 
@@ -2924,13 +2922,13 @@ namespace Yaesu {
 
 			std::string Menu::SetEQ1Freq(EQ1FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::EQ1_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::EQ1_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ1Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ1_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ1_FREQ));
 				return set(s);
 			}
 
@@ -2949,13 +2947,13 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::EQ1_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::EQ1_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ1Level()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ1_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ1_LEVEL));
 				return set(s);
 			}
 
@@ -2974,13 +2972,13 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::EQ1_BWTH, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::EQ1_BWTH), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ1Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ1_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ1_BWTH));
 				return set(s);
 			}
 
@@ -2996,13 +2994,13 @@ namespace Yaesu {
 
 			std::string Menu::SetEQ2Freq(EQ2FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::EQ2_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::EQ2_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ2Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ2_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ2_FREQ));
 				return set(s);
 			}
 
@@ -3021,13 +3019,13 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::EQ2_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::EQ2_LEVEL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ2Level()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ2_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ2_LEVEL));
 				return set(s);
 			}
 
@@ -3046,13 +3044,13 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:+02}", MenuFunction::EQ2_BWTH, val);
+				std::string s = fmt::format("{:04}{:+02}", static_cast<int>(MenuFunction::EQ2_BWTH), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ2Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ2_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ2_BWTH));
 				return set(s);
 			}
 
@@ -3068,13 +3066,13 @@ namespace Yaesu {
 
 			std::string Menu::SetEQ3Freq(EQ3FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::EQ3_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::EQ3_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ3Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ3_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ3_FREQ));
 				return set(s);
 			}
 
@@ -3093,13 +3091,13 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::EQ3_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::EQ3_LEVEL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ3Level()
 			{
-				std::string s = fmt::format("{:04};", MenuFunction::EQ3_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ3_LEVEL));
 				return set(s);
 			}
 
@@ -3118,13 +3116,13 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:+02}", MenuFunction::EQ3_BWTH, val);
+				std::string s = fmt::format("{:04}{:+02}", static_cast<int>(MenuFunction::EQ3_BWTH), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadEQ3Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EQ3_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EQ3_BWTH));
 				return set(s);
 			}
 
@@ -3141,13 +3139,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPEQ1Freq(EQ1FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::P_EQ1_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::P_EQ1_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ1Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ1_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ1_FREQ));
 				return set(s);
 			}
 
@@ -3166,13 +3164,13 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::P_EQ1_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::P_EQ1_LEVEL), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ1Level()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ1_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ1_LEVEL));
 				return set(s);
 			}
 
@@ -3191,13 +3189,13 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:+02}", MenuFunction::P_EQ1_BWTH, val);
+				std::string s = fmt::format("{:04}{:+02}", static_cast<int>(MenuFunction::P_EQ1_BWTH), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ1Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ1_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ1_BWTH));
 				return set(s);
 			}
 
@@ -3213,13 +3211,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPEQ2Freq(EQ2FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::P_EQ2_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::P_EQ2_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ2Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ2_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ2_FREQ));
 				return set(s);
 			}
 
@@ -3238,13 +3236,13 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::P_EQ2_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::P_EQ2_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ2Level()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ2_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ2_LEVEL));
 				return set(s);
 			}
 
@@ -3263,13 +3261,13 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:+02}", MenuFunction::P_EQ2_BWTH, val);
+				std::string s = fmt::format("{:04}{:+02}", static_cast<int>(MenuFunction::P_EQ2_BWTH), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ2Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ2_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ2_BWTH));
 				return set(s);
 			}
 
@@ -3285,13 +3283,13 @@ namespace Yaesu {
 
 			std::string Menu::SetPEQ3Freq(EQ3FreqValue val)
 			{
-				std::string s = fmt::format("{:04}{:02}", MenuFunction::P_EQ3_FREQ, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::P_EQ3_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ3Freq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ3_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ3_FREQ));
 				return set(s);
 			}
 
@@ -3310,20 +3308,20 @@ namespace Yaesu {
 				val = val < -20 ? -20 : val;
 				val = val > 20 ? 20 : val;
 
-				std::string s = fmt::format("{:04}{:+03}", MenuFunction::P_EQ2_LEVEL, val);
+				std::string s = fmt::format("{:04}{:+03}", static_cast<int>(MenuFunction::P_EQ3_LEVEL), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ3Level()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ2_LEVEL);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ3_LEVEL));
 				return set(s);
 			}
 
 			int Menu::AnswerPEQ3Level(std::string data)
 			{
 				MenuFunction f = (MenuFunction)std::stoi(data.substr(2, 4));
-				if (f == MenuFunction::P_EQ2_LEVEL)
+				if (f == MenuFunction::P_EQ3_LEVEL)
 				{
 					return std::stoi(data.substr(6, 3));
 				}
@@ -3335,20 +3333,20 @@ namespace Yaesu {
 				val = val < 1 ? 1 : val;
 				val = val > 10 ? 10 : val;
 
-				std::string s = fmt::format("{:04}{:+02}", MenuFunction::P_EQ2_BWTH, val);
+				std::string s = fmt::format("{:04}{:02}", static_cast<int>(MenuFunction::P_EQ3_BWTH), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadPEQ3Bwth()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::P_EQ2_BWTH);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::P_EQ3_BWTH));
 				return set(s);
 			}
 
 			int Menu::AnswerPEQ3Bwth(std::string data)
 			{
 				MenuFunction f = (MenuFunction)std::stoi(data.substr(2, 4));
-				if (f == MenuFunction::P_EQ2_BWTH)
+				if (f == MenuFunction::P_EQ3_BWTH)
 				{
 					return std::stoi(data.substr(6, 2));
 				}
@@ -3359,13 +3357,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::HF_SSB_PWR, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::HF_SSB_PWR), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadHfSsbPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::HF_SSB_PWR);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::HF_SSB_PWR));
 				return set(s);
 			}
 
@@ -3383,13 +3381,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 40 ? 40 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::HF_AM_PWR, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::HF_AM_PWR), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadHfAmPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::HF_AM_PWR);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::HF_AM_PWR));
 				return set(s);
 			}
 
@@ -3407,13 +3405,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::HF_PWR, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::HF_PWR), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadHfPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::HF_PWR);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::HF_PWR));
 				return set(s);
 			}
 
@@ -3431,13 +3429,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_POWER_50M, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::SSB_POWER_50M), val);
 				return set(s);
 			}
 
 			std::string Menu::Read50mSsbPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_POWER_50M);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_POWER_50M));
 				return set(s);
 			}
 
@@ -3455,13 +3453,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 40 ? 40 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_POWER_50M, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AM_POWER_50M), val);
 				return set(s);
 			}
 
 			std::string Menu::Read50mAmPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_POWER_50M);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_POWER_50M));
 				return set(s);
 			}
 
@@ -3479,13 +3477,13 @@ namespace Yaesu {
 			{
 				val = val < 5 ? 5 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::VHF_PWR, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::VHF_PWR), val);
 				return set(s);
 			}
 
 			std::string Menu::Read50mPwr()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::VHF_PWR);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::VHF_PWR));
 				return set(s);
 			}
 
@@ -3503,13 +3501,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_MIC_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::SSB_MIC_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBMicGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_MIC_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_MIC_GAIN));
 				return set(s);
 			}
 
@@ -3527,13 +3525,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_MIC_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AM_MIC_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadAMMicGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_MIC_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_MIC_GAIN));
 				return set(s);
 			}
 
@@ -3551,13 +3549,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::FM_MIC_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::FM_MIC_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadFMMicGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_MIC_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_MIC_GAIN));
 				return set(s);
 			}
 
@@ -3575,13 +3573,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_MIC_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DATA_MIC_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDATAMicGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_MIC_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_MIC_GAIN));
 				return set(s);
 			}
 
@@ -3599,13 +3597,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::SSB_DATA_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::SSB_DATA_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadSSBDataGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::SSB_DATA_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::SSB_DATA_GAIN));
 				return set(s);
 			}
 
@@ -3623,13 +3621,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::AM_DATA_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::AM_DATA_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadAMDataGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::AM_DATA_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::AM_DATA_GAIN));
 				return set(s);
 			}
 
@@ -3647,13 +3645,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::FM_DATA_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::FM_DATA_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadFMDataGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::FM_DATA_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::FM_DATA_GAIN));
 				return set(s);
 			}
 
@@ -3671,13 +3669,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DATA_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDataDataGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_GAIN));
 				return set(s);
 			}
 
@@ -3693,13 +3691,13 @@ namespace Yaesu {
 
 			std::string Menu::SetTunerSelect(TunerSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::TUNER_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::TUNER_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadTunerSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::TUNER_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::TUNER_SELECT));
 				return set(s);
 			}
 
@@ -3715,13 +3713,13 @@ namespace Yaesu {
 
 			std::string Menu::SetVoxSelect(VoxSelectValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::VOX_SELECT, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::VOX_SELECT), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadVoxSelect()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::VOX_SELECT);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::VOX_SELECT));
 				return set(s);
 			}
 
@@ -3739,13 +3737,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::VOX_GAIN, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::VOX_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadVoxGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::VOX_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::VOX_GAIN));
 				return set(s);
 			}
 
@@ -3764,13 +3762,13 @@ namespace Yaesu {
 			{
 				val = val < 30 ? 30 : val;
 				val = val > 3000 ? 3000 : val;
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::VOX_DELAY, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::VOX_DELAY), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadVoxDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::VOX_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::VOX_DELAY));
 				return set(s);
 			}
 
@@ -3789,13 +3787,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::ANTI_VOX_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::ANTI_VOX_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadAntiVoxGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::ANTI_VOX_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::ANTI_VOX_GAIN));
 				return set(s);
 			}
 
@@ -3813,13 +3811,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::DATA_VOX_GAIN, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::DATA_VOX_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDataVoxGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_VOX_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_VOX_GAIN));
 				return set(s);
 			}
 
@@ -3838,13 +3836,13 @@ namespace Yaesu {
 			{
 				val = val < 30 ? 30 : val;
 				val = val > 3000 ? 3000 : val;
-				std::string s = fmt::format("{:04}{:04}", MenuFunction::DATA_VOX_DELAY, val);
+				std::string s = fmt::format("{:04}{:04}", static_cast<int>(MenuFunction::DATA_VOX_DELAY), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDataVoxDelay()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_VOX_DELAY);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_VOX_DELAY));
 				return set(s);
 			}
 
@@ -3863,13 +3861,13 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				std::string s = fmt::format("{:04}{:03}", MenuFunction::DATA_ANTIVOX_GAIN, val);
+				std::string s = fmt::format("{:04}{:03}", static_cast<int>(MenuFunction::DATA_ANTIVOX_GAIN), val);
 				return set(s);
 			}
 
 			std::string Menu::ReadDataAntiVoxGain()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DATA_ANTIVOX_GAIN);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DATA_ANTIVOX_GAIN));
 				return set(s);
 			}
 
@@ -3884,13 +3882,13 @@ namespace Yaesu {
 			}
 			std::string Menu::SetEmergencyFreq(EnableDisableValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::EMERGENCY_FREQ, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::EMERGENCY_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadEmergencyFreq()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::EMERGENCY_FREQ);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::EMERGENCY_FREQ));
 				return set(s);
 			}
 
@@ -3906,13 +3904,13 @@ namespace Yaesu {
 
 			std::string Menu::SetReset(ResetValue val)
 			{
-				std::string s = fmt::format("{:04}{:d}", MenuFunction::EMERGENCY_FREQ, val);
+				std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::EMERGENCY_FREQ), static_cast<int>(val));
 				return set(s);
 			}
 
 			std::string Menu::ReadMainVersion()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::MAIN_VERSION);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::MAIN_VERSION));
 				return set(s);
 			}
 
@@ -3928,7 +3926,7 @@ namespace Yaesu {
 
 			std::string Menu::ReadDSPVersion()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::DSP_VERSION);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::DSP_VERSION));
 				return set(s);
 			}
 
@@ -3944,7 +3942,7 @@ namespace Yaesu {
 
 			std::string Menu::ReadLCDVersion()
 			{
-				std::string s = fmt::format("{:04}", MenuFunction::LCD_VERSION);
+				std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::LCD_VERSION));
 				return set(s);
 			}
 
@@ -3994,7 +3992,7 @@ namespace Yaesu {
 
 			std::string FAST_STEP::Set(VFOFastStepValue val)
 			{
-				return fmt::format("FS{:d};", val);
+				return fmt::format("FS{:d};", static_cast<int>(val));
 			}
 			std::string FAST_STEP::Read()
 			{
@@ -4008,7 +4006,7 @@ namespace Yaesu {
 
 			std::string AGC_FUNCTION::Set(AGCSetValue val)
 			{
-				return fmt::format("GT{:02};", val);
+				return fmt::format("GT{:02};", static_cast<int>(val));
 			}
 			std::string AGC_FUNCTION::Read()
 			{
@@ -4036,7 +4034,7 @@ namespace Yaesu {
 				freq = freq > 1200 ? 1200 : freq;
 				freq = freq < 0 ? 0 : freq;
 				freq = freq - (freq % 20);
-				return fmt::format("IS0{}{:+05};", val, freq);
+				return fmt::format("IS0{}{:+05};", static_cast<int>(val), freq);
 			}
 
 			std::string IF_SHIFT::Read()
@@ -4073,7 +4071,7 @@ namespace Yaesu {
 			std::string KeyPitch::Set(KeyPitchValue val)
 			{
 
-				return fmt::format("KP{:02};", val);
+				return fmt::format("KP{:02};", static_cast<int>(val));
 			}
 			std::string KeyPitch::Read()
 			{
@@ -4087,7 +4085,7 @@ namespace Yaesu {
 
 			std::string Keyer::Set(KeyerValue val)
 			{
-				return fmt::format("KR{};", val);
+				return fmt::format("KR{};", static_cast<int>(val));
 			}
 
 			std::string Keyer::Read()
@@ -4101,7 +4099,7 @@ namespace Yaesu {
 
 			std::string KeyerSpeed::Set(KeyerSpeedVal val)
 			{
-				return fmt::format("KS{:03};", val);
+				return fmt::format("KS{:03};", static_cast<int>(val));
 			}
 
 			std::string KeyerSpeed::Read()
@@ -4116,12 +4114,12 @@ namespace Yaesu {
 
 			std::string CWKeyingPlayback::Set(KeyerMemoryChannel val)
 			{
-				return fmt::format("KY{:0X};", val);
+				return fmt::format("KY{:0X};", static_cast<int>(val));
 			}
 
 			std::string VFODialLock::Set(DialLockValue val)
 			{
-				return fmt::format("LK{:d};", val);
+				return fmt::format("LK{:d};", static_cast<int>(val));
 			}
 			std::string VFODialLock::Read()
 			{
@@ -4134,7 +4132,7 @@ namespace Yaesu {
 
 			std::string LoadMessage::Set(DVSRecordingValue val)
 			{
-				return fmt::format("LM0{:d};", val);
+				return fmt::format("LM0{:d};", static_cast<int>(val));
 			}
 
 			std::string LoadMessage::Read(DVSRecordingValue val)
@@ -4220,7 +4218,7 @@ namespace Yaesu {
 					retStr = "";
 					break;
 				default:
-					retStr = fmt::format("MC{:03};", val);
+					retStr = fmt::format("MC{:03};", static_cast<int>(val));
 					break;
 				}
 				return retStr;
@@ -4342,7 +4340,7 @@ namespace Yaesu {
 
 			std::string OperatingMode::Set(ModeValue val)
 			{
-				return fmt::format("MD0{:0X};", val);
+				return fmt::format("MD0{:0X};", static_cast<int>(val));
 			}
 
 			std::string OperatingMode::Read()
@@ -4376,11 +4374,11 @@ namespace Yaesu {
 			{
 				val.val.iVal = val.val.iVal > 100 ? 100 : val.val.iVal;
 				val.val.iVal = val.val.iVal < 0 ? 0 : val.val.iVal;
-				return fmt::format("ML{:d}{:03};", val.f, val.val.iVal);
+				return fmt::format("ML{:d}{:03};", static_cast<int>(val.f), val.val.iVal);
 			}
 			std::string MonitorLevel::Read(MonitorFunction val)
 			{
-				return fmt::format("ML{:d};", val);
+				return fmt::format("ML{:d};", static_cast<int>(val));
 			}
 			MonitorLevelValue MonitorLevel::Answer(std::string data)
 			{
@@ -4582,7 +4580,7 @@ namespace Yaesu {
 					retStr = "";
 					break;
 				default:
-					retStr = fmt::format("MR{:03};", val);
+					retStr = fmt::format("MR{:03};", static_cast<int>(val));
 					break;
 				}
 				return retStr;
@@ -4710,7 +4708,7 @@ namespace Yaesu {
 
 			std::string MeterSW::Set(MeterType val)
 			{
-				return fmt::format("MS{:d};", val);
+				return fmt::format("MS{:d};", static_cast<int>(val));
 			}
 
 			std::string MeterSW::Read()
@@ -4792,18 +4790,18 @@ namespace Yaesu {
 					retStr = "";
 					break;
 				default:
-					retStr = fmt::format("MT{:03}", val.MemoryChannel);
+					retStr = fmt::format("MT{:03}", static_cast<int>(val.MemoryChannel));
 					break;
 				}
-				ret = fmt::format("{}{:09}{:+05}{:01}0{:0X}0{:01}00{:01}{:01}{: <12};",
+				ret = fmt::format("{}{:09}{:+05}{:01}0{:0X}0{:01}00{:01}{:01}{};",
 					retStr,
 					val.VFOAFreq,
 					val.ClarifierFreq,
 					val.Clarifier,
-					val.Mode,
-					val.CTCSS,
-					val.Operation,
-					val.TAG,
+					static_cast<int>(val.Mode),
+					static_cast<int>(val.CTCSS),
+					static_cast<int>(val.Operation),
+					static_cast<int>(val.TAG),
 					val.TagString.substr(0, 12));
 
 				return ret;
@@ -4878,7 +4876,7 @@ namespace Yaesu {
 					retStr = "";
 					break;
 				default:
-					retStr = fmt::format("MT{:03};", val);
+					retStr = fmt::format("MT{:03};", static_cast<int>(val));
 					break;
 				}
 				return retStr;
@@ -5095,7 +5093,7 @@ namespace Yaesu {
 
 			std::string MoxSet::Set(MoxSetVal val)
 			{
-				return fmt::format("MX{:d};", val);
+				return fmt::format("MX{:d};", static_cast<int>(val));
 			}
 			std::string MoxSet::Read()
 			{
@@ -5108,7 +5106,7 @@ namespace Yaesu {
 
 			std::string Narrow::Set(NarrowValue val)
 			{
-				return fmt::format("NA0{:d};", val);
+				return fmt::format("NA0{:d};", static_cast<int>(val));
 			}
 			std::string Narrow::Read()
 			{
@@ -5122,7 +5120,7 @@ namespace Yaesu {
 
 			std::string NoiseBlankerStatus::Set(NoiseBlankerStatusValue val)
 			{
-				return fmt::format("NB0{:d};", val);
+				return fmt::format("NB0{:d};", static_cast<int>(val));
 			}
 
 			std::string NoiseBlankerStatus::Read()
@@ -5155,7 +5153,7 @@ namespace Yaesu {
 
 			std::string NoiseReduction::Set(NoiseReductionValue val)
 			{
-				return fmt::format("NR0{:d};", val);
+				return fmt::format("NR0{:d};", static_cast<int>(val));
 			}
 
 			std::string NoiseReduction::Read()
@@ -5293,7 +5291,7 @@ namespace Yaesu {
 
 			std::string OffSet::Set(OperationType val)
 			{
-				return fmt::format("OS0{:d};", val);
+				return fmt::format("OS0{:d};", static_cast<int>(val));
 			}
 
 			std::string OffSet::Read()
@@ -5308,7 +5306,7 @@ namespace Yaesu {
 
 			std::string PreAmp::Set(PreAmpValue val)
 			{
-				return fmt::format("PA0{:d};", val);
+				return fmt::format("PA0{:d};", static_cast<int>(val));
 			}
 			std::string PreAmp::Read()
 			{
@@ -5321,7 +5319,7 @@ namespace Yaesu {
 
 			std::string PlayBack::Set(DVSRecordingValue val)
 			{
-				return fmt::format("PB0{:d};", val);
+				return fmt::format("PB0{:d};", static_cast<int>(val));
 			}
 
 			std::string PlayBack::Read()
@@ -5386,7 +5384,7 @@ namespace Yaesu {
 
 			std::string PowerSwitch::Set(PowerSwitchValue val)
 			{
-				return fmt::format("PS{:d};", val);
+				return fmt::format("PS{:d};", static_cast<int>(val));
 			}
 			std::string PowerSwitch::Read()
 			{
@@ -5415,7 +5413,7 @@ namespace Yaesu {
 
 			std::string RFAttenuator::Set(RfAttenuatorState val)
 			{
-				return fmt::format("RA0{:d};", val);
+				return fmt::format("RA0{:d};", static_cast<int>(val));
 			}
 			std::string RFAttenuator::Read()
 			{
@@ -5520,7 +5518,7 @@ namespace Yaesu {
 
 			std::string Scan::Set(ScanState val)
 			{
-				return fmt::format("SC{:d};", val);
+				return fmt::format("SC{:d};", static_cast<int>(val));
 			}
 			std::string Scan::Read()
 			{
@@ -5596,7 +5594,7 @@ namespace Yaesu {
 
 			std::string Split::Set(SplitValue val)
 			{
-				return fmt::format("ST{:d};", val);
+				return fmt::format("ST{:d};", static_cast<int>(val));
 			}
 
 			std::string Split::Read()
@@ -5616,7 +5614,7 @@ namespace Yaesu {
 
 			std::string TXW::Set(TXWValue val)
 			{
-				return fmt::format("TS{:d};", val);
+				return fmt::format("TS{:d};", static_cast<int>(val));
 			}
 			std::string TXW::Read()
 			{
@@ -5630,7 +5628,7 @@ namespace Yaesu {
 
 			std::string TxSet::Set(TxSetValue val)
 			{
-				return fmt::format("TX{:d};", val);
+				return fmt::format("TX{:d};", static_cast<int>(val));
 			}
 
 			std::string TxSet::Read()
@@ -5678,7 +5676,7 @@ namespace Yaesu {
 			{
 				val = val < 0 ? 0 : val;
 				val = val > 100 ? 100 : val;
-				return fmt::format("VG{:03};", val);
+				return fmt::format("VG{:03};", static_cast<int>(val));
 			}
 			std::string VoxGain::Read()
 			{
@@ -5696,7 +5694,7 @@ namespace Yaesu {
 
 			std::string VoxStatus::Set(VoxStatusValue val)
 			{
-				return fmt::format("VX{:d};", val);
+				return fmt::format("VX{:d};", static_cast<int>(val));
 			}
 
 			std::string VoxStatus::Read()
@@ -6755,7 +6753,7 @@ namespace Yaesu {
 				case MemoryChannelValue::EMG:
 					return "EMG";
 				default:
-					return fmt::format("Channel {:d}", v);
+					return fmt::format("Channel {:d}", static_cast<int>(v));
 				}
 			}
 
@@ -6877,7 +6875,7 @@ namespace Yaesu {
 
 			std::string DisplayMenuFunction(Commands::MenuFunction f)
 			{
-				std::string ret = fmt::format("{:04}", f);
+				std::string ret = fmt::format("{:04}", static_cast<int>(f));
 				return ret.substr(0, 2) + "-" + ret.substr(2, 2);
 			}
 

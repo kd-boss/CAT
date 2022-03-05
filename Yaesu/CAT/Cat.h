@@ -1512,7 +1512,7 @@ namespace Yaesu {
 			{
 			public:
 
-				static std::string Read(BusyState Value);
+				static std::string Read();
 
 				static BusyState Answer(std::string data);
 

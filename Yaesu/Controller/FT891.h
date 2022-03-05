@@ -3,12 +3,14 @@
 #ifndef FT891_h
 #define FT891_h
 
+#include <fstream>
 #include <thread>
 #include <string>
 #include <vector>
 #include <chrono>
 #include <boost/asio.hpp>
-#include <boost/program_options.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <boost/asio/serial_port.hpp>
 #include "../CAT/Cat.h"
 #include <FL/Fl.H>
@@ -51,13 +53,114 @@ class FT891 : public Fl_Double_Window
 int ClarifierValue;
 int VFOAFreq;
 int VFOBFreq;
-std::string buff;
+int tVFOAFreq;
+int dimmerBacklightval;
+int hfPowerval;
+int HFAmPowerval;
+int HFSsbPowerval;
+int vhfpowerval;
+int vhfssbpowerval;
+int vhfampowerval;
+int lcdcontrastval;
+int dimmerval;
+int dimmmertxbusyval;
+int AmLcutFreqVal;
+int AMOutLevelValue;
+int CWOutLevelValue;
+int RTTYOutLevelValue;
+int DATAOutLevelValue;
+int SSBOutLevelValue;
+int MicBandWidth1Value;
+int MicEq1LevelValue;
+int MicBandWidth2Value;
+int MicEq2LevelValue;
+int MicBandWidth3Value;
+int MicEq3LevelValue;
+
+int MicPBandWidth1Value;
+int MicPEq1LevelValue;
+int MicPBandWidth2Value;
+int MicPEq2LevelValue;
+int MicPBandWidth3Value;
+int MicPEq3LevelValue;
+int TXTOTValue;
+int AGCFastDelayValue;
+int AGCMidDelayValue;
+int AGCSlowDelayValue;
+int CWWeightValue;
+int VoxDelayTimeValue;
+int VoxGainLevelValue;
+int SquelchLevelValue;
+int RFGainValue;
+int MicGainValue;
+int PowerControlValue;
+int VolumeLevel;
+
+std::string dispval;
+std::string labelText;
 std::string KeyPitchLabelText;
+std::string buff;
+
+Yaesu::FT891::Commands::AGCReadValue AGCReadVal;
+Yaesu::FT891::Commands::ModeValue mv;
+Yaesu::FT891::Commands::WidthValue WidthVal;
+Yaesu::FT891::Commands::MeterType MeterTypeValue;
+Yaesu::FT891::Commands::KeyerSpeedVal KeyerSpeedValue;
+Yaesu::FT891::Commands::FreqLowCutValue AMLCUTFreqValue;
+Yaesu::FT891::Commands::FreqSlopeValue AMLCUTSlopeValue;
+Yaesu::FT891::Commands::FreqLowCutValue CWLCUTFreqValue;
+Yaesu::FT891::Commands::FreqSlopeValue CWLCUTSlopeValue;
+Yaesu::FT891::Commands::FreqLowCutValue RTTYLCUTFreqValue;
+Yaesu::FT891::Commands::FreqSlopeValue RTTYLCUTSlopeValue;
+Yaesu::FT891::Commands::FreqLowCutValue DATALCUTFreqValue;
+Yaesu::FT891::Commands::FreqSlopeValue DATALCUTSlopeValue;
+Yaesu::FT891::Commands::FreqLowCutValue SSBLCUTFreqValue;
+Yaesu::FT891::Commands::FreqSlopeValue SSBLCUTSlopeValue;
+Yaesu::FT891::Commands::ClarSelectValue ClarifierTypeValue;
+Yaesu::FT891::Commands::EQ1FreqValue MicCenterFreq1Value;
+Yaesu::FT891::Commands::EQ2FreqValue MicCenterFreq2Value;
+Yaesu::FT891::Commands::EQ3FreqValue MicCenterFreq3Value;
+Yaesu::FT891::Commands::EQ1FreqValue MicPCenterFreq1Value;
+Yaesu::FT891::Commands::EQ2FreqValue MicPCenterFreq2Value;
+Yaesu::FT891::Commands::EQ3FreqValue MicPCenterFreq3Value;
+Yaesu::FT891::Commands::APOValue APOVal;
+Yaesu::FT891::Commands::FanControlValue FanControlVal;
+Yaesu::FT891::Commands::EnableDisableValue MemoryGroupValue;
+Yaesu::FT891::Commands::EnableDisableValue FMSettingValue;
+Yaesu::FT891::Commands::EnableDisableValue RecSettingValue;
+Yaesu::FT891::Commands::EnableDisableValue ATASSettingValue;
+Yaesu::FT891::Commands::EnableDisableValue MicScanValue;
+Yaesu::FT891::Commands::MicScanResumeValue MicScanResumeVal;
+Yaesu::FT891::Commands::CwBreakInType CWBreakInTypeValue;
+Yaesu::FT891::Commands::CwWaveShapeValue CwWaveShapeVal;
+Yaesu::FT891::Commands::CwFreqDisplayValue CWFreqDisplayVal;
+Yaesu::FT891::Commands::PCKeyingValue PCKeyingVal;
+Yaesu::FT891::Commands::QskDelayTimeValue QSKDelayTimeVal;
+Yaesu::FT891::Commands::DataModeValue DataModeVal;
+Yaesu::FT891::Commands::PSKToneValue PSKToneVal;
 Yaesu::FT891::Commands::BfoValue SSBbfo;
 Yaesu::FT891::Commands::BfoValue CWBfo;
 Yaesu::FT891::Commands::DataBfoValue DATABfo;
 Yaesu::FT891::Commands::DataBfoValue RTTYBfo;
 Yaesu::FT891::Commands::NarrowValue NarrowState;
+Yaesu::FT891::Commands::KeyerTypeValue KeyerTypeVal;
+Yaesu::FT891::Commands::KeyerDotDashValue KeyerDotDashVal;
+Yaesu::FT891::Commands::CWMemoryTypeValue CWMemory1Val;
+Yaesu::FT891::Commands::CWMemoryTypeValue CWMemory2Val;
+Yaesu::FT891::Commands::CWMemoryTypeValue CWMemory3Val;
+Yaesu::FT891::Commands::CWMemoryTypeValue CWMemory4Val;
+Yaesu::FT891::Commands::CWMemoryTypeValue CWMemory5Val;
+Yaesu::FT891::Commands::KeyerMemoryValue CWMemory1Value;
+Yaesu::FT891::Commands::KeyerMemoryValue CWMemory2Value;
+Yaesu::FT891::Commands::KeyerMemoryValue CWMemory3Value;
+Yaesu::FT891::Commands::KeyerMemoryValue CWMemory4Value;
+Yaesu::FT891::Commands::KeyerMemoryValue CWMemory5Value;
+Yaesu::FT891::Commands::PTTSelectValue AMPTTSelectValue;
+Yaesu::FT891::Commands::PTTSelectValue SSBPTTSelectValue;
+Yaesu::FT891::Commands::PTTSelectValue PktPTTSelectValue;
+Yaesu::FT891::Commands::PTTSelectValue DATAPTTSelectValue;
+Yaesu::FT891::Commands::CatRateValue CatRateSelectValue;
+Yaesu::FT891::Commands::CatTOTValue CatTOTSelectValue;
 
 Fl_Box* ChannelLabel;
 Fl_Light_Button* PowerButton;
@@ -82,6 +185,8 @@ Fl_Group* TXEQGroup;
 Fl_Group* MicEQGroup;
 Fl_Group* CompEQGroup;
 Fl_Group* CWSettingsTab;
+Fl_Group* CatSettingsTab;
+
 
 Fl_Value_Slider* Backlight;
 Fl_Value_Slider* HFPower;
@@ -126,6 +231,7 @@ Fl_Value_Slider* MicPBandWidth3;
 Fl_Value_Slider* AGCFastDelay;
 Fl_Value_Slider* AGCMidDelay;
 Fl_Value_Slider* AGCSlowDelay;
+
 
 Fl_Button* MON;
 Fl_Button* NAR;
@@ -238,12 +344,21 @@ Fl_Choice* CWMemory2Setting;
 Fl_Choice* CWMemory3Setting;
 Fl_Choice* CWMemory4Setting;
 Fl_Choice* CWMemory5Setting;
+Fl_Choice* PktPTTSelect;
+Fl_Choice* CatRateSelect;
+Fl_Choice* CatTOTSelect;
 
 Fl_Counter* Clarifier;
 
 Fl_Timer* refresh;
 CallbackAsyncSerial m_port;
 
+bool CatSettingsLoaded,
+     TXEQGroupLoaded,
+     EQGroupLoaded,
+     CWGroupLoaded,
+     PowerGroupLoaded,
+     LightingGrouploaded;
 void PowerUp();
 void PowerDown();
 void ReadPowerSwitch();
@@ -253,6 +368,7 @@ void BuildLightingGroup(int w, int h);
 void BuildTXEQGroup(int w, int h);
 void BuildRxEQGroup(int w, int h);
 void BuildCWSettings(int w, int h);
+void BuildCatSettings(int w, int h);
 void BuildUI(int w, int h);
 void SetBand();
 void readCallback(const char*, int);
@@ -275,10 +391,24 @@ void OnCounter(Fl_Counter*, void*);
 void OnMessageUpdate(Fl_Input* o);
 void OnPowerButtonClick(Fl_Light_Button* o, void* v);
 int OnTextEnter(int Key, Fl_Input*);
+void OnTabChanged(Fl_Tabs*);
 
 };
 
 void TimerCallback(void *);
 void OnEnter(Fl_Input* ,void*);
 void OnMessageText(Fl_Input*, void*);
+void OnTabChanged(Fl_Tabs*, void*);
+void OnOk(Fl_Button*, void*);
+class ComPortDialog : public Fl_Window
+{
+public:
+    ComPortDialog();
+    Yaesu::FT891::Commands::CatRateValue Rate;
+    std::string m_PortName;
+    Fl_Choice* CatRateChoice;
+    Fl_Input* PortName;
+    Fl_Button* Ok;
+    void OkClicked();
+};
 #endif
