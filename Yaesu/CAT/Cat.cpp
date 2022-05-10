@@ -4793,6 +4793,8 @@ namespace Yaesu {
 					retStr = fmt::format("MT{:03}", static_cast<int>(val.MemoryChannel));
 					break;
 				}
+				std::string tag(12,' ');
+				std::copy(val.TagString.begin(), val.TagString.end(),tag.begin());
 				ret = fmt::format("{}{:09}{:+05}{:01}0{:0X}0{:01}00{:01}{:01}{};",
 					retStr,
 					val.VFOAFreq,
@@ -4802,7 +4804,7 @@ namespace Yaesu {
 					static_cast<int>(val.CTCSS),
 					static_cast<int>(val.Operation),
 					static_cast<int>(val.TAG),
-					val.TagString.substr(0, 12));
+					tag);
 
 				return ret;
 			}
@@ -5461,7 +5463,7 @@ namespace Yaesu {
 			RadioInfoVal RadioInformation::Answer(std::string data)
 			{
 				RadioInfoVal ret;
-				ret.Type = (InformationType)std::stoi(data.substr(2, 1));
+				ret.Type = (InformationType)std::stoi(data.substr(2, 1),0,16);
 				ret.Value = (InformationState)std::stoi(data.substr(3, 1));
 				return ret;
 			}

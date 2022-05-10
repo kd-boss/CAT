@@ -1,9 +1,36 @@
-
+#ifndef CAT_H
+#define CAT_H
 #include<string>
 #include<exception>
 #include<stdexcept>
 #include<type_traits>
 //VFOA to VFOB
+
+template<typename E, E first, E head>
+void advanceEnum(E& v)
+{
+    if(v == head)
+        v = first;
+}
+
+template<typename E, E first, E head, E next, E... tail>
+void advanceEnum(E& v)
+{
+    if(v == head)
+        v = next;
+    else
+        advanceEnum<E,first,next,tail...>(v);
+}
+
+template<typename E, E first, E... values>
+struct EnumValues
+{
+    static void advance(E& v)
+    {
+        advanceEnum<E, first, first, values...>(v);
+    }
+};
+
 namespace Yaesu {
 	namespace FT891 {
 		namespace Commands {
@@ -1044,6 +1071,7 @@ namespace Yaesu {
 				DATA_USB,
 				AM_N
 			};
+
 			enum class MemoryChannelValue
 			{
 				_1 = 1,
@@ -1170,7 +1198,9 @@ namespace Yaesu {
 				_5363mhz,
 				_5366mhz,
 				EMG = 600
+
 			};
+				       
 			enum class InformationType {
 				HI_SWR,
 				REC = 3,
@@ -1362,7 +1392,9 @@ namespace Yaesu {
 			};
 
 			struct MemoryChannelTagValue {
-
+				MemoryChannelTagValue() {
+					TagString = "";
+				}
 				MemoryChannelValue MemoryChannel;
 				int VFOAFreq;
 				int ClarifierFreq;
@@ -3219,3 +3251,5 @@ namespace Yaesu {
 		}; //end Commands
 	}; //end FT891
 }; //end Yeasu
+
+#endif
