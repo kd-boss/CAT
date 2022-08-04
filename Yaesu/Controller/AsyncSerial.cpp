@@ -139,7 +139,7 @@ void AsyncSerial::write(const char *data, size_t size)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        pimpl->writeQueue.insert(pimpl->writeQueue.end(),data,data+size);
+        std::copy(data, data + size, std::back_inserter(pimpl->writeQueue));        
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
@@ -148,8 +148,7 @@ void AsyncSerial::write(const std::vector<char>& data)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        pimpl->writeQueue.insert(pimpl->writeQueue.end(),data.begin(),
-                data.end());
+        std::copy(data.begin(), data.end(), std::back_inserter(pimpl->writeQueue));
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
@@ -158,7 +157,7 @@ void AsyncSerial::writeString(const std::string& s)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        pimpl->writeQueue.insert(pimpl->writeQueue.end(),s.begin(),s.end());
+        std::copy(s.begin(), s.end(), std::back_inserter(pimpl->writeQueue));
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
