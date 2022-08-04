@@ -4836,6 +4836,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string MemoryChannelSelection::Set(MemoryChannelValue value)
             {
+
                 switch(value)
                 {
                     case MemoryChannelValue::P1L:
@@ -4876,8 +4877,11 @@ RigType IDENTIFICATION::Answer(std::string data)
                         return "MCP9U;";
                     case MemoryChannelValue::EMG:
                         return "MCEMG;";
+                    default:
+                        return fmt::format("MC{:03};", static_cast<int>(value));
                 }
-                return fmt::format("MC{:03};", static_cast<int>(value));
+
+
             }
 
             std::string MemoryChannelSelection::Read()
@@ -4887,7 +4891,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelValue MemoryChannelSelection::Answer(std::string data)
             {
-                MemoryChannelValue ret;
+                MemoryChannelValue ret = MemoryChannelValue::_1;
                 std::string memVal = data.substr(2, 3);
                 if (memVal == "EMG") {
                     ret = MemoryChannelValue::EMG;
@@ -5180,8 +5184,11 @@ RigType IDENTIFICATION::Answer(std::string data)
                         return "MTP9U;";
                     case MemoryChannelValue::EMG:
                         return "MTEMG;";
+                    default:
+                        return fmt::format("MT{:3d};", static_cast<int>(channel));
                 }
-                return fmt::format("MT{:3d};", static_cast<int>(channel));
+
+
             }
 
             MemoryChannelTagValue MemoryChannelTag::Answer(std::string data)
@@ -5857,7 +5864,7 @@ RigType IDENTIFICATION::Answer(std::string data)
                 SMeterValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(3,3));
-
+                return ret;
             }
 
             std::string SquelchLevel::Set(SquelchValue value)
@@ -5877,6 +5884,7 @@ RigType IDENTIFICATION::Answer(std::string data)
                 SquelchValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(3,3));
+                return ret;
             }
 
             std::string FunctionTx::Set(TxSet value)
@@ -5901,28 +5909,29 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string SpectrumScope::Set(MainSubValue Band, SpectrumScopeFunction function, SpectrumScopeValueType value)
             {
+                std::string ret;
                 switch(function)
                 {
                     case SpectrumScopeFunction::SPEED:
-                    return fmt::format("SS{:01d}{:01d}{:01d}0000;",
+                    ret = fmt::format("SS{:01d}{:01d}{:01d}0000;",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        static_cast<int>(value.Speed));
                     break;
                     case SpectrumScopeFunction::PEAK:
-                    return fmt::format("SS{:01d}{:01d}{:01d}0000;",
+                    ret = fmt::format("SS{:01d}{:01d}{:01d}0000;",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        static_cast<int>(value.Peak));
                     break;
                     case SpectrumScopeFunction::MARKER:
-                    return fmt::format("SS{:01d}{:01d}{:01d}0000;",
+                    ret = fmt::format("SS{:01d}{:01d}{:01d}0000;",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        static_cast<int>(value.Marker));
                     break;
                     case SpectrumScopeFunction::COLOR:
-                    return fmt::format("SS{:01d}{:01d}{:01x}{:01d}{:01d}00;",
+                    ret = fmt::format("SS{:01d}{:01d}{:01x}{:01d}{:01d}00;",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        static_cast<int>(value.Colors.DIRECT_SAMPELING),
@@ -5930,18 +5939,19 @@ RigType IDENTIFICATION::Answer(std::string data)
                                        static_cast<int>(value.Colors.NARROW_ENABLE));
                     break;
                     case SpectrumScopeFunction::LEVEL:
-                    return fmt::format("SS{:01d}{:01d}{:+05.1f};",
+                    ret = fmt::format("SS{:01d}{:01d}{:+05.1f};",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        value.Level);
                     break;
                     case SpectrumScopeFunction::SPAN:
-                    return fmt::format("SS{:01d}{:01d}{:01d}0000;",
+                    ret = fmt::format("SS{:01d}{:01d}{:01d}0000;",
                                        static_cast<int>(Band),
                                        static_cast<int>(function),
                                        static_cast<int>(value.Span));
                     break;
                 }
+                return ret;
             }
 
             SpectrumScopeAnswerType SpectrumScope::Answer(std::string data)
@@ -10319,7 +10329,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelValue MemoryChannel::Answer(std::string data)
             {
-                MemoryChannelValue ret;
+                MemoryChannelValue ret = MemoryChannelValue::_1;
                 std::string memVal = data.substr(2, 3);
                 if (memVal == "EMG") {
                     ret = MemoryChannelValue::EMG;
