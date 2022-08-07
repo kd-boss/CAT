@@ -21,6 +21,3771 @@ RigType IDENTIFICATION::Answer(std::string data)
 
     namespace Commands
     {
+        namespace FT991 {
+            std::string VFO_A_To_VFO_B::Set()
+            {
+                return "AB;";
+            }
+            
+            std::string AntennaTunerControl::Set(AntennaTunerControlValue value)
+            {
+                return fmt::format("AC00{:1d};",static_cast<int>(value));
+            }
+            
+            std::string AntennaTunerControl::Read()
+            {
+                return "AC;";
+            }
+            
+            AntennaTunerControlValue AntennaTunerControl::Answer(std::string data)
+            {
+                return static_cast<AntennaTunerControlValue>(std::stoi(data.substr(4,1)));
+            }
+            
+            std::string AF_GAIN::Set(int value)
+            {   
+               return fmt::format("AG0{:03d};",value);     
+            }
+            
+            std::string AF_GAIN::Read()
+            {
+                return "AG0;";
+            }
+            
+            int AF_GAIN::Answer(std::string data)
+            {   
+                return std::stoi(data.substr(3,3));
+            }
+            
+            std::string AutoInformation::Set(OnOffValue value)
+            {
+                return fmt::format("AI{:1d};", static_cast<int>(value));
+            }
+            
+            std::string AutoInformation::Read()
+            {
+                return "AI;";
+            }
+            
+            OnOffValue AutoInformation::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string VFO_A_To_Memory::Set()
+            {
+                return "AM;";
+            }
+
+            std::string VFO_B_To_VFO_A::Set()
+            {
+                return "BA;";
+            }
+
+            std::string AutoNotch::Set(OnOffValue value)
+            {
+                return fmt::format("BC0{:1d};", static_cast<int>(value));
+            }
+            
+            std::string AutoNotch::Read()
+            {
+                return "BC0;";
+            }
+            
+            OnOffValue AutoNotch::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string BandDown::Set()
+            {
+                return "BD0";
+            }
+
+            std::string BreakIn::Set(OnOffValue value)
+            {
+                return fmt::format("BI{:1d};",static_cast<int>(value));
+            }
+            
+            std::string BreakIn::Read()
+            {
+                return "BI;";
+            }
+            
+            OnOffValue BreakIn::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string ManualNotch::Set(ManualNotchValueType value)   
+            {
+                switch(value.Type)
+                {
+                    case ManualNotchType::OnOff:
+                    {
+                        return fmt::format("BP0{:1d}{:03d};",
+                            static_cast<int>(value.Type),
+                            static_cast<int>(value.Value.State));
+                    }
+                    case ManualNotchType::Level:
+                    {
+                    return fmt::format("BP0{:1d}{:03d};",
+                        static_cast<int>(value.Type),
+                        static_cast<int>(value.Value.Frequency));
+                    }
+                default:
+                    return "";
+                }
+            }
+            
+            std::string ManualNotch::Read(ManualNotchType type)
+            {
+                return fmt::format("BP0{:1d};",static_cast<int>(type));
+            }
+            
+            ManualNotchValueType ManualNotch::Answer(std::string data)
+            {
+                ManualNotchValueType ret;
+                ret.Type = static_cast<ManualNotchType>(std::stoi(data.substr(3,1)));
+                if(ret.Type == ManualNotchType::OnOff)
+                {
+                    ret.Value.State = static_cast<OnOffValue>(std::stoi(data.substr(4,3)));
+                }
+                else
+                {
+                    ret.Value.Frequency = std::stoi(data.substr(4,3));
+                }
+                return ret;
+            }
+            
+            std::string BandSelect::Set(Band value)
+            {
+                return fmt::format("BS{:02};",static_cast<int>(value));
+            }
+            
+            
+            std::string BandUp::Set()
+            {
+                return "BU0;";
+            }
+            
+            
+            std::string Busy::Read()
+            {
+                return "BY;";
+            }
+            
+            OnOffValue Busy::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string ChannelUpDown::Set(UpDownValue value)
+            {
+                return fmt::format("CH{:1d};",static_cast<int>(value));
+            }
+
+            std::string CTCSSToneFrequency::Set(CTCSSToneValue value)
+            {
+                return fmt::format("CN0{:01d}{:03d};",
+                                  static_cast<int>(value.Type),
+                                  value.Value);
+            }
+            
+            std::string CTCSSToneFrequency::Read(CTCSSToneType type)
+            {
+                return fmt::format("CN0{:01d};",static_cast<int>(type));
+            }
+            
+            CTCSSToneValue CTCSSToneFrequency::Answer(std::string data)
+            {
+                CTCSSToneValue ret;
+                ret.Type = static_cast<CTCSSToneType>(std::stoi(data.substr(3,1)));
+                ret.Value = std::stoi(data.substr(4,3));
+                return ret;
+            }
+            
+            std::string Countour::Set(CountourValue value)
+            {
+                switch(value.Type)
+                {
+                    case CountourType::CONTOUR_ONOFF:
+                    {
+                    return fmt::format("CO0{:01d}{:04d};",
+                        static_cast<int>(value.Type),
+                        static_cast<int>(value.Value.CountourState));
+                    }
+                    case CountourType::CONTOUR_FREQ:
+                    {
+                    return fmt::format("CO0{:01d}{:04d};",
+                        static_cast<int>(value.Type),
+                        static_cast<int>(value.Value.CountourFrequency));
+                    }
+                    case CountourType::APF_ONOFF:
+                    {
+                        return fmt::format("CO0{:01d}{:04d};",
+                        static_cast<int>(value.Type),
+                        static_cast<int>(value.Value.APFState));
+                    }
+                    case CountourType::APF_FREQ:
+                    {
+                        return fmt::format("CO0{:01d}{:04d};",
+                        static_cast<int>(value.Type),
+                        static_cast<int>(value.Value.APFFrequency));                                        
+                    }
+                default:
+                    return "";
+                }                
+            }
+            
+            std::string Countour::Read(CountourType type)
+            {
+                return fmt::format("CO0{:01d};",static_cast<int>(type));                
+            }
+            
+            CountourValue Countour::Answer(std::string data)
+            {
+                CountourValue ret;
+                ret.Type = static_cast<CountourType>(std::stoi(data.substr(3,1)));
+                switch(ret.Type)
+                {
+                     case CountourType::CONTOUR_ONOFF: 
+                        ret.Value.CountourState = static_cast<OnOffValue>(std::stoi(data.substr(4,3)));
+                     break;
+                     case CountourType::CONTOUR_FREQ:
+                         ret.Value.CountourFrequency = std::stoi(data.substr(4,3));
+                     break;
+                     case CountourType::APF_ONOFF:
+                          ret.Value.APFState = static_cast<OnOffValue>(std::stoi(data.substr(4,3)));
+                     break;
+                     case CountourType::APF_FREQ:
+                          ret.Value.APFFrequency = std::stoi(data.substr(4,3));
+                     break;
+                }
+                return ret;
+            }
+
+            std::string CWSpot::Set(OnOffValue value)
+            {
+                return fmt::format("CS{:01d};",static_cast<int>(value));
+            }
+            
+            std::string CWSpot::Read()
+            {
+                return "CS;";
+            }
+            
+            OnOffValue CWSpot::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string CTCSS::Set(CTCSSType value)
+            {
+                return fmt::format("CT0{:01d};", static_cast<int>(value));
+            }
+            
+            std::string CTCSS::Read()
+            {
+                return "CT0;";
+            }
+            
+            CTCSSType CTCSS::Answer(std::string data)
+            {
+                return static_cast<CTCSSType>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string DIMMER::Set(DimmerValue value)
+            {
+                return fmt::format("DA00{:02d}{:02d};", value.LED, value.TFT);
+            }
+            
+            std::string DIMMER::Read()
+            {
+                return "DA;";
+            }
+            
+            DimmerValue DIMMER::Answer(std::string data)
+            {
+                DimmerValue ret;
+                ret.LED = std::stoi(data.substr(4,2));
+                ret.TFT = std::stoi(data.substr(6,2));
+                return ret;
+            }
+            std::string MIC_DWN::Set()
+            {
+                return "DN;";
+            }
+
+            std::string DateAndTime::Set(DateTimeValue value)
+            {
+                return fmt::format("DT{:01d}{}", static_cast<int>(value.Type), value.Value);
+            }
+            
+            std::string DateAndTime::Read(DateTimeType type)
+            {
+                return fmt::format("DT{:01d};",static_cast<int>(type));
+            }
+            
+            DateTimeValue DateAndTime::Answer(std::string data)
+            {
+                DateTimeValue ret;
+                ret.Type = static_cast<DateTimeType>(std::stoi(data.substr(2,1)));
+                ret.Value = data.substr(3,data.find(";",3));
+                return ret;
+            }
+            
+            std::string EncoderDown::Set(EncoderValue value)
+            {
+                return fmt::format("ED{:01d}{:02d};",
+                    static_cast<int>(value.Type),
+                    value.Steps);
+            }
+
+            std::string ENT_KEY::Set()
+            {
+                return "EK;";
+            }
+
+            std::string EncoderUp::Set(EncoderValue value)
+            {
+                 return fmt::format("EU{:01d}{:02d};",
+                    static_cast<int>(value.Type),
+                    value.Steps);
+            }
+
+
+
+            std::string Menu::AGC_FAST_DELAY::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:04};",
+                static_cast<int>(MenuFunction::AGC_FAST_DELAY),
+                value);
+            }
+            
+            std::string Menu::AGC_FAST_DELAY::Read()
+            {
+                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_FAST_DELAY));
+            }
+            
+            int Menu::AGC_FAST_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(5,4));
+            }
+
+            std::string Menu::AGC_MID_DELAY::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:04};",
+                static_cast<int>(MenuFunction::AGC_MID_DELAY),
+                value);
+            }
+            
+            std::string Menu::AGC_MID_DELAY::Read()
+            {
+                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_MID_DELAY));
+            }
+            
+            int Menu::AGC_MID_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(5,4));
+            }
+           
+            std::string Menu::AGC_SLOW_DELAY::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:04};",
+                static_cast<int>(MenuFunction::AGC_SLOW_DELAY),
+                value);
+            }
+            
+            std::string Menu::AGC_SLOW_DELAY::Read()
+            {
+                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_SLOW_DELAY));
+            }
+            
+            int Menu::AGC_SLOW_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(5,4));
+            }
+
+            std::string Menu::HOME_FUNCTION::Set(HomeFunction value)
+            {
+                return fmt::format("EX{:03d}{:01d};", 
+                                  static_cast<int>(MenuFunction::HOME),
+                                  static_cast<int>(value));
+            }
+            
+            std::string Menu::HOME_FUNCTION::Read()
+            {
+                return fmt::format("EX{:03d};", static_cast<int>(MenuFunction::HOME));
+            }
+            
+            HomeFunction Menu::HOME_FUNCTION::Answer(std::string data)
+            {
+                return static_cast<HomeFunction>(std::stoi(data.substr(5,1)));
+            }
+            
+
+            std::string Menu::DISPLAY_COLOR::Set(DisplayColorType value)
+            {
+                return fmt::format("EX{:03d}{:01d};",
+                                    static_cast<int>(MenuFunction::DISPLAY_COLOR),
+                                    static_cast<int>(value));          
+            }
+            
+            std::string Menu::DISPLAY_COLOR::Read()
+            {
+                 return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::DISPLAY_COLOR));
+            }
+            
+            DisplayColorType Menu::DISPLAY_COLOR::Answer(std::string data)
+            {
+                return static_cast<DisplayColorType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DIMMER_LED::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:01d};",
+                                    static_cast<int>(MenuFunction::DIMMER_LED
+                                    ),
+                                    value);       
+            }
+            
+            std::string Menu::DIMMER_LED::Read()
+            {
+                 return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::DIMMER_LED));
+            }
+            
+            int Menu::DIMMER_LED::Answer(std::string data)
+            {
+                return std::stoi(data.substr(5,1));
+            }
+            
+
+            std::string Menu::DIMMER_TFT::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:02d};",
+                                    static_cast<int>(MenuFunction::DIMMER_TFT
+                                    ),
+                                    value);       
+            }
+            
+            std::string Menu::DIMMER_TFT::Read()
+            {
+                 return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::DIMMER_TFT));
+            }
+            
+            int Menu::DIMMER_TFT::Answer(std::string data)
+            {
+                return std::stoi(data.substr(5,2));
+            }
+            
+            std::string Menu::BAR_MTR_PEAK_HOLD::Set(MeterHoldType value)
+            {
+                  return fmt::format("EX{:03d}{:01d};",
+                                    static_cast<int>(MenuFunction::BAR_MTR_PEAK_HOLD),
+                                    static_cast<int>(value)); 
+            }
+            
+            std::string Menu::BAR_MTR_PEAK_HOLD::Read()
+            {
+             return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::BAR_MTR_PEAK_HOLD));  
+            }
+            
+            MeterHoldType Menu::BAR_MTR_PEAK_HOLD::Answer(std::string data)
+            {
+              return static_cast<MeterHoldType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DVS_RX_OUT_LEVEL::Set(int value)
+            {
+                 return fmt::format("EX{:03d}{:03d};",
+                                    static_cast<int>(MenuFunction::DVS_RX_OUT_LEVEL),
+                                    static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DVS_RX_OUT_LEVEL::Read()
+            {
+                return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::DVS_RX_OUT_LEVEL));  
+            }
+            
+            int Menu::DVS_RX_OUT_LEVEL::Answer(std::string data)
+            {
+                 return std::stoi(data.substr(5,3));
+            }
+            
+            std::string Menu::DVS_TX_OUT_LEVEL::Set(int value)
+            {
+                 return fmt::format("EX{:03d}{:03d};",
+                                    static_cast<int>(MenuFunction::DVS_TX_OUT_LEVEL),
+                                    static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DVS_TX_OUT_LEVEL::Read()
+            {
+                return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::DVS_TX_OUT_LEVEL));  
+            }
+            
+            int Menu::DVS_TX_OUT_LEVEL::Answer(std::string data)
+            {
+                 return std::stoi(data.substr(5,3));
+            }
+            
+            std::string Menu::KEYER_TYPE::Set(KeyerType value)
+            {
+                 return fmt::format("EX{:03d}{:01d};",
+                                    static_cast<int>(MenuFunction::KEYER_TYPE),
+                                    static_cast<int>(value)); 
+            }
+            
+            std::string Menu::KEYER_TYPE::Read()
+            {
+                 return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::KEYER_TYPE)); 
+            }
+            
+            KeyerType Menu::KEYER_TYPE::Answer(std::string data)
+            {
+                return static_cast<KeyerType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::KEYER_DOTDASH::Set(KeyerDotDashType value)
+            {
+                return fmt::format("EX{:03d}{:01d};",
+                                    static_cast<int>(MenuFunction::KEYER_DOTDASH),
+                                    static_cast<int>(value)); 
+            }
+            
+            std::string Menu::KEYER_DOTDASH::Read()
+            {
+                 return fmt::format("EX{:03d};",
+                                    static_cast<int>(MenuFunction::KEYER_DOTDASH)); 
+            }
+            
+            KeyerDotDashType Menu::KEYER_DOTDASH::Answer(std::string data)
+            {
+                return static_cast<KeyerDotDashType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_WEIGHT::Set(int value)
+            {
+                return fmt::format("EX{:03d}{:02d};",
+                    static_cast<int>(MenuFunction::CW_WEIGHT),
+                        static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_WEIGHT::Read()
+            {
+            return fmt::format("EX{:03d};",
+                static_cast<int>(MenuFunction::CW_WEIGHT));
+            }
+            
+            int Menu::CW_WEIGHT::Answer(std::string data)
+            {
+                return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::BEACON_INTERVAL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::BEACON_INTERVAL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::BEACON_INTERVAL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::BEACON_INTERVAL));
+            }
+            
+            int Menu::BEACON_INTERVAL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::NUMBER_STYLE::Set(NumberStyleType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::NUMBER_STYLE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::NUMBER_STYLE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::NUMBER_STYLE));
+            }
+            
+            NumberStyleType Menu::NUMBER_STYLE::Answer(std::string data)
+            {
+            return static_cast<NumberStyleType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CONTEST_NUMBER::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::CONTEST_NUMBER),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CONTEST_NUMBER::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CONTEST_NUMBER));
+            }
+            
+            int Menu::CONTEST_NUMBER::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::CW_MEMORY_1::Set(CwMemoryType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_1),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_MEMORY_1::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_1));
+            }
+            
+            CwMemoryType Menu::CW_MEMORY_1::Answer(std::string data)
+            {
+            return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
+            }
+            
+
+            std::string Menu::CW_MEMORY_2::Set(CwMemoryType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_2),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_MEMORY_2::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_2));
+            }
+            
+            CwMemoryType Menu::CW_MEMORY_2::Answer(std::string data)
+            {
+            return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
+            }
+
+             std::string Menu::CW_MEMORY_3::Set(CwMemoryType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_3),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_MEMORY_3::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_3));
+            }
+            
+            CwMemoryType Menu::CW_MEMORY_3::Answer(std::string data)
+            {
+            return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
+            }
+
+            std::string Menu::NB_WIDTH::Set(NbWidthType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::NB_WIDTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::NB_WIDTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::NB_WIDTH));
+            }
+            
+            NbWidthType Menu::NB_WIDTH::Answer(std::string data)
+            {
+            return static_cast<NbWidthType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::NB_REJECTION::Set(NBRejectionType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::NB_REJECTION),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::NB_REJECTION::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::NB_REJECTION));
+            }
+            
+            NBRejectionType Menu::NB_REJECTION::Answer(std::string data)
+            {
+                return static_cast<NBRejectionType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::NB_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::NB_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::NB_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::NB_LEVEL));
+            }
+            
+            int Menu::NB_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::TIME_ZONE::Set(std::string value)
+            {
+            return fmt::format("EX{:03d}{};",
+            static_cast<int>(MenuFunction::TIME_ZONE),
+            value);
+            }
+            
+            std::string Menu::TIME_ZONE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TIME_ZONE));
+            }
+            
+            std::string Menu::TIME_ZONE::Answer(std::string data)
+            {
+            return data.substr(5,5);
+            }
+            
+            std::string Menu::GPS_RS232_SELECT::Set(GpsSelectType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::GPS_RS232_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::GPS_RS232_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::GPS_RS232_SELECT));
+            }
+            
+            GpsSelectType Menu::GPS_RS232_SELECT::Answer(std::string data)
+            {
+            return static_cast<GpsSelectType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RS232_RATE::Set(CatRate value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RS232_RATE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RS232_RATE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RS232_RATE));
+            }
+            
+            CatRate Menu::RS232_RATE::Answer(std::string data)
+            {
+            return static_cast<CatRate>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RS232_TOT::Set(CatTOT value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RS232_TIME_OUT_TIMER),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RS232_TOT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RS232_TIME_OUT_TIMER));
+            }
+            
+            CatTOT Menu::RS232_TOT::Answer(std::string data)
+            {
+            return static_cast<CatTOT>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CAT_RATE::Set(CatRate value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CAT_RATE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CAT_RATE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CAT_RATE));
+            }
+            
+            CatRate Menu::CAT_RATE::Answer(std::string data)
+            {
+            return static_cast<CatRate>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CAT_TOT::Set(CatTOT value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CAT_TIME_OUT_TIMER),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CAT_TOT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CAT_TIME_OUT_TIMER));
+            }
+            
+            CatTOT Menu::CAT_TOT::Answer(std::string data)
+            {
+            return static_cast<CatTOT>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CAT_RTS::Set(EnableDisableValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CAT_RTS),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CAT_RTS::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CAT_RTS));
+            }
+            
+            EnableDisableValue Menu::CAT_RTS::Answer(std::string data)
+            {
+            return static_cast<EnableDisableValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::MEM_GROUP::Set(EnableDisableValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::MEM_GROUP),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::MEM_GROUP::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::MEM_GROUP));
+            }
+            
+            EnableDisableValue Menu::MEM_GROUP::Answer(std::string data)
+            {
+            return static_cast<EnableDisableValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::QUICK_SPLIT_FREQ::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::QUICK_SPLIT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::QUICK_SPLIT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::QUICK_SPLIT_FREQ));
+            }
+            
+            int Menu::QUICK_SPLIT_FREQ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::MIC_SCAN::Set(EnableDisableValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::MIC_SCAN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::MIC_SCAN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::MIC_SCAN));
+            }
+            
+            EnableDisableValue Menu::MIC_SCAN::Answer(std::string data)
+            {
+            return static_cast<EnableDisableValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::MIC_SCAN_RESUME::Set(MicScanResumeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::MIC_SCAN_RESUME),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::MIC_SCAN_RESUME::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::MIC_SCAN_RESUME));
+            }
+            
+            MicScanResumeValue Menu::MIC_SCAN_RESUME::Answer(std::string data)
+            {
+            return static_cast<MicScanResumeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::REF_FREQ_ADJ::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::REF_FREQ_ADJ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::REF_FREQ_ADJ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::REF_FREQ_ADJ));
+            }
+            
+            int Menu::REF_FREQ_ADJ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::TX_TOT::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::TX_TOT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TX_TOT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TX_TOT));
+            }
+            
+            int Menu::TX_TOT::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::CLAR_MODE_SELECT::Set(ClarModeType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CLAR_MODE_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CLAR_MODE_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CLAR_MODE_SELECT));
+            }
+            
+            ClarModeType Menu::CLAR_MODE_SELECT::Answer(std::string data)
+            {
+            return static_cast<ClarModeType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AM_LCUT_FREQ::Set(FreqLowCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::AM_LCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_LCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_LCUT_FREQ));
+            }
+            
+            FreqLowCutValue Menu::AM_LCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqLowCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::AM_LCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::AM_LCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_LCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_LCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::AM_LCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AM_HCUT_FREQ::Set(FreqHighCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::AM_HCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_HCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_HCUT_FREQ));
+            }
+            
+            FreqHighCutValue Menu::AM_HCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::AM_HCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::AM_HCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_HCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_HCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::AM_HCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AM_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::AM_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_OUT_LEVEL));
+            }
+            
+            int Menu::AM_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::AM_PTT_SELECT::Set(PTTSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::AM_PTT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_PTT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_PTT_SELECT));
+            }
+            
+            PTTSelectValue Menu::AM_PTT_SELECT::Answer(std::string data)
+            {
+            return static_cast<PTTSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AM_PORT_SELECT::Set(RearSelect value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::AM_PORT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_PORT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_PORT_SELECT));
+            }
+            
+            RearSelect Menu::AM_PORT_SELECT::Answer(std::string data)
+            {
+            return static_cast<RearSelect>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AM_DATA_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::AM_DATA_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AM_DATA_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AM_DATA_GAIN));
+            }
+            
+            int Menu::AM_DATA_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::CW_LCUT_FREQ::Set(FreqLowCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::CW_LCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_LCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_LCUT_FREQ));
+            }
+            
+            FreqLowCutValue Menu::CW_LCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqLowCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::CW_LCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_LCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_LCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_LCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::CW_LCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_HCUT_FREQ::Set(FreqHighCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::CW_HCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_HCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_HCUT_FREQ));
+            }
+            
+            FreqHighCutValue Menu::CW_HCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::CW_HCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_HCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_HCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_HCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::CW_HCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::CW_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_OUT_LEVEL));
+            }
+            
+            int Menu::CW_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::CW_AUTO_MODE::Set(CWAutoModeType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_AUTO_MODE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_AUTO_MODE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_AUTO_MODE));
+            }
+            
+            CWAutoModeType Menu::CW_AUTO_MODE::Answer(std::string data)
+            {
+            return static_cast<CWAutoModeType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_BK_IN_TYPE::Set(CwBreakInType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_BK_IN_TYPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_BK_IN_TYPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_BK_IN_TYPE));
+            }
+            
+            CwBreakInType Menu::CW_BK_IN_TYPE::Answer(std::string data)
+            {
+            return static_cast<CwBreakInType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_BK_IN_DELAY::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::CW_BK_IN_DELAY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_BK_IN_DELAY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_BK_IN_DELAY));
+            }
+            
+            int Menu::CW_BK_IN_DELAY::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::CW_WAVE_SHAPE::Set(CWWaveShapeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_WAVE_SHAPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_WAVE_SHAPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_WAVE_SHAPE));
+            }
+            
+            CWWaveShapeValue Menu::CW_WAVE_SHAPE::Answer(std::string data)
+            {
+            return static_cast<CWWaveShapeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::CW_FREQ_DISPLAY::Set(CWFreqDisplayValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_FREQ_DISPLAY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_FREQ_DISPLAY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_FREQ_DISPLAY));
+            }
+            
+            CWFreqDisplayValue Menu::CW_FREQ_DISPLAY::Answer(std::string data)
+            {
+            return static_cast<CWFreqDisplayValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::PC_KEYING::Set(PCKeyingValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::PC_KEYING),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PC_KEYING::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PC_KEYING));
+            }
+            
+            PCKeyingValue Menu::PC_KEYING::Answer(std::string data)
+            {
+            return static_cast<PCKeyingValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::QSK_DELAY_TIME::Set(QskDelayTimeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::QSK_DELAY_TIME),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::QSK_DELAY_TIME::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::QSK_DELAY_TIME));
+            }
+            
+            QskDelayTimeValue Menu::QSK_DELAY_TIME::Answer(std::string data)
+            {
+            return static_cast<QskDelayTimeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_MODE::Set(DataMode value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_MODE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_MODE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_MODE));
+            }
+            
+            DataMode Menu::DATA_MODE::Answer(std::string data)
+            {
+            return static_cast<DataMode>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::PSK_TONE::Set(PSKToneValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::PSK_TONE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PSK_TONE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PSK_TONE));
+            }
+            
+            PSKToneValue Menu::PSK_TONE::Answer(std::string data)
+            {
+            return static_cast<PSKToneValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::OTHER_SHIFT::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+05d};",
+            static_cast<int>(MenuFunction::OTHER_SHIFT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::OTHER_SHIFT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::OTHER_SHIFT));
+            }
+            
+            int Menu::OTHER_SHIFT::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,5)));
+            }
+            
+            std::string Menu::OTHER_DISP::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+05d};",
+            static_cast<int>(MenuFunction::OTHER_DISP),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::OTHER_DISP::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::OTHER_DISP));
+            }
+            
+            int Menu::OTHER_DISP::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,5)));
+            }
+            
+
+            std::string Menu::DATA_LCUT_FREQ::Set(FreqLowCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::DATA_LCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_LCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_LCUT_FREQ));
+            }
+            
+            FreqLowCutValue Menu::DATA_LCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqLowCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::DATA_LCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_LCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_LCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_LCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::DATA_LCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_HCUT_FREQ::Set(FreqHighCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::DATA_HCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_HCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_HCUT_FREQ));
+            }
+            
+            FreqHighCutValue Menu::DATA_HCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::DATA_HCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_HCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_HCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_HCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::DATA_HCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_IN_SELECT::Set(ModulationSource value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_IN_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_IN_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_IN_SELECT));
+            }
+            
+            ModulationSource Menu::DATA_IN_SELECT::Answer(std::string data)
+            {
+            return static_cast<ModulationSource>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_PTT_SELECT::Set(PTTSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_PTT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_PTT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_PTT_SELECT));
+            }
+            
+            PTTSelectValue Menu::DATA_PTT_SELECT::Answer(std::string data)
+            {
+            return static_cast<PTTSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::DATA_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_OUT_LEVEL));
+            }
+            
+            int Menu::DATA_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::FM_MIC_SELECT::Set(ModulationSource value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::FM_MIC_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_MIC_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_MIC_SELECT));
+            }
+            
+            ModulationSource Menu::FM_MIC_SELECT::Answer(std::string data)
+            {
+            return static_cast<ModulationSource>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::FM_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::FM_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_OUT_LEVEL));
+            }
+            
+            int Menu::FM_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::FM_PKT_PTT_SELECT::Set(PTTSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::FM_PKT_PTT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_PKT_PTT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_PKT_PTT_SELECT));
+            }
+            
+            PTTSelectValue Menu::FM_PKT_PTT_SELECT::Answer(std::string data)
+            {
+            return static_cast<PTTSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DATA_PORT_SELECT::Set(RearSelect value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DATA_PORT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_PORT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_PORT_SELECT));
+            }
+            
+            RearSelect Menu::DATA_PORT_SELECT::Answer(std::string data)
+            {
+            return static_cast<RearSelect>(std::stoi(data.substr(5,1)));
+            }
+
+            std::string Menu::FM_PKT_PORT_SELECT::Set(RearSelect value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::FM_PKT_PORT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_PKT_PORT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_PKT_PORT_SELECT));
+            }
+            
+            RearSelect Menu::FM_PKT_PORT_SELECT::Answer(std::string data)
+            {
+            return static_cast<RearSelect>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::FM_PKT_TX_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::FM_PKT_TX_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_PKT_TX_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_PKT_TX_GAIN));
+            }
+            
+            int Menu::FM_PKT_TX_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+
+            std::string Menu::FM_PKT_MODE::Set(PKTMode value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::FM_PKT_MODE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::FM_PKT_MODE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::FM_PKT_MODE));
+            }
+            
+            PKTMode Menu::FM_PKT_MODE::Answer(std::string data)
+            {
+            return static_cast<PKTMode>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RPT_SHIFT_28MHZ::Set(int value)
+            {
+             //over our max?
+             value = value > 1000 ? 1000 : value;
+             //under our min?
+             value = value < 0 ? 0 : value;
+             //not a 10 kHz step?
+             value = (value - value % 10);
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_28MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RPT_SHIFT_28MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_28MHZ));
+            }
+            
+            int Menu::RPT_SHIFT_28MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::RPT_SHIFT_50MHZ::Set(int value)
+            {
+                   //over our max?
+             value = value > 4000 ? 4000 : value;
+             //under our min?
+             value = value < 0 ? 0 : value;
+             //not a 10 kHz step?
+             value = (value - (value % 10));
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_50MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RPT_SHIFT_50MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_50MHZ));
+            }
+            
+            int Menu::RPT_SHIFT_50MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::RPT_SHIFT_144MHZ::Set(int value)
+            {
+                //over our max?
+             value = value > 4000 ? 4000 : value;
+             //under our min?
+             value = value < 0 ? 0 : value;
+             //not a 10 kHz step?
+             value = (value - (value % 10));
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_144MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RPT_SHIFT_144MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_144MHZ));
+            }
+            
+            int Menu::RPT_SHIFT_144MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::RPT_SHIFT_430MHZ::Set(int value)
+            {
+                  //over our max?
+             value = value > 10000 ? 10000 : value;
+             //under our min?
+             value = value < 0 ? 0 : value;
+             //not a 10 kHz step?
+             value = (value - (value % 10));
+            return fmt::format("EX{:03d}{:05d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_430MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RPT_SHIFT_430MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RPT_SHIFT_430MHZ));
+            }
+            
+            int Menu::RPT_SHIFT_430MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,5)));
+            }
+            
+            std::string Menu::ARS_144MHZ::Set(OnOffValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::ARS_144MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::ARS_144MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::ARS_144MHZ));
+            }
+            
+            OnOffValue Menu::ARS_144MHZ::Answer(std::string data)
+            {
+            return static_cast<OnOffValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::ARS_430MHZ::Set(OnOffValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::ARS_430MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::ARS_430MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::ARS_430MHZ));
+            }
+            
+            OnOffValue Menu::ARS_430MHZ::Answer(std::string data)
+            {
+            return static_cast<OnOffValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DCS_POLARITY::Set(DCSPolarityValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DCS_POLARITY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DCS_POLARITY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DCS_POLARITY));
+            }
+            
+            DCSPolarityValue Menu::DCS_POLARITY::Answer(std::string data)
+            {
+            return static_cast<DCSPolarityValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RADIO_ID::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RADIO_ID));
+            }
+            
+            std::string Menu::RADIO_ID::Answer(std::string data)
+            {
+            return data.substr(5,5);
+            }
+            
+            std::string Menu::GM_DISPLAY::Set(GMDisplayType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::GM_DISPLAY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::GM_DISPLAY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::GM_DISPLAY));
+            }
+            
+            GMDisplayType Menu::GM_DISPLAY::Answer(std::string data)
+            {
+            return static_cast<GMDisplayType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::DISTANCE::Set(DistanceType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::DISTANCE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DISTANCE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DISTANCE));
+            }
+            
+            DistanceType Menu::DISTANCE::Answer(std::string data)
+            {
+            return static_cast<DistanceType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::AMS_TX_MODE::Set(AMSTxModeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::AMS_TX_MODE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::AMS_TX_MODE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::AMS_TX_MODE));
+            }
+            
+            AMSTxModeValue Menu::AMS_TX_MODE::Answer(std::string data)
+            {
+            return static_cast<AMSTxModeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::STANDBY_BEEP::Set(OnOffValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::STANDBY_BEEP),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::STANDBY_BEEP::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::STANDBY_BEEP));
+            }
+            
+            OnOffValue Menu::STANDBY_BEEP::Answer(std::string data)
+            {
+            return static_cast<OnOffValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_LCUT_FREQ::Set(FreqLowCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::RTTY_LCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_LCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_LCUT_FREQ));
+            }
+            
+            FreqLowCutValue Menu::RTTY_LCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqLowCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::RTTY_LCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_LCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_LCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_LCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::RTTY_LCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_HCUT_FREQ::Set(FreqHighCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::RTTY_HCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_HCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_HCUT_FREQ));
+            }
+            
+            FreqHighCutValue Menu::RTTY_HCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::RTTY_HCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_HCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_HCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_HCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::RTTY_HCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_SHIFT_PORT::Set(ShiftPortValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_SHIFT_PORT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_SHIFT_PORT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_SHIFT_PORT));
+            }
+            
+            ShiftPortValue Menu::RTTY_SHIFT_PORT::Answer(std::string data)
+            {
+            return static_cast<ShiftPortValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_POLARITY_RX::Set(RTTYPolarityValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_POLARITY_RX),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_POLARITY_RX::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_POLARITY_RX));
+            }
+            
+            RTTYPolarityValue Menu::RTTY_POLARITY_RX::Answer(std::string data)
+            {
+            return static_cast<RTTYPolarityValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_POLARITY_TX::Set(RTTYPolarityValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_POLARITY_TX),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_POLARITY_TX::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_POLARITY_TX));
+            }
+            
+            RTTYPolarityValue Menu::RTTY_POLARITY_TX::Answer(std::string data)
+            {
+            return static_cast<RTTYPolarityValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::RTTY_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_OUT_LEVEL));
+            }
+            
+            int Menu::RTTY_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::RTTY_SHIFT_FREQ::Set(RTTYShiftFreqValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_SHIFT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_SHIFT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_SHIFT_FREQ));
+            }
+            
+            RTTYShiftFreqValue Menu::RTTY_SHIFT_FREQ::Answer(std::string data)
+            {
+            return static_cast<RTTYShiftFreqValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::RTTY_MARK_FREQ::Set(RTTYMarkFreq value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::RTTY_MARK_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::RTTY_MARK_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::RTTY_MARK_FREQ));
+            }
+            
+            RTTYMarkFreq Menu::RTTY_MARK_FREQ::Answer(std::string data)
+            {
+            return static_cast<RTTYMarkFreq>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SSB_LCUT_FREQ::Set(FreqLowCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::SSB_LCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_LCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_LCUT_FREQ));
+            }
+            
+            FreqLowCutValue Menu::SSB_LCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqLowCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::SSB_LCUT_SLOPE::Set(FreqSlopeValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SSB_LCUT_SLOPE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_LCUT_SLOPE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_LCUT_SLOPE));
+            }
+            
+            FreqSlopeValue Menu::SSB_LCUT_SLOPE::Answer(std::string data)
+            {
+            return static_cast<FreqSlopeValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SSB_HCUT_FREQ::Set(FreqHighCutValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::SSB_HCUT_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_HCUT_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_HCUT_FREQ));
+            }
+            
+            FreqHighCutValue Menu::SSB_HCUT_FREQ::Answer(std::string data)
+            {
+            return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::SSB_MIC_SELECT::Set(ModulationSource value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SSB_MIC_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_MIC_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_MIC_SELECT));
+            }
+            
+            ModulationSource Menu::SSB_MIC_SELECT::Answer(std::string data)
+            {
+            return static_cast<ModulationSource>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SSB_OUT_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::SSB_OUT_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_OUT_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_OUT_LEVEL));
+            }
+            
+            int Menu::SSB_OUT_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::SSB_PTT_SELECT::Set(PTTSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SSB_PTT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_PTT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_PTT_SELECT));
+            }
+            
+            PTTSelectValue Menu::SSB_PTT_SELECT::Answer(std::string data)
+            {
+            return static_cast<PTTSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SSB_PORT_SELECT::Set(RearSelect value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SSB_PORT_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_PORT_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_PORT_SELECT));
+            }
+            
+            RearSelect Menu::SSB_PORT_SELECT::Answer(std::string data)
+            {
+            return static_cast<RearSelect>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SSB_TX_BPF::Set(SSBTXBandPassValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SSB_TX_BPF),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SSB_TX_BPF::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SSB_TX_BPF));
+            }
+            
+            SSBTXBandPassValue Menu::SSB_TX_BPF::Answer(std::string data)
+            {
+            return static_cast<SSBTXBandPassValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::APF_WIDTH::Set(APFWidthValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::APF_WIDTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::APF_WIDTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::APF_WIDTH));
+            }
+            
+            APFWidthValue Menu::APF_WIDTH::Answer(std::string data)
+            {
+            return static_cast<APFWidthValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::COUNTOUR_LEVEL::Set(int value)
+            {
+                value = value < -40 ? -40 : value;
+                value = value > 20 ? 20 : value;
+
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::COUNTOUR_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::COUNTOUR_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::COUNTOUR_LEVEL));
+            }
+            
+            int Menu::COUNTOUR_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::COUNTOUR_WIDTH::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::COUNTOUR_WIDTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::COUNTOUR_WIDTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::COUNTOUR_WIDTH));
+            }
+            
+            int Menu::COUNTOUR_WIDTH::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::IF_NOTCH_WIDTH::Set(IFNotchWidth value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::IF_NOTCH_WIDTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::IF_NOTCH_WIDTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::IF_NOTCH_WIDTH));
+            }
+            
+            IFNotchWidth Menu::IF_NOTCH_WIDTH::Answer(std::string data)
+            {
+            return static_cast<IFNotchWidth>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SCP_DISPLAY_MODE::Set(ScopeDisplayMode value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SCP_DISPLAY_MODE),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SCP_DISPLAY_MODE::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SCP_DISPLAY_MODE));
+            }
+            
+            ScopeDisplayMode Menu::SCP_DISPLAY_MODE::Answer(std::string data)
+            {
+            return static_cast<ScopeDisplayMode>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::SCP_SPAN_FREQ::Set(ScopeSpan value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::SCP_SPAN_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SCP_SPAN_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SCP_SPAN_FREQ));
+            }
+            
+            ScopeSpan Menu::SCP_SPAN_FREQ::Answer(std::string data)
+            {
+            return static_cast<ScopeSpan>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::SPECTRUM_COLOR::Set(SpectrumColor value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SPECTRUM_COLOR),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SPECTRUM_COLOR::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SPECTRUM_COLOR));
+            }
+            
+            SpectrumColor Menu::SPECTRUM_COLOR::Answer(std::string data)
+            {
+            return static_cast<SpectrumColor>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::WATERFALL_COLOR::Set(WaterfallColor value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::WATERFALL_COLOR),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::WATERFALL_COLOR::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::WATERFALL_COLOR));
+            }
+            
+            WaterfallColor Menu::WATERFALL_COLOR::Answer(std::string data)
+            {
+            return static_cast<WaterfallColor>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::PRMTRC_EQ1_FREQ::Set(EQ1FreqValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ1_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_FREQ));
+            }
+            
+            EQ1FreqValue Menu::PRMTRC_EQ1_FREQ::Answer(std::string data)
+            {
+            return static_cast<EQ1FreqValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::PRMTRC_EQ1_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ1_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_LEVEL));
+            }
+            
+            int Menu::PRMTRC_EQ1_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::PRMTRC_EQ1_BWTH::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_BWTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ1_BWTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ1_BWTH));
+            }
+            
+            int Menu::PRMTRC_EQ1_BWTH::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::PRMTRC_EQ2_FREQ::Set(EQ2FreqValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ2_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_FREQ));
+            }
+            
+            EQ2FreqValue Menu::PRMTRC_EQ2_FREQ::Answer(std::string data)
+            {
+            return static_cast<EQ2FreqValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::PRMTRC_EQ2_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ2_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_LEVEL));
+            }
+            
+            int Menu::PRMTRC_EQ2_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::PRMTRC_EQ2_BWTH::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_BWTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ2_BWTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ2_BWTH));
+            }
+            
+            int Menu::PRMTRC_EQ2_BWTH::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::PRMTRC_EQ3_FREQ::Set(EQ3FreqValue value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ3_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_FREQ));
+            }
+            
+            EQ3FreqValue Menu::PRMTRC_EQ3_FREQ::Answer(std::string data)
+            {
+            return static_cast<EQ3FreqValue>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::PRMTRC_EQ3_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:+03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ3_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_LEVEL));
+            }
+            
+            int Menu::PRMTRC_EQ3_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::PRMTRC_EQ3_BWTH::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_BWTH),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRMTRC_EQ3_BWTH::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRMTRC_EQ3_BWTH));
+            }
+            
+            int Menu::PRMTRC_EQ3_BWTH::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::TX_MAX_POWER_HF::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_HF),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TX_MAX_POWER_HF::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_HF));
+            }
+            
+            int Menu::TX_MAX_POWER_HF::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::TX_MAX_POWER_50MHZ::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_50MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TX_MAX_POWER_50MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_50MHZ));
+            }
+            
+            int Menu::TX_MAX_POWER_50MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::TX_MAX_POWER_144MHZ::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_144MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TX_MAX_POWER_144MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_144MHZ));
+            }
+            
+            int Menu::TX_MAX_POWER_144MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string Menu::TX_MAX_POWER_430MHZ::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_430MHZ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TX_MAX_POWER_430MHZ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TX_MAX_POWER_430MHZ));
+            }
+            
+            int Menu::TX_MAX_POWER_430MHZ::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,2)));
+            }
+
+            std::string Menu::TUNER_SELECT::Set(TunerSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::TUNER_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::TUNER_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::TUNER_SELECT));
+            }
+            
+            TunerSelectValue Menu::TUNER_SELECT::Answer(std::string data)
+            {
+            return static_cast<TunerSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::VOX_SELECT::Set(VoxSelectValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::VOX_SELECT),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::VOX_SELECT::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::VOX_SELECT));
+            }
+            
+            VoxSelectValue Menu::VOX_SELECT::Answer(std::string data)
+            {
+            return static_cast<VoxSelectValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::VOX_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::VOX_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::VOX_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::VOX_GAIN));
+            }
+            
+            int Menu::VOX_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::VOX_DELAY::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::VOX_DELAY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::VOX_DELAY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::VOX_DELAY));
+            }
+            
+            int Menu::VOX_DELAY::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::ANTI_VOX_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::ANTI_VOX_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::ANTI_VOX_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::ANTI_VOX_GAIN));
+            }
+            
+            int Menu::ANTI_VOX_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+
+            std::string Menu::DATA_VOX_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::DATA_VOX_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_VOX_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_VOX_GAIN));
+            }
+            
+            int Menu::DATA_VOX_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::DATA_VOX_DELAY::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:04d};",
+            static_cast<int>(MenuFunction::DATA_VOX_DELAY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::DATA_VOX_DELAY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::DATA_VOX_DELAY));
+            }
+            
+            int Menu::DATA_VOX_DELAY::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,4)));
+            }
+            
+            std::string Menu::ANTI_DVOX_GAIN::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::ANTI_DVOX_GAIN),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::ANTI_DVOX_GAIN::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::ANTI_DVOX_GAIN));
+            }
+            
+            int Menu::ANTI_DVOX_GAIN::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
+            std::string Menu::EMERGENCY_FREQ_TX::Set(EnableDisableValue value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::EMERGENCY_FREQ_TX),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::EMERGENCY_FREQ_TX::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::EMERGENCY_FREQ_TX));
+            }
+            
+            EnableDisableValue Menu::EMERGENCY_FREQ_TX::Answer(std::string data)
+            {
+            return static_cast<EnableDisableValue>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::PRT_WIRES_FREQ::Set(WiresFreqencyType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::PRT_WIRES_FREQ),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRT_WIRES_FREQ::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRT_WIRES_FREQ));
+            }
+            
+            WiresFreqencyType Menu::PRT_WIRES_FREQ::Answer(std::string data)
+            {
+            return static_cast<WiresFreqencyType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::PRESET_FREQUENCY::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:08d};",
+            static_cast<int>(MenuFunction::PRESET_FREQUENCY),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::PRESET_FREQUENCY::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::PRESET_FREQUENCY));
+            }
+            
+            int Menu::PRESET_FREQUENCY::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,8)));
+            }
+            
+            std::string Menu::SEARCH_SETUP::Set(SearchSetupType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::SEARCH_SETUP),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::SEARCH_SETUP::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::SEARCH_SETUP));
+            }
+            
+            SearchSetupType Menu::SEARCH_SETUP::Answer(std::string data)
+            {
+            return static_cast<SearchSetupType>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::WIRES_DG_ID::Set(WiresDGID value)
+            {
+            return fmt::format("EX{:03d}{:02d};",
+            static_cast<int>(MenuFunction::WIRES_DG_ID),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::WIRES_DG_ID::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::WIRES_DG_ID));
+            }
+            
+            WiresDGID Menu::WIRES_DG_ID::Answer(std::string data)
+            {
+            return static_cast<WiresDGID>(std::stoi(data.substr(5,2)));
+            }
+            
+            std::string FrequencyVFOA::Set(int value)
+            {
+                return fmt::format("FA{:08d};",value);
+            }
+            
+            std::string FrequencyVFOA::Read()
+            {
+                return "FA;";
+            }
+            
+            int FrequencyVFOA::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,8));
+            }
+            
+            std::string FrequencyVFOB::Set(int value)
+            {
+                return fmt::format("FB{:08d};",value);
+            }
+            
+            std::string FrequencyVFOB::Read()
+            {
+                return "FB;";
+            }
+            
+            int FrequencyVFOB::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,8));
+            }            
+
+            std::string FastStep::Set(OnOffValue value)
+            {
+                return fmt::format("FS{:01d};", static_cast<int>(value));
+            }
+            
+            std::string FastStep::Read()
+            {
+                return "FS;";
+            }
+            
+            OnOffValue FastStep::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string FunctionTX::Set(FunctionTxValue value)
+            {
+                return fmt::format("FT{:01d}", 2 + static_cast<int>(value));
+            }
+            
+            std::string FunctionTX::Read()
+            {
+                return "FT;";
+            }
+            
+            FunctionTxValue FunctionTX::Answer(std::string data)
+            {
+                return static_cast<FunctionTxValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string AGCFunction::Set(AGCSetValue value)
+            {
+                return fmt::format("GT0{:01d};", static_cast<int>(value));
+            }
+            
+            std::string AGCFunction::Read()
+            {
+                return "GT0;";
+            }
+            
+            AGCStateValue AGCFunction::Answer(std::string data)
+            {
+                return static_cast<AGCStateValue>(std::stoi(data.substr(3,1)));
+            }
+            
+ 
+            
+            std::string Information::Read()
+            {
+                return "IF;";
+            }
+            
+            InformationValue Information::Answer(std::string data)
+            {
+                InformationValue ret;
+                ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
+                ret.VFOAFreq = std::stoi(data.substr(5, 9));
+                ret.ClarifierFreq = std::stoi(data.substr(14,5));
+                ret.RxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(19,1)));
+                ret.TxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(20,1)));
+                ret.Mode = static_cast<ModeValue>(std::stoi(data.substr(21,1),0,16));
+                ret.VFO = static_cast<VFOChannelTypeValue>(std::stoi(data.substr(22,1)));
+                ret.CTCSS = static_cast<CTCSSState>(std::stoi(data.substr(23,1)));
+                ret.Operation = static_cast<OperationType>(std::stoi(data.substr(26,1)));
+
+                return ret;    
+            }
+            
+            std::string IF_Shift::Set(int value)
+            {
+                return fmt::format("IS0{:+05d};", value);
+            }
+            
+            std::string IF_Shift::Read()
+            {
+                return "IS0;";
+            }
+            
+            int IF_Shift::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,5));
+            }
+            
+            std::string KeyerMemory::Set(KeyerMemoryValue value)
+            {
+                return fmt::format("KM{:01d}{:50s};",static_cast<int>(value.Channel),
+                                   value.Message.substr(0,50));
+            }
+            
+            std::string KeyerMemory::Read(KeyerMemoryChannel channel)
+            {
+                return fmt::format("KM{:01d};",static_cast<int>(channel));                
+            }
+            
+            KeyerMemoryValue KeyerMemory::Answer(std::string data)
+            {
+                KeyerMemoryValue ret;
+                ret.Channel = static_cast<KeyerMemoryChannel>(std::stoi(data.substr(2,1)));
+                ret.Message = data.substr(3, data.find(";") - 1);
+                return ret;
+            }
+            
+            std::string KeyPitch::Set(KeyPitchValue value)
+            {
+                return fmt::format("KP{:02d};", static_cast<int>(value));
+            }
+            
+            std::string KeyPitch::Read()
+            {
+                return "KP;";
+            }
+            
+            KeyPitchValue KeyPitch::Answer(std::string data)
+            {
+                return static_cast<KeyPitchValue>(std::stoi(data.substr(2,2)));
+            }
+            
+            std::string Keyer::Set(OnOffValue value)
+            {
+                return fmt::format("KR{:01d};",static_cast<int>(value));
+            }
+            
+            std::string Keyer::Read()
+            {
+                return "KR;";
+            }
+            
+            OnOffValue Keyer::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string KeySpeed::Set(int value)
+            {
+                return fmt::format("KS{:03};",value);
+            }
+            
+            std::string KeySpeed::Read()
+            {
+                return "KS;";
+            }
+            
+            int KeySpeed::Answer(std::string data)
+            {   
+                return std::stoi(data.substr(2,3));
+            }
+            
+            std::string CWKeying::Set(CWKeyingPlaybackValue value)
+            {
+                return fmt::format("KY{:0x};", static_cast<int>(value));
+            }   
+            
+            std::string Lock::Set(OnOffValue value)
+            {
+                return fmt::format("LK{:01d};", static_cast<int>(value));
+            }
+            
+            std::string Lock::Read()
+            {
+                return "LK;";
+            }
+            
+            OnOffValue Lock::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));                
+            }
+            
+
+           std::string LoadMessage::Set(DVSRecordingValue value)
+           {
+                return fmt::format("LM0{:01d};",static_cast<int>(value));
+           }
+           
+           std::string LoadMessage::Read()
+           {
+                return "LM0;";
+           }
+           
+           DVSRecordingValue LoadMessage::Answer(std::string data)
+           {
+               return static_cast<DVSRecordingValue>(std::stoi(data.substr(3,1)));
+           }
+           
+            std::string MemoryChannel_To_VFOA::Set( )
+            {
+                return "MA;";
+            }
+            
+            std::string MemoryChannel::Set(MemoryChannelValue value)
+            {
+                return fmt::format("MC{:03d};",static_cast<int>(value));
+            }
+            
+            std::string MemoryChannel::Read()
+            {
+                return "MC;";
+            }
+            
+            MemoryChannelValue MemoryChannel::Answer(std::string data)
+            {
+                return static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
+            }
+            
+            std::string OperatingMode::Set(ModeValue value)
+            {
+                return fmt::format("MD0{:01x};", static_cast<int>(value));
+            }
+            
+            std::string OperatingMode::Read()
+            {
+                return "MD0;";
+            }
+            
+            ModeValue OperatingMode::Answer(std::string data)
+            {
+                return static_cast<ModeValue>(std::stoi(data.substr(3,1),0,16));
+            }
+            
+            std::string MicGain::Set(int value)
+            {
+                return fmt::format("MG{:03d};",value);
+            }
+            
+            std::string MicGain::Read()
+            {
+                return "MG;";
+            }
+            
+            int MicGain::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,3));
+            }
+            
+            std::string MonitorLevel::Set(MonitorLevelValue value)
+            {
+                switch(value.f)
+                {
+                    case MonitorFunction::OnOff:
+                    return fmt::format("ML{:01d}{:03d};",
+                    static_cast<int>(value.f),
+                    static_cast<int>(value.val.eVal));
+                    break;
+                    case MonitorFunction::Level:
+                    return fmt::format("ML{:01d}{:03d};",
+                    static_cast<int>(value.f),
+                    value.val.iVal);
+                    break;
+                    default:
+                    return "";
+                }
+            }
+            
+            std::string MonitorLevel::Read(MonitorFunction f)
+            {
+                return fmt::format("ML{:01d};", static_cast<int>(f));
+            }
+            
+            MonitorLevelValue MonitorLevel::Answer(std::string data)
+            {
+                MonitorLevelValue ret;
+                ret.f = static_cast<MonitorFunction>(std::stoi(data.substr(2,1)));
+                switch(ret.f)
+                {
+                    case MonitorFunction::OnOff:
+                    {
+                        ret.val.eVal = static_cast<OnOffValue>(std::stoi(data.substr(3,3)));
+                        break;
+                    }
+                    case MonitorFunction::Level:
+                    {
+                        ret.val.iVal = std::stoi(data.substr(3,3));
+                        break;
+                    }
+
+                }
+                return ret;
+            }
+            
+            
+            
+            std::string MemoryChannelRead::Read(MemoryChannelValue chan)
+            {
+                return fmt::format("MR{:03d};",static_cast<int>(chan));
+            }
+            
+            MemoryChannelTag MemoryChannelRead::Answer(std::string data)
+            {
+                MemoryChannelTag ret;
+                ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
+                ret.VFOAFreq = std::stoi(data.substr(5, 9));
+                ret.ClarifierFreq = std::stoi(data.substr(14,5));
+                ret.RxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(19,1)));
+                ret.TxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(20,1)));
+                ret.Mode = static_cast<ModeValue>(std::stoi(data.substr(21,1),0,16));
+                ret.VFO = static_cast<VFOChannelTypeValue>(std::stoi(data.substr(22,1)));
+                ret.CTCSS = static_cast<CTCSSState>(std::stoi(data.substr(23,1)));
+                ret.Operation = static_cast<OperationType>(std::stoi(data.substr(26,1)));
+                ret.Tag = "";
+                return ret;
+            }
+            
+            std::string MeterSW::Set(MeterType value)
+            {   
+                return fmt::format("MS{:01d};",static_cast<int>(value));
+            }
+            
+            std::string MeterSW::Read()
+            {
+                return "MS;";
+            }
+            
+            MeterType MeterSW::Answer(std::string data)
+            {
+                return static_cast<MeterType>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string MemoryChannelWriteTag::Set(MemoryChannelTag value)
+            {
+                return fmt::format("MT{:03d}{:09d}{:05d}{:01d}{:01d}{:01x}0{:01d}00{:01d}0{};",
+                static_cast<int>(value.MemoryChannel),
+                value.VFOAFreq,
+                value.ClarifierFreq,
+                static_cast<int>(value.RxClarifier),
+                static_cast<int>(value.TxClarifier),
+                static_cast<int>(value.Mode),
+                static_cast<int>(value.CTCSS),
+                static_cast<int>(value.Operation),
+                value.Tag.substr(0,12));
+            }
+            
+            std::string MemoryChannelWriteTag::Read(MemoryChannelValue chan)
+            {
+                return fmt::format("MT{:03d};",static_cast<int>(chan));
+            }
+            
+            MemoryChannelTag MemoryChannelWriteTag::Answer(std::string data)
+            {
+                MemoryChannelTag ret;
+                ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
+                ret.VFOAFreq = std::stoi(data.substr(5, 9));
+                ret.ClarifierFreq = std::stoi(data.substr(14,5));
+                ret.RxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(19,1)));
+                ret.TxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(20,1)));
+                ret.Mode = static_cast<ModeValue>(std::stoi(data.substr(21,1),0,16));
+                ret.VFO = static_cast<VFOChannelTypeValue>(std::stoi(data.substr(22,1)));
+                ret.CTCSS = static_cast<CTCSSState>(std::stoi(data.substr(23,1)));
+                ret.Operation = static_cast<OperationType>(std::stoi(data.substr(26,1)));
+                ret.Tag = data.substr(27, data.find_first_of(';',27) - 28);
+                return ret;
+            }
+            
+            std::string MemoryChannelWrite(MemoryChannelTag value)
+            {
+                return fmt::format("MT{:03d}{:09d}{:05d}{:01d}{:01d}{:01x}0{:01d}00{:01d};",
+                static_cast<int>(value.MemoryChannel),
+                value.VFOAFreq,
+                value.ClarifierFreq,
+                static_cast<int>(value.RxClarifier),
+                static_cast<int>(value.TxClarifier),
+                static_cast<int>(value.Mode),
+                static_cast<int>(value.CTCSS),
+                static_cast<int>(value.Operation));
+            }
+
+            std::string MoxSet::Set(OnOffValue value)
+            {
+                return fmt::format("MX{:01d};",static_cast<int>(value));
+            }
+            
+            std::string MoxSet::Read()
+            {
+                return "MX;";
+            }
+            
+            OnOffValue MoxSet::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string Narrow::Set(OnOffValue value)
+            {
+                return fmt::format("MA0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string Narrow::Read()
+            {
+                return "MA0;";
+            }
+            
+            OnOffValue Narrow::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string NoiseBlankerStatus::Set(OnOffValue value)
+            {
+                return fmt::format("NB0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string NoiseBlankerStatus::Read()
+            {
+                return "NB0;";
+            }
+            
+            OnOffValue NoiseBlankerStatus::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string NoiseBlankerLevel::Set(int value)
+            {
+                value = value > 10 ? 10 : value;
+                value = value < 0 ? 0 : value;
+                return fmt::format("NL0{:03d};", value);
+            }
+            
+            std::string NoiseBlankerLevel::Read()
+            {
+                return "NL0;";
+            }
+            
+            int NoiseBlankerLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,3));
+            }
+            
+            std::string NoiseReduction::Set(OnOffValue value)
+            {
+                return fmt::format("NR0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string NoiseReduction::Read()
+            {
+                return "NR0;";
+            }
+            
+            OnOffValue NoiseReduction::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string OppisateBandInformation::Read()
+            {
+                return "OI;";
+            }
+            
+            OppositeInformationValue OppisateBandInformation::Answer(std::string data)
+            {
+                OppositeInformationValue ret;
+                ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
+                ret.VFOBFreq = std::stoi(data.substr(5, 9));
+                ret.ClarifierFreq = std::stoi(data.substr(14,5));
+                ret.RxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(19,1)));
+                ret.TxClarifier = static_cast<ClarifierState>(std::stoi(data.substr(20,1)));
+                ret.Mode = static_cast<ModeValue>(std::stoi(data.substr(21,1),0,16));
+                ret.VFO = static_cast<VFOChannelTypeValue>(std::stoi(data.substr(22,1)));
+                ret.CTCSS = static_cast<CTCSSState>(std::stoi(data.substr(23,1)));
+                ret.Operation = static_cast<OperationType>(std::stoi(data.substr(26,1)));
+
+                return ret;    
+            }
+
+            
+            std::string Offset::Set(OperationType value)
+            {
+                return fmt::format("OS0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string Offset::Read()
+            {
+                return "OS0;";
+            }
+            
+            OperationType Offset::Answer(std::string data)
+            {
+                return static_cast<OperationType>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string PreAmp::Set(PreampType value)
+            {
+                return fmt::format("PA0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string PreAmp::Read()
+            {
+                return "PA0;";
+            }
+            
+            PreampType PreAmp::Answer(std::string data)
+            {
+                return static_cast<PreampType>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string PlayBack::Set(DVSRecordingValue value)
+            {
+                return fmt::format("PB0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string PlayBack::Read()
+            {
+                return "PB0;";
+            }
+            
+            DVSRecordingValue PlayBack::Answer(std::string data)
+            {
+                return static_cast<DVSRecordingValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string PowerControl::Set(int value)
+            {
+                value = value < 5 ? 5 : value;
+                value = value > 100 ? 100 : value;
+                return fmt::format("PC{:03d};",value);
+            }
+            
+            std::string PowerControl::Read()
+            {
+                return "PC;";
+            }
+            
+            int PowerControl::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,3));
+            }
+            
+            std::string SpeechProcessorLevel::Set(int value)
+            {
+                return fmt::format("PL{:03d};",value);
+            }
+            
+            std::string SpeechProcessorLevel::Read()
+            {
+                return "PL;";
+            }
+            
+            int SpeechProcessorLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,3));
+            }
+            
+            std::string SpeechProcessor::Set(SpeechProcessorSetting value)
+            {
+                return fmt::format("PR{:01d}{:01d};", static_cast<int>(value.Type),
+                    static_cast<int>(value.State));
+            }
+            
+            std::string SpeechProcessor::Read(SpeechProcessorType type)
+            {
+                return fmt::format("PR{:01d};",static_cast<int>(type));
+            }
+            
+            SpeechProcessorSetting SpeechProcessor::Answer(std::string data)
+            {
+                SpeechProcessorSetting ret;
+                ret.Type = static_cast<SpeechProcessorType>(std::stoi(data.substr(2,1)));
+                ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+                return ret;
+            }
+            
+            std::string PowerSwitch::Set(OnOffValue value)
+            {
+                return fmt::format("PS{:01d};",static_cast<int>(value));
+            }
+            
+            std::string PowerSwitch::Read()
+            {
+                return "PS;";
+            }
+            
+            OnOffValue PowerSwitch::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string QMB_Store::Set()
+            {       
+                return "QI;";   
+            }
+            
+            std::string QMB_Recall::Set()
+            {
+                return "QR;";
+            }
+
+            std::string QuickSplit::Set()
+            {
+                return "QS;";
+            }
+
+            std::string RFAttenuator::Set(OnOffValue value)
+            {
+                return fmt::format("RA0{:01d};",static_cast<int>(value));
+            }
+            
+            std::string RFAttenuator::Read()
+            {
+                return "RA0;";
+            }
+            
+            OnOffValue RFAttenuator::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+            }
+            
+            std::string ClarClear::Set()
+            {
+                return "RC;";
+            }
+            std::string ClarDown::Set(int value)
+            {
+                value = value > 9999 ? 9999 : value;
+                value = value < 0 ? 0 : value;
+                return fmt::format("RD{:04d};", value);
+            }
+
+            std::string RFGain::Set(int value)
+            {
+                value = value > 255 ? 255 : value;
+                value = value < 0 ? 0 : value;                
+                return fmt::format("RG0{:03d};", value);
+            }
+            
+            std::string RFGain::Read()
+            {
+                return "RG0;";
+            }
+            
+            int RFGain::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,3));
+            }
+            
+           
+            
+            std::string RadioInformation::Read(RadioInformationType type)
+            {
+                return fmt::format("RI{:01d};",static_cast<int>(type));
+            }
+            
+            RadioInformationValue RadioInformation::Answer(std::string data)
+            {
+                RadioInformationValue ret;
+                ret.Type = static_cast<RadioInformationType>(std::stoi(data.substr(2,1)));
+                ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
+                return ret;
+            }
+            
+            std::string NoiseReductionLevel::Set(int value)
+            {
+                value = value > 15 ? 15 : value;
+                value = value < 1 ? 1 : value;
+                return fmt::format("RL0{:02d};",value);
+            }
+            
+            std::string NoiseReductionLevel::Read()
+            {
+                return "RL0;";
+            }
+            
+            int NoiseReductionLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,2));
+            }
+        
+            std::string ReadMeter::Read(ReadMeterType value)
+            {
+                return fmt::format("RM{:01d};", static_cast<int>(value));
+            }
+            
+            ReadMeterValue ReadMeter::Answer(std::string data)
+            {   
+                ReadMeterValue ret;
+                ret.Type = static_cast<ReadMeterType>(std::stoi(data.substr(2,1)));
+                ret.Value = std::stoi(data.substr(3,3));
+                return ret;
+            }
+            
+                        
+            std::string RadioStatus::Read()
+            {
+                return "RS;";
+            }
+            
+            RadioStatusType RadioStatus::Answer(std::string data)
+            {
+                return static_cast<RadioStatusType>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string RXClarifier::Set(OnOffValue value)
+            {
+                return fmt::format("RT{:01d};",static_cast<int>(value));
+            }
+            
+            std::string RXClarifier::Read()
+            {
+                return "RT;";
+            }
+            
+            OnOffValue RXClarifier::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string RXClarifierPlusOffset::Set(int value)
+            {
+                value = value < 0 ? 0 : value;
+                value = value > 9999 ? 9999 : value;
+                return fmt::format("RU{:04d};",value);
+            }
+
+            std::string Scan::Set(ScanType value)
+            {
+                return fmt::format("SC{:01d};",static_cast<int>(value));
+            }
+            
+            std::string Scan::Read()
+            {
+                return "SC;";
+            }
+            
+            ScanType Scan::Answer(std::string data)
+            {
+                return static_cast<ScanType>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string Width::Set(int value)
+            {
+                return fmt::format("SH0{:02d};", value);
+            }
+            
+            std::string Width::Read()
+            {
+                return "SH0;";
+            }
+            
+            int Width::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,2));
+            }
+            
+                        
+            std::string SMeterReading::Read()
+            {
+                return "SM0;";
+            }
+            
+            int SMeterReading::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,3));
+            }
+            
+            std::string SquelchLevel::Set(int value)
+            {
+                value = value > 100 ? 100 : value;
+                value = value < 0 ? 0 : value;
+                return fmt::format("SQ0{:03d};",value);
+            }
+            
+            std::string SquelchLevel::Read()
+            {
+                return "SQ0;";
+            }
+            
+            int SquelchLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3,3));
+            }
+            
+            std::string SwapVFO::Set()
+            {
+                return "SV;";
+            }
+
+            std::string TXW::Set(OnOffValue value)
+            {
+                return fmt::format("TS{:01d};",static_cast<int>(value));
+            }
+            
+            std::string TXW::Read()
+            {
+                return "TS;";
+            }
+            
+            OnOffValue TXW::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string TXSet::Set(TXSetType value)
+            {
+                return fmt::format("TX{:01d};",static_cast<int>(value));
+            }
+            
+            std::string TXSet::Read()
+            {
+                return "TX;";
+            }
+            
+            TXSetType TXSet::Answer(std::string data)
+            {
+                return static_cast<TXSetType>(std::stoi(data.substr(2,1)));
+            }
+            
+            
+            std::string PLLUnlockStatus::Read()
+            {
+                return "UL;";
+            }
+            
+            PLLLockType PLLUnlockStatus::Answer(std::string data)
+            {
+                return static_cast<PLLLockType>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string UP::Set()
+            {
+                return "UP;";
+            }
+
+            std::string VoxDelayTime::Set(int value)
+            {
+                value = value < 30 ? 30 : value;
+                value = value > 3000 ? 3000 : value;
+                return fmt::format("VD{:04d};",value);
+            }
+            
+            std::string VoxDelayTime::Read()
+            {
+                return "VD;";
+            }
+            
+            int VoxDelayTime::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,4));
+            }
+
+            std::string VoxGain::Set(int value)
+            {
+                value = value < 0 ? 0 : value;
+                value = value > 100 ? 100 : value;
+                return fmt::format("VG{:03d};",value);
+            }
+            
+            std::string VoxGain::Read()
+            {
+                return "VG;";
+            }
+            
+            int VoxGain::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2,3));
+            }
+            
+            std::string VFOA_To_Memory::Set()
+            {
+                return "VM;";
+            }
+
+            std::string VoxStatus::Set(OnOffValue value)
+            {
+                return fmt::format("VX{:01d};", static_cast<int>(value));
+            }
+            
+            std::string VoxStatus::Read()
+            {
+                return "VX;";
+            }
+            
+            OnOffValue VoxStatus::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+            
+            std::string TXClarifier::Set(OnOffValue value)
+            {
+                return fmt::format("XT{:01d};", static_cast<int>(value));
+            }
+            
+            std::string TXClarifier::Read()
+            {
+                return "XT;";
+            }
+            
+            OnOffValue TXClarifier::Answer(std::string data)
+            {
+                 return static_cast<OnOffValue>(std::stoi(data.substr(2,1)));
+            }
+
+            std::string ZeroIn::Set()
+            {
+                return "ZI;";
+            }
+        }    
+
         namespace FTDX101
         {
             std::string MainToSub::Set()
@@ -204,17 +3969,18 @@ RigType IDENTIFICATION::Answer(std::string data)
             std::string ManualNotch::Set(MainSubValue band,ManualNotchValueType type,int value)
             {
                 return fmt::format("BP{:01}{:01}{:03};",
-                static_cast<int>(band),
-                static_cast<int>(type),
-                value);
+                                    static_cast<int>(band),
+                                    static_cast<int>(type),
+                                    value);
             }
 
             std::string ManualNotch::Set(ManualNotchValue value)
             {
                 return fmt::format("BP{:01}{:01}{:03};",
-                static_cast<int>(value.band),
-                static_cast<int>(value.type),
-                value.value);
+                                   static_cast<int>(value.band),
+                                   static_cast<int>(value.type),
+                                   value.value);
+
             }
 
             std::string ManualNotch::Read(ManualNotchValue value)
@@ -1775,7 +5541,7 @@ RigType IDENTIFICATION::Answer(std::string data)
                 return std::stoi(data.substr(8,4));
             }
 
-            std::string Menu::RadioSetting::RTTY::POLARITY_RX::Set(PolarityValue value)
+            std::string Menu::RadioSetting::RTTY::POLARITY_RX::Set(RTTYPolarityValue value)
             {
                 return fmt::format("EX{:02}{:02}{:02}{:01};",
                 static_cast<int>(MenuGroup::RadioSettings),
@@ -1792,12 +5558,12 @@ RigType IDENTIFICATION::Answer(std::string data)
                 static_cast<int>(RTTYSettings::POLARITY_RX));
             }
 
-            PolarityValue Menu::RadioSetting::RTTY::POLARITY_RX::Answer(std::string data)
+            RTTYPolarityValue Menu::RadioSetting::RTTY::POLARITY_RX::Answer(std::string data)
             {
-                return static_cast<PolarityValue>(std::stoi(data.substr(8,1)));
+                return static_cast<RTTYPolarityValue>(std::stoi(data.substr(8,1)));
             }
 
-            std::string Menu::RadioSetting::RTTY::POLARITY_TX::Set(PolarityValue value)
+            std::string Menu::RadioSetting::RTTY::POLARITY_TX::Set(RTTYPolarityValue value)
             {
                 return fmt::format("EX{:02}{:02}{:02}{:01};",
                 static_cast<int>(MenuGroup::RadioSettings),
@@ -1814,9 +5580,9 @@ RigType IDENTIFICATION::Answer(std::string data)
                 static_cast<int>(RTTYSettings::POLARITY_TX));
             }
 
-            PolarityValue Menu::RadioSetting::RTTY::POLARITY_TX::Answer(std::string data)
+            RTTYPolarityValue Menu::RadioSetting::RTTY::POLARITY_TX::Answer(std::string data)
             {
-                return static_cast<PolarityValue>(std::stoi(data.substr(8,1)));
+                return static_cast<RTTYPolarityValue>(std::stoi(data.substr(8,1)));
             }
 
             std::string Menu::RadioSetting::RTTY::LCUT_Freq::Set(FreqLowCutValue value)
@@ -2018,7 +5784,7 @@ RigType IDENTIFICATION::Answer(std::string data)
                 return static_cast<DecodeAfcRangeValue>(std::stoi(data.substr(8,1)));
             }
 
-            std::string Menu::RadioSetting::ENC_DEC_PSK::POLARITY_RX::Set(PolarityValue value)
+            std::string Menu::RadioSetting::ENC_DEC_PSK::POLARITY_RX::Set(RTTYPolarityValue value)
             {
                 return fmt::format("EX{:02d}{:02d}{:02d}{:01d};",
                 static_cast<int>(MenuGroup::RadioSettings),
@@ -2036,12 +5802,12 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             }
 
-            PolarityValue Menu::RadioSetting::ENC_DEC_PSK::POLARITY_RX::Answer(std::string data)
+            RTTYPolarityValue Menu::RadioSetting::ENC_DEC_PSK::POLARITY_RX::Answer(std::string data)
             {
-                return static_cast<PolarityValue>(std::stoi(data.substr(8,1)));
+                return static_cast<RTTYPolarityValue>(std::stoi(data.substr(8,1)));
             }
 
-            std::string Menu::RadioSetting::ENC_DEC_PSK::POLARITY_TX::Set(PolarityValue value)
+            std::string Menu::RadioSetting::ENC_DEC_PSK::POLARITY_TX::Set(RTTYPolarityValue value)
             {
                 return fmt::format("EX{:02d}{:02d}{:02d}{:01d};",
                 static_cast<int>(MenuGroup::RadioSettings),
@@ -2059,9 +5825,9 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             }
 
-            PolarityValue Menu::RadioSetting::ENC_DEC_PSK::POLARITY_TX::Answer(std::string data)
+            RTTYPolarityValue Menu::RadioSetting::ENC_DEC_PSK::POLARITY_TX::Answer(std::string data)
             {
-                return static_cast<PolarityValue>(std::stoi(data.substr(8,1)));
+                return static_cast<RTTYPolarityValue>(std::stoi(data.substr(8,1)));
             }
 
             std::string Menu::RadioSetting::ENC_DEC_PSK::TX_LEVEL::Set(int value)
@@ -5040,11 +8806,11 @@ RigType IDENTIFICATION::Answer(std::string data)
                 return std::stoi(data.substr(2,3));
             }
 
-            std::string MonitorLevel::Set(MonitorState value)
+            std::string MonitorLevel::Set(MonitorLevelValue value)
             {
                 return fmt::format("ML{:1d}{:3d};",
                     static_cast<int>(value.Type),
-                    (value.Type == MonitorRequestType::MONITOR_ONOFF ? static_cast<int>(value.Value.OnOrOff) : value.Value.Value ));
+                    (value.Type == MonitorRequestType::MONITOR_ONOFF ? static_cast<int>(value.Value.eValue) : value.Value.iValue ));
             }
 
             std::string MonitorLevel::Read(MonitorRequestType value)
@@ -5053,17 +8819,17 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
 
 
-            MonitorState MonitorLevel::Answer(std::string data)
+            MonitorLevelValue MonitorLevel::Answer(std::string data)
             {
-                MonitorState ret;
+                MonitorLevelValue ret;
                 ret.Type = static_cast<MonitorRequestType>(std::stoi(data.substr(2,1)));
                 if(ret.Type == MonitorRequestType::MONITOR_ONOFF)
                 {
-                    ret.Value.OnOrOff = static_cast<OnOffValue>(std::stoi(data.substr(3,3)));
+                    ret.Value.eValue = static_cast<OnOffValue>(std::stoi(data.substr(3,3)));
                 }
                 else
                 {
-                    ret.Value.Value = std::stoi(data.substr(3,3));
+                    ret.Value.iValue = std::stoi(data.substr(3,3));
                 }
                 return ret;
             }
