@@ -99,7 +99,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             std::string BandDown::Set()
             {
-                return "BD0";
+                return "BD0;";
             }
 
             std::string BreakIn::Set(OnOffValue value)
@@ -250,16 +250,16 @@ RigType IDENTIFICATION::Answer(std::string data)
                 switch(ret.Type)
                 {
                      case CountourType::CONTOUR_ONOFF: 
-                        ret.Value.CountourState = static_cast<OnOffValue>(std::stoi(data.substr(4,3)));
+                        ret.Value.CountourState = static_cast<OnOffValue>(std::stoi(data.substr(4,4)));
                      break;
                      case CountourType::CONTOUR_FREQ:
-                         ret.Value.CountourFrequency = std::stoi(data.substr(4,3));
+                         ret.Value.CountourFrequency = std::stoi(data.substr(4,4));
                      break;
                      case CountourType::APF_ONOFF:
-                          ret.Value.APFState = static_cast<OnOffValue>(std::stoi(data.substr(4,3)));
+                          ret.Value.APFState = static_cast<OnOffValue>(std::stoi(data.substr(4,4)));
                      break;
                      case CountourType::APF_FREQ:
-                          ret.Value.APFFrequency = std::stoi(data.substr(4,3));
+                          ret.Value.APFFrequency = std::stoi(data.substr(4,4));
                      break;
                 }
                 return ret;
@@ -365,7 +365,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             std::string Menu::AGC_FAST_DELAY::Read()
             {
-                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_FAST_DELAY));
+                return fmt::format("EX{:03d};", static_cast<int>(MenuFunction::AGC_FAST_DELAY));
             }
             
             int Menu::AGC_FAST_DELAY::Answer(std::string data)
@@ -382,7 +382,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             std::string Menu::AGC_MID_DELAY::Read()
             {
-                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_MID_DELAY));
+                return fmt::format("EX{:03d};", static_cast<int>(MenuFunction::AGC_MID_DELAY));
             }
             
             int Menu::AGC_MID_DELAY::Answer(std::string data)
@@ -399,7 +399,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             std::string Menu::AGC_SLOW_DELAY::Read()
             {
-                return fmt::format("EX{:03d}", static_cast<int>(MenuFunction::AGC_SLOW_DELAY));
+                return fmt::format("EX{:03d};", static_cast<int>(MenuFunction::AGC_SLOW_DELAY));
             }
             
             int Menu::AGC_SLOW_DELAY::Answer(std::string data)
@@ -422,6 +422,24 @@ RigType IDENTIFICATION::Answer(std::string data)
             HomeFunction Menu::HOME_FUNCTION::Answer(std::string data)
             {
                 return static_cast<HomeFunction>(std::stoi(data.substr(5,1)));
+            }
+            
+            std::string Menu::MY_CALL_INDICATION::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::MY_CALL_INDICATION),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::MY_CALL_INDICATION::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::MY_CALL_INDICATION));
+            }
+            
+            int Menu::MY_CALL_INDICATION::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,1)));
             }
             
 

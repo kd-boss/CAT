@@ -354,7 +354,7 @@ namespace Yaesu
 				AGC_MID_DELAY,
 				AGC_SLOW_DELAY,
 				HOME,
-				MY_CALL,
+				MY_CALL_INDICATION,
 				DISPLAY_COLOR,
 				DIMMER_LED,
 				DIMMER_TFT,
@@ -1018,7 +1018,7 @@ namespace Yaesu
             {
                 MAIN,
                 SUB,
-                MULTI
+                MULTI = 8
             };
             enum class NBRejectionType : int
             {
@@ -1522,6 +1522,14 @@ namespace Yaesu
                 static std::string Set(HomeFunction value);
 				static std::string Read();
                 static HomeFunction Answer(std::string data);
+				};
+				
+				class MY_CALL_INDICATION
+				{
+				  public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
 				};
 				
 				class DISPLAY_COLOR
