@@ -317,6 +317,24 @@ RigType IDENTIFICATION::Answer(std::string data)
                 return "DN;";
             }
 
+            std::string Menu::BEEP_LEVEL::Set(int value)
+            {
+            return fmt::format("EX{:03d}{:03d};",
+            static_cast<int>(MenuFunction::BEEP_LEVEL),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::BEEP_LEVEL::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::BEEP_LEVEL));
+            }
+            
+            int Menu::BEEP_LEVEL::Answer(std::string data)
+            {
+            return static_cast<int>(std::stoi(data.substr(5,3)));
+            }
+            
             std::string DateAndTime::Set(DateTimeValue value)
             {
                 return fmt::format("DT{:01d}{}", static_cast<int>(value.Type), value.Value);
@@ -713,6 +731,42 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
             
             CwMemoryType Menu::CW_MEMORY_3::Answer(std::string data)
+            {
+            return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
+            }
+
+  std::string Menu::CW_MEMORY_4::Set(CwMemoryType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_4),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_MEMORY_4::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_4));
+            }
+            
+            CwMemoryType Menu::CW_MEMORY_4::Answer(std::string data)
+            {
+            return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
+            }
+
+ std::string Menu::CW_MEMORY_5::Set(CwMemoryType value)
+            {
+            return fmt::format("EX{:03d}{:01d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_5),
+            static_cast<int>(value)); 
+            }
+            
+            std::string Menu::CW_MEMORY_5::Read()
+            {
+            return fmt::format("EX{:03d};",
+            static_cast<int>(MenuFunction::CW_MEMORY_5));
+            }
+            
+            CwMemoryType Menu::CW_MEMORY_5::Answer(std::string data)
             {
             return static_cast<CwMemoryType>(std::stoi(data.substr(5,1)));
             }
@@ -10823,20 +10877,20 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string Menu::SetRfSqlVr(RfSqlVrValue val)
             {
-                std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::BEEP_LEVEL), static_cast<int>(val));
+                std::string s = fmt::format("{:04}{:d}", static_cast<int>(MenuFunction::RF_SQL_VR), static_cast<int>(val));
                 return set(s);
             }
 
             std::string Menu::ReadRfSqlVr()
             {
-                std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::BEEP_LEVEL));
+                std::string s = fmt::format("{:04}", static_cast<int>(MenuFunction::RF_SQL_VR));
                 return set(s);
             }
 
             RfSqlVrValue Menu::AnswerRfSqlVr(std::string data)
             {
                 MenuFunction f = (MenuFunction)std::stoi(data.substr(2, 4));
-                if (f == MenuFunction::BEEP_LEVEL)
+                if (f == MenuFunction::RF_SQL_VR)
                 {
                     return (RfSqlVrValue)std::stoi(data.substr(6, 1));
                 }
