@@ -2326,6 +2326,14 @@ namespace Yaesu
 				static FreqHighCutValue Answer(std::string data);
 				};
 				
+				class SSB_HCUT_SLOPE
+				{
+				public:
+					static std::string Set(FreqSlopeValue);
+					static std::string Read();
+					static FreqSlopeValue Answer(std::string data);
+				};
+
 				class SSB_MIC_SELECT
 				{
 				  public:
@@ -2501,7 +2509,81 @@ namespace Yaesu
 				static std::string Read();
 				static int Answer(std::string data);
 				};
-				
+
+			
+				class P_PRMTRC_EQ1_FREQ
+				{
+				public:
+					static std::string Set(EQ1FreqValue value);
+					static std::string Read();
+					static EQ1FreqValue Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ1_LEVEL
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ1_BWTH
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ2_FREQ
+				{
+				public:
+					static std::string Set(EQ2FreqValue value);
+					static std::string Read();
+					static EQ2FreqValue Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ2_LEVEL
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ2_BWTH
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ3_FREQ
+				{
+				public:
+					static std::string Set(EQ3FreqValue value);
+					static std::string Read();
+					static EQ3FreqValue Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ3_LEVEL
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+				class P_PRMTRC_EQ3_BWTH
+				{
+				public:
+					static std::string Set(int value);
+					static std::string Read();
+					static int Answer(std::string data);
+				};
+
+
 				class TX_MAX_POWER_HF
 				{
 				  public:

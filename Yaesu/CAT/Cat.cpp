@@ -2229,6 +2229,25 @@ RigType IDENTIFICATION::Answer(std::string data)
             return static_cast<FreqHighCutValue>(std::stoi(data.substr(5,2)));
             }
             
+			std::string Menu::SSB_HCUT_SLOPE::Set(FreqSlopeValue value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::SSB_HCUT_SLOPE),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::SSB_HCUT_SLOPE::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::SSB_HCUT_SLOPE));
+			}
+
+            FreqSlopeValue Menu::SSB_HCUT_SLOPE::Answer(std::string data)
+			{
+				return static_cast<FreqHighCutValue>(std::stoi(data.substr(5, 2)));
+			}
+
+
             std::string Menu::SSB_MIC_SELECT::Set(ModulationSource value)
             {
             return fmt::format("EX{:03d}{:01d};",
@@ -2628,6 +2647,168 @@ RigType IDENTIFICATION::Answer(std::string data)
             return static_cast<int>(std::stoi(data.substr(5,2)));
             }
             
+			std::string Menu::P_PRMTRC_EQ1_FREQ::Set(EQ1FreqValue value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_FREQ),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ1_FREQ::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_FREQ));
+			}
+
+			EQ1FreqValue Menu::P_PRMTRC_EQ1_FREQ::Answer(std::string data)
+			{
+				return static_cast<EQ1FreqValue>(std::stoi(data.substr(5, 2)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ1_LEVEL::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:+03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_LEVEL),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ1_LEVEL::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_LEVEL));
+			}
+
+			int Menu::P_PRMTRC_EQ1_LEVEL::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 3)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ1_BWTH::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_BWTH),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ1_BWTH::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ1_BWTH));
+			}
+
+			int Menu::P_PRMTRC_EQ1_BWTH::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 2)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_FREQ::Set(EQ2FreqValue value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_FREQ),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_FREQ::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_FREQ));
+			}
+
+			EQ2FreqValue Menu::P_PRMTRC_EQ2_FREQ::Answer(std::string data)
+			{
+				return static_cast<EQ2FreqValue>(std::stoi(data.substr(5, 2)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_LEVEL::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:+03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_LEVEL),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_LEVEL::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_LEVEL));
+			}
+
+			int Menu::P_PRMTRC_EQ2_LEVEL::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 3)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_BWTH::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_BWTH),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ2_BWTH::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ2_BWTH));
+			}
+
+			int Menu::P_PRMTRC_EQ2_BWTH::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 2)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_FREQ::Set(EQ3FreqValue value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_FREQ),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_FREQ::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_FREQ));
+			}
+
+			EQ3FreqValue Menu::P_PRMTRC_EQ3_FREQ::Answer(std::string data)
+			{
+				return static_cast<EQ3FreqValue>(std::stoi(data.substr(5, 2)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_LEVEL::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:+03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_LEVEL),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_LEVEL::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_LEVEL));
+			}
+
+			int Menu::P_PRMTRC_EQ3_LEVEL::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 3)));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_BWTH::Set(int value)
+			{
+				return fmt::format("EX{:03d}{:02d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_BWTH),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::P_PRMTRC_EQ3_BWTH::Read()
+			{
+				return fmt::format("EX{:03d};",
+					static_cast<int>(MenuFunction::P_PRMTRC_EQ3_BWTH));
+			}
+
+			int Menu::P_PRMTRC_EQ3_BWTH::Answer(std::string data)
+			{
+				return static_cast<int>(std::stoi(data.substr(5, 2)));
+			}
+
             std::string Menu::TX_MAX_POWER_HF::Set(int value)
             {
             return fmt::format("EX{:03d}{:03d};",
