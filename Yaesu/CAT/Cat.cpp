@@ -2244,7 +2244,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             FreqSlopeValue Menu::SSB_HCUT_SLOPE::Answer(std::string data)
 			{
-				return static_cast<FreqHighCutValue>(std::stoi(data.substr(5, 2)));
+				return static_cast<FreqSlopeValue>(std::stoi(data.substr(5, 2)));
 			}
 
 
