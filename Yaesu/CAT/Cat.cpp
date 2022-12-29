@@ -16,12 +16,12 @@ RigType IDENTIFICATION::Answer(std::string data)
 {
     return static_cast<Yaesu::RigType>(std::stoi(data.substr(2,4)));
 }
-
-
-
     namespace Commands
     {
-        namespace FT991 {
+       
+
+        namespace FT991A 
+        {
             std::string VFO_A_To_VFO_B::Set()
             {
                 return "AB;";
@@ -4037,7 +4037,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             {
                 return "ZI;";
             }
-        }    
+        };
 
         namespace FTDX101
         {
@@ -8666,6 +8666,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             FastStepState FastStep::Answer(std::string data)
             {
                 return static_cast<FastStepState>(std::stoi(data.substr(2,1)));
+                
             }
 
             std::string AGCFunction::Set(AGCSetFunction value)
@@ -9020,13 +9021,13 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string OperatingMode::Set(ModeSettingValue value)
             {
-                return fmt::format("MD{:1d}{:1d};",
+                return fmt::format("MD{:1d}{:1x};",
                     static_cast<int>(value.Band),
                     static_cast<int>(value.Mode));
             }
             std::string OperatingMode::Set(MainSubValue Band, ModeValue Mode)
             {
-                return fmt::format("MD{:1d}{:1d};",
+                return fmt::format("MD{:1d}{:1x};",
                     static_cast<int>(Band),
                     static_cast<int>(Mode));
             }
@@ -17296,5 +17297,41 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
 
         };
+
+		namespace FTDX10
+		{
+			std::string AntennaTunerControl::Set(FTDX10::TunerState value)
+			{
+				return FT891::AntennaTunerControl::Set(value);
+			}
+			std::string AntennaTunerControl::Read()
+			{
+				return FT891::AntennaTunerControl::Read();
+			}
+
+			FTDX10::TunerState AntennaTunerControl::Answer(std::string data)
+			{
+				return FT891::AntennaTunerControl::Answer(data);
+			}
+
+			std::string AntiVoxLevel::Set(int value)
+			{
+				return fmt::format("AV{:3d};", value);
+			}
+
+			std::string AntiVoxLevel::Read()
+			{
+				return "AV;";
+			}
+
+			int AntiVoxLevel::Answer(std::string data)
+			{
+				return std::stoi(data.substr(2, 3));
+			}
+
+
+
+
+		};
     };
 };
