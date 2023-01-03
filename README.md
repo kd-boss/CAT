@@ -19,12 +19,12 @@ Yaesu::Commands::FTDX101
 there's Set, Read, and Answer for all of the commands of a radio that support each function. Some commands only have a Set, such as switching between VFOA and VFOB. 
 
 Read commands always request a response from the radio.
-Answer commands always take the response of the radio and returns the approperate type.
+Answer commands always take the response of a Read Command sent to the radio and returns the approperate type.
 Set commands set some state of the radio. 
 
 
 
-namespace Yaesu handles figuring out what radio it's talking to with the IDENTIFICATION commands and the RigType enum. As ne radio's are added, the RigType enum will be expanded. This is particularly useful with the FTDX101 series as many feilds are 200 on the MP model and only 100 on the D model. The following is a simple illiustration of how to use this library and boost::asio with the FT891 to set the meter type of the display. 
+namespace Yaesu handles figuring out what radio it's talking to with the IDENTIFICATION commands and the RigType enum. As new radio's are added, the RigType enum will be expanded. This is particularly useful with the FTDX101 series as many feilds are 200 on the MP model and only 100 on the D model. The following is a simple illiustration of how to use this library and boost::asio with the FT891 to set the meter type of the display. 
 
 
 ```
