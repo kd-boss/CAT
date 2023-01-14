@@ -38,7 +38,8 @@ namespace Yaesu
 		FT891 = 650,
 		FT991A = 670,
 		FTDX101D = 681,
-		FTDX101MP = 682
+		FTDX101MP = 682,
+		FTDX10 = 761
 	};
 
 	class IDENTIFICATION
@@ -49,8 +50,8 @@ namespace Yaesu
 	};
 
 	namespace Commands
-	{
-		namespace FT991
+	{	
+		namespace FT991A
 		{
 			enum class PreampType
 			{
@@ -75,6 +76,7 @@ namespace Yaesu
 				CH4,
 				CH5
 			};
+
 			enum class VoxSelectValue : int
 			{
 				MIC,
@@ -87,12 +89,12 @@ namespace Yaesu
                 _9600bps
             };
 
-
             enum class CwBreakInType : int
             {
                 SEMI,
                 FULL
             };
+
             enum class CWAutoModeType
             {
                 OFF,
@@ -190,7 +192,6 @@ namespace Yaesu
 				_1275hz,
 				_2125hz
 			};
-
 
 			enum class AMSTxModeValue : int
 			{
@@ -301,6 +302,7 @@ namespace Yaesu
 				_1050Hz
 
 			};
+
 			enum class PSKToneValue : int
 			{
 				_1000hz,
@@ -315,11 +317,13 @@ namespace Yaesu
 				_4msec,
 				_6msec
 			};
+
 			enum class CWFreqDisplayValue : int
 			{
 				FREQ,
 				PITCH
 			};
+
 			enum class QskDelayTimeValue : int
 			{
 				_15msec,
@@ -506,7 +510,7 @@ namespace Yaesu
 
 			};
 
-					enum class MemoryChannelValue
+			enum class MemoryChannelValue
 			{
 				_1 = 1,
 				_2,
@@ -638,7 +642,8 @@ namespace Yaesu
 				OFF,
 				ON
             };
-            enum class EnableDisableValue : int
+            
+			enum class EnableDisableValue : int
 			{
 				DIABLE,
 				ENABLE
@@ -795,25 +800,25 @@ namespace Yaesu
 				_1000hz,
 
 			};
+			
 			enum class APFWidthValue : int
 			{
 				NARROW,
 				MEDIUM,
 				WIDE
 			};
+			
 			enum class CTCSSToneType : int
 			{
 				CTCSS,
 				DCS
 			};
-
 			
 			enum class IFNotchWidth : int
 			{
 				NARROW,
 				WIDE
 			};
-
 		
             enum class HomeFunction : int
 			{
@@ -901,8 +906,7 @@ namespace Yaesu
 				PAUSE,
 				TIME
 			};
-
-			
+		
 			enum class ClarifierState : int
 			{
 				OFF,
@@ -916,6 +920,7 @@ namespace Yaesu
 				APF_ONOFF,
 				APF_FREQ
 			};
+			
 			enum class CTCSSType : int
 			{
 				CTCSS_OFF,
@@ -971,6 +976,7 @@ namespace Yaesu
 				DateTimeType Type;
 				std::string Value;
 			};
+			
 			enum class CwMemoryType : int
 			{
 				TEXT,
@@ -985,17 +991,20 @@ namespace Yaesu
 				_300_2700,
 				_400_2600
 			};
-            enum class GpsSelectType : int
+            
+			enum class GpsSelectType : int
             {
                 GPS1,
                 GPS2,
                 RS232C
             };
+			
 			enum class ScopeDisplayMode : int
 			{
 				SPECTRUM,
 				WATERFALL
 			};
+			
 			enum class ScopeSpan : int
 			{
 				_50kHz  = 3,
@@ -1004,6 +1013,7 @@ namespace Yaesu
 				_500kHz,
 				_1000kHz
 			};
+			
 			enum class SpectrumColor : int
 			{
 				BLUE,
@@ -1014,18 +1024,21 @@ namespace Yaesu
 				RED,
 				SKY_BLUE
 			};
-            enum class EncoderType : int
+            
+			enum class EncoderType : int
             {
                 MAIN,
                 SUB,
                 MULTI = 8
             };
-            enum class NBRejectionType : int
+            
+			enum class NBRejectionType : int
             {
                 _10db,
                 _30db,
                 _50db
             };
+			
 			enum class WaterfallColor : int
 			{
 				BLUE,
@@ -1176,6 +1189,7 @@ namespace Yaesu
 				PMS,
 				HOME
 			};
+			
 			enum class CTCSSState : int
 			{
 				OFF,
@@ -1184,6 +1198,7 @@ namespace Yaesu
 				DCS_ENC_DEC,
 				DCS_ENC
 			};
+			
 			enum class OperationType : int
 			{
 				Simplex,
@@ -1219,7 +1234,6 @@ namespace Yaesu
 				OnOffValue State;
 			};
 
-			
 			struct MonitorLevelValue
 			{
 
@@ -1231,6 +1245,7 @@ namespace Yaesu
 				};
 				Value val;
 			};
+
 			struct KeyerMemoryValue
 			{
 				KeyerMemoryChannel Channel;
@@ -1393,8 +1408,7 @@ namespace Yaesu
 			static std::string Read(CTCSSToneType);
 			static CTCSSToneValue Answer(std::string data);
 			};
-			
-		
+					
 			union CountourState
 			{
 				OnOffValue CountourState;
@@ -1424,7 +1438,6 @@ namespace Yaesu
 			static std::string Read();
 			static OnOffValue Answer(std::string data);
 			};
-
 	
 			class CTCSS
 			{
@@ -1454,8 +1467,6 @@ namespace Yaesu
 			static std::string Set();
 			};
 
-
-
 			class DateAndTime
 			{
 			  public:
@@ -1464,7 +1475,6 @@ namespace Yaesu
             static DateTimeValue Answer(std::string data);
 			};
 			
-
 			struct EncoderValue 
 			{
 				EncoderType Type;
@@ -2724,7 +2734,6 @@ namespace Yaesu
 									
 			}; //end Menu
 
-
 			class FrequencyVFOA
 			{
 				public:
@@ -2766,44 +2775,44 @@ namespace Yaesu
 			class AGCFunction
 			{
 			  public:
-			static std::string Set(FT991::AGCSetValue value);
+			static std::string Set(FT991A::AGCSetValue value);
 			static std::string Read();
-			static FT991::AGCStateValue Answer(std::string data);
+			static FT991A::AGCStateValue Answer(std::string data);
 			};
 
-		     class Information
+		    class Information
 			 {
 			   public:
 			 
 			 static std::string Read();
 			 static InformationValue Answer(std::string data);
 			 };
-			 
-			 class IF_Shift
+			
+			class IF_Shift
 			 {
 			   public:
 			 static std::string Set(int value);
 			 static std::string Read();
 			 static int Answer(std::string data);
 			 };
-			 
-			 class KeyerMemory
+			
+			class KeyerMemory
 			 {
 			   public:
 			 static std::string Set(KeyerMemoryValue value);
 			 static std::string Read(KeyerMemoryChannel);
 			 static KeyerMemoryValue Answer(std::string data);
 			 };
-			 
-			 class KeyPitch
+			
+			class KeyPitch
 			 {
 			   public:
 			 static std::string Set(KeyPitchValue value);
 			 static std::string Read();
 			 static KeyPitchValue Answer(std::string data);
 			 };
-			 
-			 class Keyer
+			
+			class Keyer
 			 {
 			   public:
 			 static std::string Set(OnOffValue value);
@@ -2970,7 +2979,7 @@ namespace Yaesu
 			class PreAmp
 			{
 			  public:
-			static std::string Set(FT991::PreampType value);
+			static std::string Set(FT991A::PreampType value);
 			static std::string Read();
 			static PreampType Answer(std::string data);
 			};
@@ -3290,7 +3299,8 @@ namespace Yaesu
 			static std::string Set();
 			};
 			
-		}
+		};
+
 		namespace FTDX101
 		{
             enum class PolarityValue : int
@@ -3773,7 +3783,6 @@ namespace Yaesu
 				DTR,
 				RTS
 			};
-
 
 			enum class RTTYShiftFreqValue : int
 			{
@@ -4716,6 +4725,7 @@ namespace Yaesu
 				AMP1,
 				AMP2
 			};
+			
 			enum class DVSPlayBackMode : int
 			{
 				Stop,
@@ -4725,11 +4735,13 @@ namespace Yaesu
 				Channel4,
 				Channel5
 			};
+			
 			enum class SpeechProcessorType : int
 			{
 				SpeechProcessor,
 				ParametricMicrophoneEqualizer
 			};
+			
 			enum class AttenuatorType : int
 			{
 				OFF,
@@ -4737,6 +4749,7 @@ namespace Yaesu
 				_12dB,
 				_18dB
 			};
+			
 			enum class RoofingFilterType : int
 			{
 				_12kHz = 1,
@@ -4745,12 +4758,14 @@ namespace Yaesu
 				_600Hz,
 				_300Hz
 			};
+			
 			enum class RadioInformationType : int
 			{
 				HI_SWR,
 				REC = 3,
 				PLAY
 			};
+			
 			enum class ReadMeterType : int
 			{
 				Both,
@@ -4764,6 +4779,7 @@ namespace Yaesu
 				VDD,
 				TEMP
 			};
+			
 			enum class RadioMode : int
 			{
 				Normal,
@@ -4796,8 +4812,7 @@ namespace Yaesu
 				COLOR,
 				LEVEL
 			};
-
-		
+	
 			union DialType
 			{
 				MPVDDialType MPVD;
@@ -4821,6 +4836,7 @@ namespace Yaesu
 				SubDialKnob Dial;
 				DialType Type;
 			};
+			
 			struct SpeechProcessorValue
 			{
 				SpeechProcessorType Type;
@@ -4900,8 +4916,6 @@ namespace Yaesu
 				MainMeterType Main;
 				SubMeterType Sub;
 			};
-
-		
 
 			struct ModeSettingValue
 			{
@@ -7581,7 +7595,8 @@ namespace Yaesu
 				static MainSubValue Answer(std::string);
 			};
 
-		}
+		};
+
 		namespace FT891
 		{
 
@@ -9040,10 +9055,7 @@ namespace Yaesu
 
 			struct MemoryChannelTagValue
 			{
-				MemoryChannelTagValue()
-				{
-					TagString = "";
-				}
+				
 				MemoryChannelValue MemoryChannel;
 				int VFOAFreq;
 				int ClarifierFreq;
@@ -10742,6 +10754,42 @@ namespace Yaesu
 			};
 
 		}; // end FT891
+
+		namespace FTDX10
+		{
+
+			using FT891::TunerState;
+			using FT991A::OnOffValue;
+
+			using FT891::VFO_A_TO_VFO_B;
+			class AntennaTunerControl
+			{
+			public:
+				static std::string Set(TunerState value);
+				static std::string Read();
+				static TunerState Answer(std::string data);
+			};
+
+			using FT891::VolumeLevel;
+			using FT991A::AutoInformation;
+			using FT891::VFO_A_toMemoryChannel;
+			using FTDX101::AMCOutputLevel;
+
+			class AntiVoxLevel
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			using FT891::VFO_B_TO_VFO_A;
+			using FT991A::AutoNotch;
+			using FTDX101::MainSubValue;
+			using FTDX101::BandDown;
+			using FTDX101::BandUp;
+		};
+
 	};	   // end Commands
 };		   // end Yeasu
 

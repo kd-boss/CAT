@@ -4,16 +4,16 @@
 #include "../../Cat.h"
 
 using namespace std;
-using namespace Yaesu::FT891::Commands;
+using namespace Yaesu::Commands::FT891;
 using namespace boost;
 using namespace posix_time;
 using namespace asio;
 
-//set this to your radio's com port, be it a COM# on windows, or a /dev/tty on linux
+//set this to your radio's com port, be it a COM# on windows, or a /dev/tty on Linux
 string port = "COM10";
 int baud = 4800; //factory default baud rate of the rig. Modify if yours is different. 
 
-string dummydata = "alslkdkinckdlikse;"; //sufficently long enough garbage data for a dummy command to set the radio into it's error state (it replies with "?;")
+string dummydata = "alslkdkinckdlikse;"; //sufficiently long enough garbage data for a dummy command to set the radio into it's error state (it replies with "?;")
 
 void PowerDown(serial_port& port)
 {
@@ -72,7 +72,7 @@ PowerSwitchValue ReadPowerSwitch(serial_port& port)
 	size_t pos;
 	pos = buff.find(";");
 	auto command = buff.substr(0, pos + 1);
-	//deseralize the power switch state
+	//de-serialize the power switch state
 	return PowerSwitch::Answer(command);
 }
 

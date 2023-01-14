@@ -9021,13 +9021,13 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string OperatingMode::Set(ModeSettingValue value)
             {
-                return fmt::format("MD{:1d}{:1x};",
+                return fmt::format("MD{:1d}{:1d};",
                     static_cast<int>(value.Band),
                     static_cast<int>(value.Mode));
             }
             std::string OperatingMode::Set(MainSubValue Band, ModeValue Mode)
             {
-                return fmt::format("MD{:1d}{:1x};",
+                return fmt::format("MD{:1d}{:1d};",
                     static_cast<int>(Band),
                     static_cast<int>(Mode));
             }
