@@ -3656,7 +3656,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             std::string PowerControl::Set(int value)
             {
                 value = value < 5 ? 5 : value;
-                value = value > 100 ? 100 : value;
+                value = value > 200 ? 200 : value;
                 return fmt::format("PC{:03d};",value);
             }
             
