@@ -10757,11 +10757,90 @@ namespace Yaesu
 
 		namespace FTDX10
 		{
+			enum class TunerState : int
+			{
+				OFF,
+				ON,
+				StartStop
+			};
 
-			using FT891::TunerState;
-			using FT991A::OnOffValue;
+			enum class OnOffValue : int
+			{
+				OFF,
+				ON
+			};
+			
+			enum class MainSubValue :int
+			{
+				MAIN,
+				SUB
+			};
 
-			using FT891::VFO_A_TO_VFO_B;
+			enum class ManualNotchType: int
+			{
+				OnOff,
+				Frequency
+			};
+
+
+			enum class Band : int
+			{
+				_160_Meters,
+				_80_Meters,
+				_60_Meters,
+				_40_Meters,
+				_30_Meters,
+				_20_Meters,
+				_17_Meters,
+				_15_Meters,
+				_12_Meters,
+				_10_Meters,
+				_6_Meters,
+				GEN,
+				MW
+			};
+
+			enum class ChannelDirection : int
+			{
+				UP,
+				DOWN
+			};
+
+
+			struct ManualNotchValue
+			{
+				union value
+				{
+					OnOffValue State;
+					int Frequency;
+				};
+				ManualNotchType Type;				
+				value Value;
+			};
+
+			class VolumeLevel
+			{
+			public:
+				static std::string Set( int Value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class AutoInformation
+			{
+			public:
+				static std::string Set(OnOffValue);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class VFO_A_TO_VFO_B
+			{
+			public:
+				static std::string Set();
+			};
+
 			class AntennaTunerControl
 			{
 			public:
@@ -10770,10 +10849,20 @@ namespace Yaesu
 				static TunerState Answer(std::string data);
 			};
 
-			using FT891::VolumeLevel;
-			using FT991A::AutoInformation;
-			using FT891::VFO_A_toMemoryChannel;
-			using FTDX101::AMCOutputLevel;
+
+			class VFO_A_toMemoryChannel
+			{
+			public:
+				static std::string Set();
+			};
+
+			class AMCOutPutLevel
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
 
 			class AntiVoxLevel
 			{
@@ -10783,11 +10872,885 @@ namespace Yaesu
 				static int Answer(std::string data);
 			};
 
-			using FT891::VFO_B_TO_VFO_A;
-			using FT991A::AutoNotch;
-			using FTDX101::MainSubValue;
-			using FTDX101::BandDown;
-			using FTDX101::BandUp;
+
+			class VFO_B_TO_VFO_A
+			{
+			public:
+				static std::string Set();
+			};
+			
+
+			
+			class AutoNotch
+			{
+			public:
+				static std::string Set(OnOffValue);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class BandDown
+			{
+			public:
+				static std::string Set(MainSubValue value);
+				
+			};
+
+
+			class BreakIn
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+			
+
+			class VFO_B_ToMemory
+			{
+			public:
+				static std::string Set();
+				
+			};
+
+
+			class ManualNotch
+			{
+			public:
+				static std::string Set(ManualNotchValue value);
+				static std::string Read(ManualNotchType Type);
+				static ManualNotchValue Answer(std::string data);
+			};
+			
+
+			class BandSelect
+			{
+			public:
+				static std::string Set(Band value);
+			
+			};
+
+
+			class BandUp
+			{
+			public:
+				static std::string Set(MainSubValue value);
+			
+			};
+
+			class Busy
+			{
+			public:				
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum class ClarifierType : int
+			{
+				Setting,
+				Frequency
+			};
+
+			struct ClarifierValue
+			{
+				MainSubValue Band;
+				ClarifierType Type;
+				union value {
+					OnOffValue RXOnOff;
+					OnOffValue TXOnOff;
+					int Frequency;
+				};
+				value Value;
+			};
+
+
+			class ClarifierOnOff
+			{
+			public:
+				static std::string Set(ClarifierValue value);
+				static std::string Read(ClarifierValue value);
+				static ClarifierValue Answer(std::string data);
+			};
+
+
+			class ChannelUpDown
+			{
+			public:
+				static std::string Set(ChannelDirection value);
+			};
+			
+			struct CTCSSToneValue
+			{
+				MainSubValue Band;
+				int Value;
+			};
+
+
+			class CTCSSToneFrequency
+			{
+			public:
+				static std::string Set(CTCSSToneValue value);
+				static std::string Read(MainSubValue value);
+				static CTCSSToneValue Answer(std::string data);
+			};
+
+			enum class ContourType : int
+			{
+				OnOff,
+				Freq,
+				APFOnOff,
+				APFFreq
+			};
+
+			struct ContourValue
+			{
+				ContourType Type;
+				union value
+				{
+					OnOffValue OnOff;
+					int Frequency;
+				};
+
+				value Value;
+			};
+
+
+			class Countour
+			{
+			public:
+				static std::string Set(ContourValue value);
+				static std::string Read(ContourType type);
+				static ContourValue Answer(std::string data);
+			};
+
+
+			class CWSpot
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum class CTCSSStateType : int
+			{
+				OFF,
+				ENC_DEC,
+				ENC
+			};
+
+			struct CTCSSStateValue
+			{
+				MainSubValue Band;
+				CTCSSStateType Type;
+			};
+
+
+			class CTCSS
+			{
+			public:
+				static std::string Set(CTCSSStateValue value);
+				static std::string Read(MainSubValue value);
+				static CTCSSStateValue Answer(std::string data);
+			};
+
+			struct DimmerValue
+			{
+				int TFTContrast;
+				int TFTBrightness;
+				int LEDBrightness;
+			};
+
+
+			class Dimmer
+			{
+			public:
+				static std::string Set(DimmerValue value);
+				static std::string Read();
+				static DimmerValue Answer(std::string data);
+			};
+
+
+			class MicDown
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class DateTimeType : int
+			{
+				Date,
+				Time
+			};
+
+
+			struct DateAndTimeValue
+			{
+				DateTimeType Type;
+				std::string Value; 
+			};
+
+
+			class DateAndTime
+			{
+			public:
+				static std::string Set(DateAndTimeValue value);
+				static std::string Read(DateTimeType value);
+				static DateAndTimeValue Answer(std::string data);
+			};
+
+			enum class EncoderType : int
+			{
+				MainEncoder,
+				MPVDKnob,
+				MainNotchEncoder = 4,
+				MainContourEncoder,
+				MULTIKnob = 8
+			};
+
+			struct EncoderValue
+			{
+				EncoderType Type;
+				int Value = 1;
+			};
+			
+			class EncoderDown
+			{
+			public:
+				static std::string Set(EncoderValue value);
+				
+			};
+
+
+			class EncoderUp
+			{
+			public:
+				static std::string Set(EncoderValue value);
+			
+			};
+
+			enum class MenuGroup : int
+			{
+				RadioSettings = 1,
+				CWSettings,
+				OperationSetting,
+				DisplaySetting,
+				ExtensionSetting
+			};
+
+			enum class RadioSettingsType : int
+			{
+				ModeSSB = 1,
+				ModeAM,
+				ModeFM,
+				ModePSK_Data,
+				ModeRTTY,
+				ENC_DEC_PSK,
+				ENC_DEC_RTTY
+			};
+
+			enum class SSBFunction : int
+			{
+				AF_TREBLE_GAIN = 1,
+				AF_MIDDLE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				SSB_OUT_LEVEL,
+				TX_BPF_SEL,
+				SSB_MOD_SOURCE,
+				REAR_SELECT,
+				REAR_PORT_GAIN,
+				REAR_PORT_PTT
+			};
+
+
+			enum class AMFunction : int
+			{
+				AF_TREBLE_GAIN = 1,
+				AF_MIDDLE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				AM_OUT_LEVEL,
+				TX_BPF_SEL,
+				AM_MOD_SOURCE,
+				MIC_GAIN,
+				REAR_SELECT,
+				REAR_PORT_GAIN,
+				REAR_PORT_PTT
+			};
+
+
+			enum class FMFunction : int
+			{
+				AF_TREBLE_GAIN = 1,
+				AF_MIDDLE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				FM_OUT_LEVEL,		
+				FM_MOD_SOURCE,
+				MIC_GAIN,
+				REAR_SELECT,
+				REAR_PORT_GAIN,
+				REAR_PORT_PTT,
+				RPT_SHIFT_28,
+				RPT_SHIFT_50,
+				RPT,
+				TONE_FREQ,
+				TONE_ENC
+			};
+
+			enum class RepeaterOffset : int
+			{
+				Negative,
+				Simplex,
+				Postive
+			};
+
+			enum class SlopeValue : int
+			{
+				_6db,
+				_18db
+			};
+
+			enum class ModulationSource : int
+			{
+				MIC,
+				REAR
+			};
+
+			enum class RearSelectValue : int
+			{
+				DATA,
+				USB
+			};
+
+			enum class PTTSelectValue : int
+			{
+				DKAY,
+				RTS,
+				DTR
+			};
+			
+			enum class ToneEncodingValue
+			{
+				OFF,
+				ENC,
+				TSQ
+			};
+
+			class Menu
+			{
+			public:
+				class RadioSetting
+				{
+					
+				public:
+					class ModeSSB
+					{
+
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class HCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class SSB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class TX_BPF_SEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class SSB_MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSource value);
+							static std::string Read();
+							static ModulationSource Answer(std::string data);
+						};
+
+
+						class REAR_SELECT
+						{
+						public:
+							static std::string Set(RearSelectValue value);
+							static std::string Read();
+							static RearSelectValue Answer(std::string data);
+						};
+
+
+						class RPORT_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(PTTSelectValue value);
+							static std::string Read();
+							static PTTSelectValue Answer(std::string data);
+						};
+
+
+					};
+					class ModeAM
+					{
+
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class HCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class AM_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class TX_BPF_SEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AM_MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSource value);
+							static std::string Read();
+							static ModulationSource Answer(std::string data);
+						};
+
+
+						class MIC_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_SELECT
+						{
+						public:
+							static std::string Set(RearSelectValue value);
+							static std::string Read();
+							static RearSelectValue Answer(std::string data);
+						};
+
+						class RPORT_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(PTTSelectValue value);
+							static std::string Read();
+							static PTTSelectValue Answer(std::string data);
+						};
+
+
+					};
+					class ModeFM
+					{
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class HCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class FM_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						
+
+						class FM_MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSource value);
+							static std::string Read();
+							static ModulationSource Answer(std::string data);
+						};
+
+
+						class MIC_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_SELECT
+						{
+						public:
+							static std::string Set(RearSelectValue value);
+							static std::string Read();
+							static RearSelectValue Answer(std::string data);
+						};
+
+						class RPORT_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(PTTSelectValue value);
+							static std::string Read();
+							static PTTSelectValue Answer(std::string data);
+						};
+
+
+						class RPT_SHIFT_28
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						
+
+						class RPT_SHIFT_50
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RPT
+						{
+						public:
+							static std::string Set(RepeaterOffset value);
+							static std::string Read();
+							static RepeaterOffset Answer(std::string data);
+						};
+
+
+						class TONE_FREQ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class TONE_ENCODING
+						{
+						public:
+							static std::string Set(ToneEncodingValue value);
+							static std::string Read();
+							static ToneEncodingValue Answer(std::string data);
+						};
+
+
+					};
+					class ModePSK_DATA
+					{
+
+					};
+					class ModeRTTY
+					{
+
+					};
+					class EMC_DEC_PSK
+					{
+
+					};
+					class ENC_DEC_RTTY
+					{
+
+					};
+				};
+			
+			};
 		};
 
 	};	   // end Commands

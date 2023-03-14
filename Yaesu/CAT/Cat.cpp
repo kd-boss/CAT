@@ -9021,13 +9021,13 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string OperatingMode::Set(ModeSettingValue value)
             {
-                return fmt::format("MD{:1d}{:1d};",
+                return fmt::format("MD{:1d}{:1x};",
                     static_cast<int>(value.Band),
                     static_cast<int>(value.Mode));
             }
             std::string OperatingMode::Set(MainSubValue Band, ModeValue Mode)
             {
-                return fmt::format("MD{:1d}{:1d};",
+                return fmt::format("MD{:1d}{:1x};",
                     static_cast<int>(Band),
                     static_cast<int>(Mode));
             }
@@ -9539,7 +9539,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             std::string PowerControl::Set(int value)
             {
                 value = value < 5 ? 5 : value;
-                value = value > 100 ? 100 : value;
+                value = value > 200 ? 200 : value;
                 return fmt::format("PC{:03d};", value);
             }
 
@@ -17300,19 +17300,60 @@ RigType IDENTIFICATION::Answer(std::string data)
 
 		namespace FTDX10
 		{
-			std::string AntennaTunerControl::Set(FTDX10::TunerState value)
+
+			std::string VFO_A_TO_VFO_B::Set()
 			{
-				return FT891::AntennaTunerControl::Set(value);
-			}
-			std::string AntennaTunerControl::Read()
-			{
-				return FT891::AntennaTunerControl::Read();
+                return "AB;";
 			}
 
-			FTDX10::TunerState AntennaTunerControl::Answer(std::string data)
-			{
-				return FT891::AntennaTunerControl::Answer(data);
-			}
+
+            std::string VolumeLevel::Set(int value)
+            {
+                return fmt::format("AG0{:3d};", value);
+            }
+
+            std::string VolumeLevel::Read()
+            {
+                return "AG0;";
+            }
+
+            int VolumeLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(3, 3));
+            }
+
+            std::string AutoInformation::Set(OnOffValue value)
+            {
+                return fmt::format("AI{:1d};", static_cast<int>(value));
+            }
+
+            std::string AutoInformation::Read()
+            {
+                return "AI;";
+            }
+
+            OnOffValue AutoInformation::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2, 1)));
+            }
+
+
+
+            std::string AMCOutPutLevel::Set(int value)
+            {
+                return fmt::format("AO{:3d};", value);
+            }
+
+            std::string AMCOutPutLevel::Read()
+            {
+                return "AO;";
+            }
+
+            int AMCOutPutLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2, 3));
+            }
+
 
 			std::string AntiVoxLevel::Set(int value)
 			{
@@ -17329,6 +17370,1462 @@ RigType IDENTIFICATION::Answer(std::string data)
 				return std::stoi(data.substr(2, 3));
 			}
 
+			std::string AntennaTunerControl::Set(FTDX10::TunerState value)
+			{
+				std::string str = fmt::format("AC00{:01d};", static_cast<int>(value));
+				return str.c_str();
+			}
+			std::string AntennaTunerControl::Read()
+			{
+				return FT891::AntennaTunerControl::Read();
+			}
+
+			FTDX10::TunerState AntennaTunerControl::Answer(std::string data)
+			{
+				return (TunerState)std::stoi(data.substr(4, 1));
+			}
+
+
+			std::string VFO_A_toMemoryChannel::Set()
+			{
+                return "AM;";
+			}
+
+           /* std::string AntiVoxLevel::Set(int value)
+            {
+                return fmt::format("AV{:3d};");
+            }
+
+            std::string AntiVoxLevel::Read()
+            {
+                return "AV;";
+            }
+
+            int AntiVoxLevel::Answer(std::string data)
+            {
+                return std::stoi(data.substr(2, 3));
+            }*/
+
+			std::string VFO_B_TO_VFO_A::Set()
+			{
+                return "BA;";
+			}
+
+
+
+            std::string AutoNotch::Set(OnOffValue value)
+            {
+                return fmt::format("BC0{:1d};", static_cast<int>(value));
+            }
+
+            std::string AutoNotch::Read()
+            {
+                return "BC0";
+            }
+
+            OnOffValue AutoNotch::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(3, 1)));
+            }
+
+            std::string BandDown::Set(MainSubValue value)
+            {
+                return fmt::format("BD{:1d};", static_cast<int>(value));
+            }
+
+            std::string BreakIn::Set(OnOffValue value)
+            {
+                return fmt::format("BI{:1d};", static_cast<int>(value));
+            }
+
+            std::string BreakIn::Read()
+            {
+                return "BI;";
+            }
+
+            OnOffValue BreakIn::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2, 1)));
+            }
+
+            std::string VFO_B_ToMemory::Set()
+            {
+                return "BM;";
+            }
+
+            std::string ManualNotch::Set(ManualNotchValue value)
+            {
+                return fmt::format("BP0{:1d}{:3d};",
+                    static_cast<int>(value.Type),
+                    static_cast<int>(value.Value.Frequency));
+            }
+
+            std::string ManualNotch::Read(ManualNotchType type)
+            {
+                return fmt::format("BP0{:1d};", static_cast<int>(type));
+            }
+
+            ManualNotchValue ManualNotch::Answer(std::string data)
+            {
+                ManualNotchValue ret;
+                ret.Type = static_cast<ManualNotchType>(std::stoi(data.substr(3, 1)));
+                ret.Value.Frequency = std::stoi(data.substr(4, 3));
+                return ret;
+            }
+
+            std::string BandSelect::Set(Band value)
+            {
+                return fmt::format("BS{:2d};", static_cast<int>(value));
+            }
+
+            std::string BandUp::Set(MainSubValue value)
+            {
+                return fmt::format("BU{:1d};", static_cast<int>(value));
+            }
+
+            std::string Busy::Read()
+            {
+                return "BY;";
+            }
+
+            OnOffValue Busy::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2, 1)));
+            }
+
+
+
+            std::string ClarifierOnOff::Set(ClarifierValue value)
+            {
+                switch (value.Type)
+                {
+                    case ClarifierType::Setting:
+
+                        return fmt::format("CF{:1d}0{:1d}{:1d}{:1d}000;",
+                            static_cast<int>(value.Band),
+                            static_cast<int>(value.Type),
+                            static_cast<int>(value.Value.RXOnOff),
+                            static_cast<int>(value.Value.TXOnOff)
+                        );
+                    break;
+                    case ClarifierType::Frequency:
+                        return fmt::format("CF{:1d}0{:1d}{:5d+};",
+                            static_cast<int>(value.Band),
+                            static_cast<int>(value.Type),
+                            static_cast<int>(value.Value.Frequency)
+                        );
+                        break;
+                }
+                return "";
+            }
+
+            std::string ClarifierOnOff::Read(ClarifierValue value)
+            {
+                return fmt::format("CF{:1d}0{:1d};",
+                    static_cast<int>(value.Band),
+                    static_cast<int>(value.Type));
+            }
+
+            ClarifierValue ClarifierOnOff::Answer(std::string data)
+            {
+                ClarifierValue ret;
+                ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2, 1)));
+                ret.Type = static_cast<ClarifierType>(std::stoi(data.substr(4, 1)));
+                switch(ret.Type)
+                {
+                    case ClarifierType::Setting:
+                        ret.Value.RXOnOff = static_cast<OnOffValue>(std::stoi(data.substr(5, 1)));
+                        ret.Value.TXOnOff = static_cast<OnOffValue>(std::stoi(data.substr(6, 1)));
+                        break;
+                    case ClarifierType::Frequency:
+                        ret.Value.Frequency = std::stoi(data.substr(5, 5));
+                        break;
+                }
+                return ret;
+            }
+
+            std::string ChannelUpDown::Set(ChannelDirection value)
+            {
+                return fmt::format("CH{:1d};", static_cast<int>(value));
+            }
+
+
+
+            std::string CTCSSToneFrequency::Set(CTCSSToneValue value)
+            {
+                return fmt::format("CN{:1d}0{:3d};", static_cast<int>(value.Band), value.Value);
+            }
+
+            std::string CTCSSToneFrequency::Read(MainSubValue value)
+            {
+                return fmt::format("CN{:1d}0;", static_cast<int>(value));
+            }
+
+            CTCSSToneValue CTCSSToneFrequency::Answer(std::string data)
+            {
+                CTCSSToneValue ret;
+                ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2, 1)));
+                ret.Value = std::stoi(data.substr(4, 3));
+                return ret;
+            }
+
+
+
+            std::string Countour::Set(ContourValue value)
+            {
+                switch (value.Type)
+                {
+                    case ContourType::APFFreq:
+						if (value.Value.Frequency > 50) value.Value.Frequency = 50;
+						if (value.Value.Frequency < 0) value.Value.Frequency = 0;
+						return fmt::format("CO0{:1d}{:4d};", static_cast<int>(value.Type), value.Value.Frequency);
+                        break;
+                    case ContourType::Freq:
+                        if (value.Value.Frequency > 3200) value.Value.Frequency = 3200;
+                        if (value.Value.Frequency < 10) value.Value.Frequency = 10;
+                        return fmt::format("CO0{:1d}{:4d};", static_cast<int>(value.Type), value.Value.Frequency);
+                        break;
+                    case ContourType::APFOnOff:
+                    case ContourType::OnOff:
+                        return fmt::format("CO0{:1d}{:4d};", static_cast<int>(value.Type), static_cast<int>(value.Value.OnOff));
+                        break;                      
+                }
+                return "";
+            }
+
+            std::string Countour::Read(ContourType type)
+            {
+                return fmt::format("CO0{:1d};", static_cast<int>(type));
+            }
+
+            ContourValue Countour::Answer(std::string data)
+            {
+                ContourValue ret;
+                ret.Type = static_cast<ContourType>(std::stoi(data.substr(3, 1)));
+                switch (ret.Type)
+                {
+                    case ContourType::APFFreq:
+                    case ContourType::Freq:
+                        ret.Value.Frequency = std::stoi(data.substr(4, 4));
+                        break;
+                    case ContourType::APFOnOff:
+                    case ContourType::OnOff:
+                        ret.Value.OnOff = static_cast<OnOffValue>(std::stoi(data.substr(4, 4)));
+                        break;
+                }
+                return ret;
+            }
+
+            std::string CWSpot::Set(OnOffValue value)
+            {
+                return fmt::format("CS{:1d};", static_cast<int>(value));
+            }
+
+            std::string CWSpot::Read()
+            {
+                return "CS;";
+            }
+
+            OnOffValue CWSpot::Answer(std::string data)
+            {
+                return static_cast<OnOffValue>(std::stoi(data.substr(2, 1)));
+            }
+
+
+
+            std::string CTCSS::Set(CTCSSStateValue value)
+            {
+                return fmt::format("CT{:1d}{:1d};",
+                    static_cast<int>(value.Band),
+                    static_cast<int>(value.Type)
+                );
+            }
+
+            std::string CTCSS::Read(MainSubValue value)
+            {
+                return fmt::format("CT{:1d};", static_cast<int>(value));
+            }
+
+            CTCSSStateValue CTCSS::Answer(std::string data)
+            {
+                CTCSSStateValue ret;
+                ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2, 1)));
+                ret.Type = static_cast<CTCSSStateType>(std::stoi(data.substr(3, 1)));
+                return ret;
+            }
+
+
+
+
+            std::string Dimmer::Set(DimmerValue value)
+            {
+                if (value.LEDBrightness > 20) value.LEDBrightness = 20;
+                if (value.LEDBrightness < 0) value.LEDBrightness = 0;
+                if (value.TFTBrightness > 20) value.TFTBrightness = 20;
+                if (value.TFTContrast < 0) value.TFTContrast = 0;
+                if (value.TFTContrast > 20) value.TFTContrast = 20;
+                return fmt::format("DA00{:2d}{2d}{2d};", value.TFTContrast, value.TFTBrightness, value.LEDBrightness);
+            }
+
+            std::string Dimmer::Read()
+            {
+                return "DA;";
+            }
+
+            DimmerValue Dimmer::Answer(std::string data)
+            {
+                DimmerValue ret;
+                ret.TFTContrast = std::stoi(data.substr(4, 2));
+                ret.TFTBrightness = std::stoi(data.substr(6, 2));
+                ret.LEDBrightness = std::stoi(data.substr(8, 2));
+                return ret;
+            }
+
+            std::string MicDown::Set()
+            {
+                return "DN;";
+            }
+
+            std::string DateAndTime::Set(DateAndTimeValue value)
+            {
+                return fmt::format("DT{:1d}{};", static_cast<int>(value.Type), value.Value);
+            }
+
+            std::string DateAndTime::Read(DateTimeType value)
+            {
+                return fmt::format("DT{:1d};", static_cast<int>(value));
+            }
+
+            DateAndTimeValue DateAndTime::Answer(std::string data)
+            {
+                DateAndTimeValue ret;
+                ret.Type = static_cast<DateTimeType>(std::stoi(data.substr(3, 1)));
+                ret.Value = data.substr(4, data.length() - 5);
+                return ret;
+            }
+
+            std::string EncoderDown::Set(EncoderValue value)
+            {
+                if (value.Value < 1) value.Value = 1;
+                if (value.Value > 99) value.Value = 99;
+                return fmt::format("ED{:1d}{:2d};", static_cast<int>(value.Type), value.Value);
+            }
+
+            std::string EncoderUp::Set(EncoderValue value)
+            {
+				if (value.Value < 1) value.Value = 1;
+				if (value.Value > 99) value.Value = 99;
+				return fmt::format("EU{:1d}{:2d};", static_cast<int>(value.Type), value.Value);
+            }
+
+
+
+            std::string Menu::RadioSetting::ModeSSB::AF_TREBEL_GAIN::Set(int value)
+            {
+              
+                if (value > 10) value = 10;
+                if (value < -10) value = -10;
+                return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeSSB),
+                    static_cast<int>(SSBFunction::AF_TREBLE_GAIN),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeSSB::AF_TREBEL_GAIN::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeSSB),
+                    static_cast<int>(SSBFunction::AF_TREBLE_GAIN));
+            }
+
+            int Menu::RadioSetting::ModeSSB::AF_TREBEL_GAIN::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 3));
+            }
+
+			std::string Menu::RadioSetting::ModeSSB::AF_MIDDLE_GAIN::Set(int value)
+			{
+
+				if (value > 10) value = 10;
+				if (value < -10) value = -10;
+				return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AF_MIDDLE_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AF_MIDDLE_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AF_MIDDLE_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeSSB::AF_MIDDLE_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AF_BASS_GAIN::Set(int value)
+			{
+
+				if (value > 10) value = 10;
+				if (value < -10) value = -10;
+				return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AF_BASS_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AF_BASS_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AF_BASS_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeSSB::AF_BASS_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+            std::string Menu::RadioSetting::ModeSSB::AGC_FAST_DELAY::Set(int value)
+            {
+                if (value < 20) value = 20;
+                int remainder = (value % 20);
+                if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+                return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeSSB),
+                    static_cast<int>(SSBFunction::AGC_FAST_DELAY),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeSSB::AGC_FAST_DELAY::Read()
+            {
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AGC_FAST_DELAY));
+            }
+
+            int Menu::RadioSetting::ModeSSB::AGC_FAST_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 4));
+            }
+
+			std::string Menu::RadioSetting::ModeSSB::AGC_MID_DELAY::Set(int value)
+			{
+				if (value < 20) value = 20;
+				int remainder = (value % 20);
+				if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AGC_MID_DELAY),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AGC_MID_DELAY::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AGC_MID_DELAY));
+			}
+
+			int Menu::RadioSetting::ModeSSB::AGC_MID_DELAY::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AGC_SLOW_DELAY::Set(int value)
+			{
+				if (value < 20) value = 20;
+				int remainder = (value % 20);
+				if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AGC_SLOW_DELAY),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::AGC_SLOW_DELAY::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::AGC_SLOW_DELAY));
+			}
+
+			int Menu::RadioSetting::ModeSSB::AGC_SLOW_DELAY::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+
+
+            std::string Menu::RadioSetting::ModeSSB::LCUT_FREQ::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 19) value = 19;
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::LCUT_FREQ),
+					value);
+            }
+
+            std::string Menu::RadioSetting::ModeSSB::LCUT_FREQ::Read()
+            {
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::LCUT_FREQ));
+            }
+
+            int Menu::RadioSetting::ModeSSB::LCUT_FREQ::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 2));
+            }
+
+
+
+            std::string Menu::RadioSetting::ModeSSB::LCUT_SLOP::Set(SlopeValue value)
+            {
+				return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::LCUT_SLOPE),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeSSB::LCUT_SLOP::Read()
+            {
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::LCUT_SLOPE));
+            }
+
+            SlopeValue Menu::RadioSetting::ModeSSB::LCUT_SLOP::Answer(std::string data)
+            {
+                return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+            }
+
+			std::string Menu::RadioSetting::ModeSSB::HCUT_FREQ::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 67) value = 67;
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::HCUT_FREQ),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::HCUT_FREQ::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::HCUT_FREQ));
+			}
+
+			int Menu::RadioSetting::ModeSSB::HCUT_FREQ::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 2));
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::HCUT_SLOP::Set(SlopeValue value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::HCUT_SLOPE),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::HCUT_SLOP::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::HCUT_SLOPE));
+			}
+
+			SlopeValue Menu::RadioSetting::ModeSSB::HCUT_SLOP::Answer(std::string data)
+			{
+				return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+			}
+
+			std::string Menu::RadioSetting::ModeSSB::SSB_OUT_LEVEL::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 100) value = 100;
+				return fmt::format("EX{:2d}{:2d}{2d}{:3d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeSSB),
+					static_cast<int>(SSBFunction::SSB_OUT_LEVEL),
+					value);
+			}
+
+
+
+
+            std::string Menu::RadioSetting::ModeAM::AF_TREBEL_GAIN::Set(int value)
+            {
+
+                if (value > 10) value = 10;
+                if (value < -10) value = -10;
+                return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_TREBLE_GAIN),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AF_TREBEL_GAIN::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_TREBLE_GAIN));
+            }
+
+            int Menu::RadioSetting::ModeAM::AF_TREBEL_GAIN::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 3));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AF_MIDDLE_GAIN::Set(int value)
+            {
+
+                if (value > 10) value = 10;
+                if (value < -10) value = -10;
+                return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_MIDDLE_GAIN),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AF_MIDDLE_GAIN::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_MIDDLE_GAIN));
+            }
+
+            int Menu::RadioSetting::ModeAM::AF_MIDDLE_GAIN::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 3));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AF_BASS_GAIN::Set(int value)
+            {
+
+                if (value > 10) value = 10;
+                if (value < -10) value = -10;
+                return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_BASS_GAIN),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AF_BASS_GAIN::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AF_BASS_GAIN));
+            }
+
+            int Menu::RadioSetting::ModeAM::AF_BASS_GAIN::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 3));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_FAST_DELAY::Set(int value)
+            {
+                if (value < 20) value = 20;
+                int remainder = (value % 20);
+                if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+                return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_FAST_DELAY),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_FAST_DELAY::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_FAST_DELAY));
+            }
+
+            int Menu::RadioSetting::ModeAM::AGC_FAST_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 4));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_MID_DELAY::Set(int value)
+            {
+                if (value < 20) value = 20;
+                int remainder = (value % 20);
+                if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+                return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_MID_DELAY),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_MID_DELAY::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_MID_DELAY));
+            }
+
+            int Menu::RadioSetting::ModeAM::AGC_MID_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 4));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_SLOW_DELAY::Set(int value)
+            {
+                if (value < 20) value = 20;
+                int remainder = (value % 20);
+                if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+                return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_SLOW_DELAY),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AGC_SLOW_DELAY::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AGC_SLOW_DELAY));
+            }
+
+            int Menu::RadioSetting::ModeAM::AGC_SLOW_DELAY::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 4));
+            }
+
+
+
+            std::string Menu::RadioSetting::ModeAM::LCUT_FREQ::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 19) value = 19;
+                return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::LCUT_FREQ),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::LCUT_FREQ::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::LCUT_FREQ));
+            }
+
+            int Menu::RadioSetting::ModeAM::LCUT_FREQ::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 2));
+            }
+
+
+
+            std::string Menu::RadioSetting::ModeAM::LCUT_SLOP::Set(SlopeValue value)
+            {
+                return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::LCUT_SLOPE),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::LCUT_SLOP::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::LCUT_SLOPE));
+            }
+
+            SlopeValue Menu::RadioSetting::ModeAM::LCUT_SLOP::Answer(std::string data)
+            {
+                return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::HCUT_FREQ::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 67) value = 67;
+                return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::HCUT_FREQ),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::HCUT_FREQ::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::HCUT_FREQ));
+            }
+
+            int Menu::RadioSetting::ModeAM::HCUT_FREQ::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 2));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::HCUT_SLOP::Set(SlopeValue value)
+            {
+                return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::HCUT_SLOPE),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::HCUT_SLOP::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::HCUT_SLOPE));
+            }
+
+            SlopeValue Menu::RadioSetting::ModeAM::HCUT_SLOP::Answer(std::string data)
+            {
+                return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AM_OUT_LEVEL::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                return fmt::format("EX{:2d}{:2d}{2d}{:3d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AM_OUT_LEVEL),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::TX_BPF_SEL::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 4) value = 4;
+                return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::TX_BPF_SEL),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::TX_BPF_SEL::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::TX_BPF_SEL));
+            }
+
+            int Menu::RadioSetting::ModeAM::TX_BPF_SEL::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 1));
+            }
+
+
+
+            std::string Menu::RadioSetting::ModeAM::AM_MOD_SOURCE::Set(ModulationSource value)
+            {
+                return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AM_MOD_SOURCE),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::AM_MOD_SOURCE::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::AM_MOD_SOURCE));
+            }
+
+            ModulationSource Menu::RadioSetting::ModeAM::AM_MOD_SOURCE::Answer(std::string data)
+            {
+                return static_cast<ModulationSource>(std::stoi(data.substr(8, 1)));
+            }
+
+			std::string Menu::RadioSetting::ModeAM::MIC_GAIN::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 100 && value < 1000) value = 100;
+                
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeAM),
+					static_cast<int>(AMFunction::MIC_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeAM::MIC_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeAM),
+					static_cast<int>(AMFunction::MIC_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeAM::MIC_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+            std::string Menu::RadioSetting::ModeAM::REAR_SELECT::Set(RearSelectValue value)
+            {
+                return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_SELECT),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::REAR_SELECT::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_SELECT));
+            }
+
+            RearSelectValue Menu::RadioSetting::ModeAM::REAR_SELECT::Answer(std::string data)
+            {
+                return static_cast<RearSelectValue>(std::stoi(data.substr(8, 1)));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::RPORT_GAIN::Set(int value)
+            {
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                return fmt::format("EX{:2d}{:2d}{2d}{:3d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_PORT_GAIN),
+                    value);
+            }
+
+            std::string Menu::RadioSetting::ModeAM::RPORT_GAIN::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_PORT_GAIN));
+            }
+
+            int Menu::RadioSetting::ModeAM::RPORT_GAIN::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 3));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::RPTT_SELECT::Set(PTTSelectValue value)
+            {
+                return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_PORT_PTT),
+                    static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeAM::RPTT_SELECT::Read()
+            {
+                return fmt::format("EX{:2d}{:2d}{:2d};",
+                    static_cast<int>(MenuGroup::RadioSettings),
+                    static_cast<int>(RadioSettingsType::ModeAM),
+                    static_cast<int>(AMFunction::REAR_PORT_PTT));
+            }
+
+            PTTSelectValue Menu::RadioSetting::ModeAM::RPTT_SELECT::Answer(std::string data)
+            {
+                return static_cast<PTTSelectValue>(std::stoi(data.substr(8, 1)));
+            }
+
+
+
+			std::string Menu::RadioSetting::ModeFM::AF_TREBEL_GAIN::Set(int value)
+			{
+
+				if (value > 10) value = 10;
+				if (value < -10) value = -10;
+				return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_TREBLE_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AF_TREBEL_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_TREBLE_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeFM::AF_TREBEL_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AF_MIDDLE_GAIN::Set(int value)
+			{
+
+				if (value > 10) value = 10;
+				if (value < -10) value = -10;
+				return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_MIDDLE_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AF_MIDDLE_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_MIDDLE_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeFM::AF_MIDDLE_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AF_BASS_GAIN::Set(int value)
+			{
+
+				if (value > 10) value = 10;
+				if (value < -10) value = -10;
+				return fmt::format("EX{:2d}{:2d}{:2d}{:3d+};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_BASS_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AF_BASS_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AF_BASS_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeFM::AF_BASS_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_FAST_DELAY::Set(int value)
+			{
+				if (value < 20) value = 20;
+				int remainder = (value % 20);
+				if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_FAST_DELAY),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_FAST_DELAY::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_FAST_DELAY));
+			}
+
+			int Menu::RadioSetting::ModeFM::AGC_FAST_DELAY::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_MID_DELAY::Set(int value)
+			{
+				if (value < 20) value = 20;
+				int remainder = (value % 20);
+				if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_MID_DELAY),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_MID_DELAY::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_MID_DELAY));
+			}
+
+			int Menu::RadioSetting::ModeFM::AGC_MID_DELAY::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_SLOW_DELAY::Set(int value)
+			{
+				if (value < 20) value = 20;
+				int remainder = (value % 20);
+				if (remainder != 0) value = remainder >= 10 ? value + (20 - remainder) : value - remainder;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_SLOW_DELAY),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::AGC_SLOW_DELAY::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::AGC_SLOW_DELAY));
+			}
+
+			int Menu::RadioSetting::ModeFM::AGC_SLOW_DELAY::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+
+
+			std::string Menu::RadioSetting::ModeFM::LCUT_FREQ::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 19) value = 19;
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::LCUT_FREQ),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::LCUT_FREQ::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::LCUT_FREQ));
+			}
+
+			int Menu::RadioSetting::ModeFM::LCUT_FREQ::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 2));
+			}
+
+
+
+			std::string Menu::RadioSetting::ModeFM::LCUT_SLOP::Set(SlopeValue value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::LCUT_SLOPE),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::LCUT_SLOP::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::LCUT_SLOPE));
+			}
+
+			SlopeValue Menu::RadioSetting::ModeFM::LCUT_SLOP::Answer(std::string data)
+			{
+				return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::HCUT_FREQ::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 67) value = 67;
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::HCUT_FREQ),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::HCUT_FREQ::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::HCUT_FREQ));
+			}
+
+			int Menu::RadioSetting::ModeFM::HCUT_FREQ::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 2));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::HCUT_SLOP::Set(SlopeValue value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::HCUT_SLOPE),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::HCUT_SLOP::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::HCUT_SLOPE));
+			}
+
+			SlopeValue Menu::RadioSetting::ModeFM::HCUT_SLOP::Answer(std::string data)
+			{
+				return static_cast<SlopeValue>(std::stoi(data.substr(8, 1)));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::FM_OUT_LEVEL::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 100) value = 100;
+				return fmt::format("EX{:2d}{:2d}{2d}{:3d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::FM_OUT_LEVEL),
+					value);
+			}
+
+
+			std::string Menu::RadioSetting::ModeFM::FM_MOD_SOURCE::Set(ModulationSource value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:2d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::FM_MOD_SOURCE),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::FM_MOD_SOURCE::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::FM_MOD_SOURCE));
+			}
+
+			ModulationSource Menu::RadioSetting::ModeFM::FM_MOD_SOURCE::Answer(std::string data)
+			{
+				return static_cast<ModulationSource>(std::stoi(data.substr(8, 1)));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::MIC_GAIN::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 100 && value < 1000) value = 100;
+
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::MIC_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::MIC_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::MIC_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeFM::MIC_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::REAR_SELECT::Set(RearSelectValue value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_SELECT),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::REAR_SELECT::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_SELECT));
+			}
+
+			RearSelectValue Menu::RadioSetting::ModeFM::REAR_SELECT::Answer(std::string data)
+			{
+				return static_cast<RearSelectValue>(std::stoi(data.substr(8, 1)));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::RPORT_GAIN::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 100) value = 100;
+				return fmt::format("EX{:2d}{:2d}{2d}{:3d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_PORT_GAIN),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::RPORT_GAIN::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_PORT_GAIN));
+			}
+
+			int Menu::RadioSetting::ModeFM::RPORT_GAIN::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 3));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::RPTT_SELECT::Set(PTTSelectValue value)
+			{
+				return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_PORT_PTT),
+					static_cast<int>(value));
+			}
+
+			std::string Menu::RadioSetting::ModeFM::RPTT_SELECT::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::REAR_PORT_PTT));
+			}
+
+			PTTSelectValue Menu::RadioSetting::ModeFM::RPTT_SELECT::Answer(std::string data)
+			{
+				return static_cast<PTTSelectValue>(std::stoi(data.substr(8, 1)));
+			}
+
+
+
+            std::string Menu::RadioSetting::ModeFM::RPT_SHIFT_28::Set(int value)
+            {
+				if (value < 0) value = 0;
+				if (value > 1000) value = 1000;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT_SHIFT_28),
+					value);
+            }
+
+            std::string Menu::RadioSetting::ModeFM::RPT_SHIFT_28::Read()
+            {
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT_SHIFT_28));
+            }
+
+            int Menu::RadioSetting::ModeFM::RPT_SHIFT_28::Answer(std::string data)
+            {
+                return std::stoi(data.substr(8, 4));
+            }
+
+			std::string Menu::RadioSetting::ModeFM::RPT_SHIFT_50::Set(int value)
+			{
+				if (value < 0) value = 0;
+				if (value > 4000) value = 4000;
+				return fmt::format("EX{:2d}{:2d}{2d}{:4d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT_SHIFT_50),
+					value);
+			}
+
+			std::string Menu::RadioSetting::ModeFM::RPT_SHIFT_50::Read()
+			{
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT_SHIFT_50));
+			}
+
+			int Menu::RadioSetting::ModeFM::RPT_SHIFT_50::Answer(std::string data)
+			{
+				return std::stoi(data.substr(8, 4));
+			}
+
+
+
+            std::string Menu::RadioSetting::ModeFM::RPT::Set(RepeaterOffset value)
+            {
+				return fmt::format("EX{:2d}{:2d}{2d}{:1d}",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT),
+					static_cast<int>(value));
+            }
+
+            std::string Menu::RadioSetting::ModeFM::RPT::Read()
+            {
+				return fmt::format("EX{:2d}{:2d}{:2d};",
+					static_cast<int>(MenuGroup::RadioSettings),
+					static_cast<int>(RadioSettingsType::ModeFM),
+					static_cast<int>(FMFunction::RPT));
+            }
+
+            RepeaterOffset Menu::RadioSetting::ModeFM::RPT::Answer(std::string data)
+            {
+                return static_cast<RepeaterOffset>(std::stoi(data.substr(8, 1)));
+            }
 
 
 
