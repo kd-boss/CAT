@@ -12,19 +12,24 @@
 #include <FL\Fl_Check_Button.H>
 #include <vector>
 #include "..\CAT\Cat.h"
+#include <algorithm>
+
 
 
 class MemoryEditor : public Fl_Scroll {
+    Fl_Tile* m_tile;
+    int handle(int event);
     public:
     std::vector<std::string> channelNames;
     std::vector<std::string> frequencies;
     std::vector<std::string> clarifiervalues;
-    Yaesu::FT891::Commands::MemoryChannelTagValue* m_newChannel;
-    std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue> m_channels;    
-    MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue>& channels, const char* L);
-    MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue>& chanels, Yaesu::FT891::Commands::MemoryChannelTagValue* newChannel, const char* L);
+    Yaesu::Commands::FT891::MemoryChannelTagValue* m_newChannel;
+    std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue> m_channels;    
+    MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue>& channels, const char* L);
+    MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue>& chanels, Yaesu::Commands::FT891::MemoryChannelTagValue* newChannel, const char* L);
     Fl_Button* Ok;
     Fl_Widget*** w;
     static char** names;
+    
 };
 #endif

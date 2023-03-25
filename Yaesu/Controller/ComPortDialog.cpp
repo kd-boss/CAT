@@ -28,7 +28,7 @@ ComPortDialog::ComPortDialog() : Fl_Window(300,200)
 
 void ComPortDialog::OkClicked()
 {
-	Rate = static_cast<Yaesu::FT891::Commands::CatRateValue>(CatRateChoice->value());
+	Rate = static_cast<Yaesu::Commands::FT891::CatRateValue>(CatRateChoice->value());
 	m_PortName = PortName->value();
 	this->hide();
 }

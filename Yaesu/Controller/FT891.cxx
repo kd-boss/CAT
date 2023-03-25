@@ -8,7 +8,7 @@
 using namespace boost;
 using namespace std;
 using namespace asio;
-using namespace Yaesu::FT891::Commands;
+using namespace Yaesu::Commands::FT891;
 using namespace std::placeholders;
 using namespace boost;
 
@@ -19,6 +19,22 @@ void OnSaveMemory(Fl_Button* o, void* v)
 	((FT891*)v)->SaveMemoryChannels();
 }
 
+void OnCancelMemory(Fl_Button* o, void* v)
+{
+	((Fl_Double_Window*)v)->hide();
+}
+
+void OnOperationChoice(Fl_Widget* o, void* v)
+{
+	FT891* pwin = (FT891*)v;
+	pwin->OnOperationChoice((Fl_Choice*)o);
+}
+
+void FT891::OnOperationChoice(Fl_Choice* o)
+{
+	this->OperationValue = static_cast<Yaesu::Commands::FT891::OperationType>(o->value());
+}
+
 void FT891::SaveMemoryChannels()
 {
 	
@@ -27,33 +43,20 @@ void FT891::SaveMemoryChannels()
 	for(auto i = m_channels.begin(); i < m_channels.end(); i++)
 	{
 	
-		if(i->Mode != Yaesu::FT891::Commands::MemoryChannelModeValue::FM|| i->Mode != Yaesu::FT891::Commands::MemoryChannelModeValue::FM_N)
-		{
-			i->CTCSS = Yaesu::FT891::Commands::CTCSSState::CTCSS_OFF;
-			i->Operation = Yaesu::FT891::Commands::OperationType::Simplex;
-		}
-		if(i->TagString.length() > 0)
-		{
-			auto msg = MemoryWriteTag::Set(*i);
-			m_port.writeString(msg);
-		}
-		else
-		{
-			Yaesu::FT891::Commands::MemoryChannelWriteValue mv;
-			mv.Mode = i->Mode;
-			mv.Operation = i->Operation;
-			mv.Clarifier = i->Clarifier;
-			mv.ClarifierFreq = i->ClarifierFreq;
-			mv.CTCSS = i->CTCSS;
-			mv.MemoryChannel = i->MemoryChannel;
-			mv.VFOAFreq = i->VFOAFreq;
-			auto msg = MemoryChannelWrite::Set(mv);
-			m_port.writeString(msg);
-		}
+		
+		if(i->TagString.length() > 0 & i->TAG != TagValue::ON)
+			i->TAG = TagValue::ON;
+		
+		auto msg = MemoryWriteTag::Set(*i);
+		m_port.writeString(msg);		
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		
 		
 	}
-	
+	m_channels.clear();
 	delete win;
+	this->damage(FL_DAMAGE_ALL);
+	this->redraw();	    
 }
 
 void FT891::PowerDown()
@@ -107,7 +110,8 @@ void FT891::CalcMode(ModeValue v)
 			m_port.writeString(Keyer::Read());
 			m_port.writeString(KeyPitch::Read());	
 			m_port.writeString(BreakIn::Read());
-			this->redraw();
+			this->damage(FL_DAMAGE_ALL);
+			this->redraw();	    
 		break;
 		default:
 			MicGain->show();
@@ -128,18 +132,18 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case BfoValue::USB:
 					OperatingMode->value(0);
-					currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::USB;
+					currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::USB;
 					break;
 					case BfoValue::LSB:
 					OperatingMode->value(1);
-					currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::LSB;
+					currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::LSB;
 					break;
 					case BfoValue::AUTO:
 					 OperatingMode->value(2);
 					 if(VFOAFreq >= 10000000)
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::USB;
 					 else
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::LSB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::LSB;
 					break;
 				}
 			
@@ -149,19 +153,19 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case BfoValue::USB:
 						OperatingMode->value(0);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::USB;
 					break;
 					case BfoValue::LSB:
 						OperatingMode->value(1);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::LSB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::LSB;
 					break;
 					case BfoValue::AUTO:
 					{
 						OperatingMode->value(2);
 						if(VFOAFreq >= 10000000)
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::USB;
 					 	else
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::LSB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::LSB;
 					}
 					break;
 				}
@@ -172,18 +176,18 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case BfoValue::USB:
 						OperatingMode->value(3);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW;
 					break;
 					case BfoValue::LSB:
 						OperatingMode->value(4);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW_R;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW_R;
 					break;
 					case BfoValue::AUTO:
 						OperatingMode->value(5);
 						if(VFOAFreq >= 10000000)
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW_R;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW_R;
 					 	else
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW;
 					break;
 				}
 								
@@ -193,49 +197,49 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case BfoValue::USB:
 						OperatingMode->value(4);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW_R;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW_R;
 					break;
 					case BfoValue::LSB:
 						OperatingMode->value(3);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW;
 					break;
 					case BfoValue::AUTO:
 						OperatingMode->value(5);
 						OperatingMode->value(5);
 						if(VFOAFreq >= 10000000)
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW_R;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW_R;
 					 	else
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::CW;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::CW;
 					break;
 				}    
 				
 				break;
 			case ModeValue::FM:
 				OperatingMode->value(6);     
-				currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::FM;
+				currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::FM;
 				break;
 			case ModeValue::FM_N:
 				OperatingMode->value(7);     
-				currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::FM_N;
+				currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::FM_N;
 				break;
 			case ModeValue::AM:
 				OperatingMode->value(8);     
-				currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::AM;
+				currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::AM;
 				break;
 			case ModeValue::AM_N:
 				OperatingMode->value(9);     
-				currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::AM_N;
+				currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::AM_N;
 				break;
 			case ModeValue::DATA_BFOB:
 				switch(DATABfo)
 				{
 					case DataBfoValue::USB:
 						OperatingMode->value(10);     
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::DATA_LSB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::DATA_USB;
 					break;
 					case DataBfoValue::LSB:
 						OperatingMode->value(11);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::DATA_USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::DATA_LSB;
 					break;
 				}
 				
@@ -244,12 +248,12 @@ void FT891::CalcMode(ModeValue v)
 				switch(DATABfo)
 				{
 					case DataBfoValue::USB:
-						OperatingMode->value(11);     
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::DATA_LSB;
+						OperatingMode->value(10);     
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::DATA_USB;
 					break;
 					case DataBfoValue::LSB:
-						OperatingMode->value(10);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::DATA_USB;
+						OperatingMode->value(11);
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::DATA_LSB;
 					break;
 				}
 			     
@@ -259,11 +263,11 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case DataBfoValue::USB:
 						OperatingMode->value(12);    
-						 currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::RTTY_LSB;
+						 currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::RTTY_LSB;
 					break;
 					case DataBfoValue::LSB:
 						OperatingMode->value(13);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::RTTY_USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::RTTY_USB;
 					break;
 				}     
 				break;
@@ -272,41 +276,46 @@ void FT891::CalcMode(ModeValue v)
 				{
 					case DataBfoValue::USB:
 						OperatingMode->value(13);     
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::RTTY_USB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::RTTY_USB;
 					break;
 					case DataBfoValue::LSB:
 						OperatingMode->value(12);
-						currentMemoryMode = Yaesu::FT891::Commands::MemoryChannelModeValue::RTTY_LSB;
+						currentMemoryMode = Yaesu::Commands::FT891::MemoryChannelModeValue::RTTY_LSB;
 					break;
 				}   
 				break;
 		}
 		OperatingMode->redraw();
+
 }
 
 UIMode FT891::GetUIMode()
 {
 		UIMode v;
-		switch(OperatingMode->value())
+		auto op = OperatingMode->value();
+		switch(op)
 		{
 			case 0:
 			case 1:
 			case 2:
-			v = UIMode::SSB;
-			break;
+			return UIMode::SSB;
+				break;
 			case 3:
 			case 4:
 			case 5:
-			v = UIMode::CW;
+			return UIMode::CW;
+				break;
+			case 10:
+			case 11:
 			case 12:
 			case 13:
-			v = UIMode::RTTY;
-			break;
+			return UIMode::RTTY;
+				break;
 		}
 		return v;
 }
 
-void FT891::CalculateWidth(Yaesu::FT891::Commands::WidthValue wv)
+void FT891::CalculateWidth(Yaesu::Commands::FT891::WidthValue wv)
 {
 	UIMode v = GetUIMode();
 	Width->clear();
@@ -494,14 +503,20 @@ void FT891::readCallback(const char* c, int v)
 		{
 			if(MemoryChannelEdit)
 			{
-				currentMemory = static_cast<Yaesu::FT891::Commands::MemoryChannelValue>(static_cast<int>(currentMemory) + 1);
+				currentMemory = static_cast<Yaesu::Commands::FT891::MemoryChannelValue>(static_cast<int>(currentMemory) + 1);
 				if(static_cast<int>(currentMemory) != 118)
 				{
-					cmd = Yaesu::FT891::Commands::MemoryWriteTag::Read(currentMemory);
+					MemoryTagString = fmt::format("Reading: {:d}",static_cast<int>(currentMemory));
+					MemoryTagLabel->label(MemoryTagString.c_str());
+					MemoryTagLabel->redraw();
+					cmd = Yaesu::Commands::FT891::MemoryWriteTag::Read(currentMemory);
 					m_port.writeString(cmd);
+				
 				}
 				else
 				{
+					MemoryTagLabel->label("");
+					ReadMemories = true;
 					MemoryChannelEdit = false;
 				}
 			}
@@ -541,7 +556,8 @@ void FT891::readCallback(const char* c, int v)
 					ChannelLabel->label("PMS");
 				break;
 				case VFOChannelTypeValue::VFO:				
-					ChannelLabel->label("A");					
+					ChannelLabel->label("A");		
+					MemoryTagLabel->label("");			
 				break;
 			} 
 
@@ -565,17 +581,30 @@ void FT891::readCallback(const char* c, int v)
 			VFOA->value(dispval.c_str());
 			
 			CalcMode(iv.Mode);
+			
 			VFOA->redraw();
+			if(iv.VFO != VFOChannelTypeValue::VFO)
+			{
+					if(ReadMemories) 
+					{
+						MemoryTagLabel->label(m_channels[static_cast<int>(iv.MemoryChannel)].TagString.c_str());
+					} else 
+					{
+						m_port.writeString(Yaesu::Commands::FT891::MemoryWriteTag::Read(iv.MemoryChannel));
+					}				
+			}
+
 			#ifdef DEBUG
 			cout << dispval << endl;
 			#endif
 			
-		
+			this->damage(FL_DAMAGE_ALL);
+			this->redraw();	    
 			continue;
 		}
 		else if(cmdtype == "CF")
 		{
-			ClarifierState = Yaesu::FT891::Commands::Clarifier::Answer(cmd);
+			ClarifierState = Yaesu::Commands::FT891::Clarifier::Answer(cmd);
 			continue;
 		}
 		else if(cmdtype == "TX")
@@ -725,14 +754,32 @@ void FT891::readCallback(const char* c, int v)
 		else if(cmdtype == "MT")
 		{
 
-			MemoryChannelTagValue tv = Yaesu::FT891::Commands::MemoryWriteTag::Answer(cmd);
-			tv.MemoryChannel = currentMemory;
-			if(std::find_if(m_channels.begin(), m_channels.end(),[tv](auto e){ return e.MemoryChannel == tv.MemoryChannel;}) == m_channels.end()){
+			MemoryChannelTagValue tv = Yaesu::Commands::FT891::MemoryWriteTag::Answer(cmd);
+			if(!this->MemoryChannelEdit)
+			{
+				MemoryTagString = tv.TagString;	
+				MemoryTagLabel->label(MemoryTagString.c_str());
+			}
+			else
+			{
+				MemoryTagLabel->label("");
+			}
+
+			MemoryTagLabel->redraw();
+			
+			if(MemoryChannelEdit)
+			{	
+				tv.MemoryChannel = currentMemory;
 				m_channels.push_back(tv);
 				currentMemory = static_cast<MemoryChannelValue>(((int)currentMemory)+ 1);
-				std::string cmd = Yaesu::FT891::Commands::MemoryWriteTag::Read(currentMemory);
-				m_port.writeString(cmd);
-			}
+				MemoryTagString = fmt::format("Reading: {:d}",static_cast<int>(currentMemory));
+				MemoryTagLabel->label(MemoryTagString.c_str());
+				MemoryTagLabel->redraw();
+				std::string cmd = Yaesu::Commands::FT891::MemoryWriteTag::Read(currentMemory);
+				m_port.writeString(cmd);				
+			} 
+			
+			
 			
 			continue;
 		}
@@ -801,7 +848,7 @@ void FT891::readCallback(const char* c, int v)
 				case TunerState::ON:
 					TNR->color(FL_GREEN);
 				break;
-				case TunerState::Start:
+				case TunerState::StartStop:
 					TNR->color(FL_GREEN);
 				break;
 			}
@@ -873,6 +920,7 @@ void FT891::readCallback(const char* c, int v)
 			}
 			else
 			{
+				damage(9);
 				this->redraw();				
 			}
 
@@ -1011,7 +1059,7 @@ void FT891::readCallback(const char* c, int v)
 		}	
 		else if(cmdtype == "MC")
 		{
-			Yaesu::FT891::Commands::MemoryChannelValue v = Yaesu::FT891::Commands::MemoryChannel::Answer(cmd);
+			Yaesu::Commands::FT891::MemoryChannelValue v = Yaesu::Commands::FT891::MemoryChannel::Answer(cmd);
 			int memval = static_cast<int>(v);
 			continue;
 		}
@@ -1537,7 +1585,7 @@ void FT891::readCallback(const char* c, int v)
 		}
 		else if(cmdtype == "RI")
 		{
-			Yaesu::FT891::Commands::RadioInfoVal val = RadioInformation::Answer(cmd);
+			Yaesu::Commands::FT891::RadioInfoVal val = RadioInformation::Answer(cmd);
 			switch(val.Type)
 			{
 				case InformationType::TX_LED:
@@ -1555,7 +1603,7 @@ void FT891::readCallback(const char* c, int v)
 				case InformationType::HI_SWR:
 					if(val.Value == InformationState::ON)
 					{
-						///m_port.writeString(Yaesu::FT891::Commands::TXW::Set(TXWValue::OFF));
+						///m_port.writeString(Yaesu::Commands::FT891::TXW::Set(TXWValue::OFF));
 						StatusLED->color(fl_rgb_color(255,165,0));						
 					}
 					else
@@ -1647,10 +1695,10 @@ void FT891::readCallback(const char* c, int v)
 			continue;
 		}	
 	}
-	
-		this->flush(true);	    
 		Fl::unlock();
 		Fl::awake();
+	    this->damage(FL_DAMAGE_ALL);
+		this->redraw();	    
 	}
 	catch(std::exception& e)
 	{
@@ -1849,7 +1897,7 @@ void FT891::SetMeterType(Fl_Widget* pitem, void*)
 	}
 	else if(pitem == Band)
 	{
-		m_port.writeString(BandSelect::Set((Yaesu::FT891::Commands::Band) Band->value()));
+		m_port.writeString(BandSelect::Set((Yaesu::Commands::FT891::Band) Band->value()));
 	}
 	else if(pitem == AMLCUTFreq)
 	{
@@ -2432,7 +2480,7 @@ void FT891::OnBox(Fl_Button* o , void* v)
 		if(Keyer->color() == FL_GREEN)
 		{
 			Keyer->color(FL_BACKGROUND_COLOR);
-			m_port.writeString(Yaesu::FT891::Commands::Keyer::Set(KeyerValue::OFF));
+			m_port.writeString(Yaesu::Commands::FT891::Keyer::Set(KeyerValue::OFF));
 			KeyerSpeed->clear_active();
 			KeyerSpeed->redraw();
 		}
@@ -2492,27 +2540,27 @@ void FT891::OnBox(Fl_Button* o , void* v)
 	{
 		string s = Up::Set();
 		m_port.writeString(s);
-		s = Yaesu::FT891::Commands::INFORMATION::Read();
+		s = Yaesu::Commands::FT891::INFORMATION::Read();
 		m_port.writeString(s);
 	}
 	else if(o == McDn)
 	{
 		string s = Mic_Down::Set();
 		m_port.writeString(s);
-		s = Yaesu::FT891::Commands::INFORMATION::Read();
+		s = Yaesu::Commands::FT891::INFORMATION::Read();
 		m_port.writeString(s);
 	}
 	else if(o == LOCK)
 	{
 		if(LOCK->color() == FL_BACKGROUND_COLOR)
 		{
-			string s = Yaesu::FT891::Commands::VFODialLock::Set(DialLockValue::ON);
+			string s = Yaesu::Commands::FT891::VFODialLock::Set(DialLockValue::ON);
 			m_port.writeString(s);
 			LOCK->color(FL_GREEN);
 		}
 		else
 		{
-			string s = Yaesu::FT891::Commands::VFODialLock::Set(DialLockValue::OFF);
+			string s = Yaesu::Commands::FT891::VFODialLock::Set(DialLockValue::OFF);
 			m_port.writeString(s);
 			LOCK->color(FL_BACKGROUND_COLOR);
 		}
@@ -2564,7 +2612,7 @@ void FT891::OnBox(Fl_Button* o , void* v)
 	{
 		if(TNR->color() == FL_GREEN)
 		{
-			string s = AntennaTunerControl::Set(TunerState::Start);
+			string s = AntennaTunerControl::Set(TunerState::StartStop);
 			m_port.writeString(s);
 		}
 	}
@@ -2575,36 +2623,72 @@ void FT891::OnBox(Fl_Button* o , void* v)
 	}
 	else if(o == VA_M)
 	{
-		if(m_channels.size() == 0){
-			fl_alert("Reading Memory Channels, this may take a moment.");
+		if(!ReadMemories){		
+			
 			MemoryChannelEdit = true;		
 			currentMemory = MemoryChannelValue::_1;		
-			std::string s = Yaesu::FT891::Commands::MemoryWriteTag::Read(currentMemory);
+			MemoryTagString = fmt::format("Reading: {:d}",static_cast<int>(currentMemory));
+			MemoryTagLabel->label(MemoryTagString.c_str());
+			MemoryTagLabel->redraw();
+			std::string s = Yaesu::Commands::FT891::MemoryWriteTag::Read(currentMemory);
 			m_port.writeString(s);
 			while(MemoryChannelEdit)
-				Fl::wait();
+				Fl::wait(0);
 		}
 		
 		if(!MemoryChannelEdit)
 		{
+
 			
-			Yaesu::FT891::Commands::MemoryChannelTagValue* next = new Yaesu::FT891::Commands::MemoryChannelTagValue();
+			Yaesu::Commands::FT891::MemoryChannelTagValue* next = new Yaesu::Commands::FT891::MemoryChannelTagValue();
 			next->VFOAFreq = this->VFOAFreq;
 			next->Clarifier = ClarifierState;
 			next->ClarifierFreq = this->Clarifier->value();
 			next->Mode = this->currentMemoryMode;
-			next->Operation = static_cast<Yaesu::FT891::Commands::OperationType>(SplitValue);
-			next->TAG = Yaesu::FT891::Commands::TagValue::OFF;
+			next->Operation = static_cast<Yaesu::Commands::FT891::OperationType>(this->OperationValue);
+			next->TAG = Yaesu::Commands::FT891::TagValue::OFF;
 			next->TagString = "";
 			win = new Fl_Double_Window(1200,700, "Memory Editor");
 			m_editor = new MemoryEditor(10 ,20,1080,700-20,m_channels,next,"");					    		
 			Fl_Button* save = new Fl_Button(1100,20,80,50,"Save");
 			save->callback((Fl_Callback*)&::OnSaveMemory, this);
 			Fl_Button* cancel = new Fl_Button(1100,77,80,50,"Cancel");
+			cancel->callback((Fl_Callback*)&::OnCancelMemory,win);
 			win->set_modal();
 			win->resizable(win);				
     		win->show();			
 		}		
+	}
+	else if(o == ShowMemoryEditor)
+	{
+			
+		if(!ReadMemories) {
+			m_channels.clear();
+			MemoryChannelEdit = true;					
+			currentMemory = MemoryChannelValue::_1;		
+			MemoryTagString = fmt::format("Reading: {:d}",static_cast<int>(currentMemory));
+			MemoryTagLabel->label(MemoryTagString.c_str());
+			MemoryTagLabel->redraw();
+			std::string s = Yaesu::Commands::FT891::MemoryWriteTag::Read(currentMemory);
+			m_port.writeString(s);
+			while(MemoryChannelEdit && static_cast<int>(currentMemory) < 118)
+			{
+				Fl::wait(0);
+			}
+		}
+
+		if(!MemoryChannelEdit)		
+		{
+			win = new Fl_Double_Window(1200,700, "Memory Editor");
+			m_editor = new MemoryEditor(10 ,20,1080,700-20,m_channels,"Memory Editor");					    		
+			Fl_Button* save = new Fl_Button(1100,20,80,50,"Save");
+			save->callback((Fl_Callback*)&::OnSaveMemory, this);
+			Fl_Button* cancel = new Fl_Button(1100,77,80,50,"Cancel");
+			cancel->callback((Fl_Callback*)&::OnCancelMemory,win);
+			win->set_modal();
+			win->resizable(win);				
+    		win->show();	
+		}
 	}
 	else if(o == M_VA)
 	{
@@ -2783,9 +2867,16 @@ void FT891::BuildGeneralGroup(int w, int h)
 	AB->color(FL_BACKGROUND_COLOR);
 	AB->callback((Fl_Callback*)&::OnBox, this);
 
-	StatusLED = new Fl_Box(AB->x() + AB->w() + 5, AB->y(), boxwidth, 20);
+	ShowMemoryEditor = new Fl_Button(AB->x() + AB->w() + 5, AB->y(),boxwidth + 15,20,"M-EDIT");
+	ShowMemoryEditor->box(FL_BORDER_BOX);
+	ShowMemoryEditor->align(FL_ALIGN_CENTER);
+	ShowMemoryEditor->color(FL_BACKGROUND_COLOR);
+	ShowMemoryEditor->callback((Fl_Callback*)&::OnBox, this);
+
+	StatusLED = new Fl_Box(ShowMemoryEditor->x() + ShowMemoryEditor->w() + 5, ShowMemoryEditor->y(), boxwidth, 20);
 	StatusLED->box(FL_BORDER_BOX);
 	StatusLED->show();
+
 
 	TNR = new Fl_Button(15, PowerButton->y() + PowerButton->h() + 5, boxwidth, 20 ,"TNR");
 	TNR->box(FL_BORDER_BOX);
@@ -2953,12 +3044,24 @@ void FT891::BuildGeneralGroup(int w, int h)
 	VFOA->callback((Fl_Callback*)&::OnEnter,this);
 	VFOA->when(FL_WHEN_ENTER_KEY_ALWAYS);
 	
+	OperationChoice = new Fl_Choice(VFOA->x() + VFOA->w() + 5, VFOA->y(), 80,30);
+	OperationChoice->add("Simplex", 0, ::OnOperationChoice, this, 0);
+	OperationChoice->add("Plus Shift", 0, ::OnOperationChoice, this, 0);
+	OperationChoice->add("Minus Shift", 0, ::OnOperationChoice, this,0);
+	OperationChoice->value(static_cast<int>(Yaesu::Commands::FT891::OperationType::Simplex));
+	OperationValue = Yaesu::Commands::FT891::OperationType::Simplex;
+
 	VFOB = new Fl_Input(VFOA->x(), VFOA->y() + VFOA->h() + 5, 100, 30, "");
 	VFOB->textfont(FL_TIMES_BOLD);
 	VFOB->textsize(20);
 	VFOB->callback((Fl_Callback*)&::OnEnter,this);
 	VFOB->when(FL_WHEN_ENTER_KEY_ALWAYS);
 	
+	MemoryTagLabel = new Fl_Box(VFOB->x(), VFOB->y() + VFOB->h() + 5, 200, 50);
+	MemoryTagLabel->labelsize(17);
+	MemoryTagLabel->labelfont(FL_BOLD);		
+	MemoryTagLabel->align(FL_ALIGN_CENTER);
+	MemoryTagLabel->labelcolor(fl_rgb_color(0,0,255));
 	int col = AB->x();
 
 	IPO = new Fl_Button(col, TNR->y(), boxwidth,20, "IPO");
@@ -2989,7 +3092,7 @@ void FT891::BuildGeneralGroup(int w, int h)
 	FST->color(FL_BACKGROUND_COLOR);
 	FST->callback((Fl_Callback*)&::OnBox, this);
 	
-	Width = new Fl_Choice(col + FST->w() + 5,ATT->y(),80,30,"Width");
+	Width = new Fl_Choice(col + FST->w() + 5,ATT->y(),80,30,"Width");	
 	Width->align(FL_ALIGN_TOP);
 
 	Band = new Fl_Choice(col + FST->w() + 5, Width->y() + 45, 80,30,"Band");
@@ -4139,6 +4242,7 @@ void FT891::BuildCatSettings(int w, int h)
 void FT891::Init()
 {
 		MemoryChannelEdit = false;
+		ReadMemories = false;
 		m_port.writeString(AutoInformation::Set(InformationState::ON));
 		m_port.writeString(Menu::ReadSSBBFO());
 		m_port.writeString(Menu::ReadCWBFO());
@@ -4191,7 +4295,9 @@ TXEQGroupLoaded(false),
 EQGroupLoaded(false),
 CWGroupLoaded(false),
 LightingGrouploaded(false),
-PowerGroupLoaded(false)
+PowerGroupLoaded(false),
+MemoryChannelEdit(false),
+ReadMemories(false)
 {
 	BuildUI(w,h);
 	m_port.setCallback(std::bind(&FT891::readCallback, this, _1, _2));
@@ -4205,7 +4311,9 @@ TXEQGroupLoaded(false),
 EQGroupLoaded(false),
 CWGroupLoaded(false),
 LightingGrouploaded(false),
-PowerGroupLoaded(false)
+PowerGroupLoaded(false),
+MemoryChannelEdit(false),
+ReadMemories(false)
 {
 
 	BuildUI(w,h);
@@ -4233,6 +4341,7 @@ void FT891::OnPowerButtonClick(Fl_Light_Button* o, void* v)
 	{		
 		PowerUp();   
 		ReadPowerSwitch();
+		Init();
 	}
 }
 
@@ -4257,16 +4366,16 @@ int main(int argc, char** argv)
 				port = dlg->m_PortName;
 				switch(dlg->Rate)
 				{
-					case Yaesu::FT891::Commands::CatRateValue::_19200bps:
+					case Yaesu::Commands::FT891::CatRateValue::_19200bps:
 					baud = 19200;
 					break;
-					case Yaesu::FT891::Commands::CatRateValue::_38400bps:
+					case Yaesu::Commands::FT891::CatRateValue::_38400bps:
 					baud = 38400;
 					break;
-					case Yaesu::FT891::Commands::CatRateValue::_4800bps:
+					case Yaesu::Commands::FT891::CatRateValue::_4800bps:
 					baud = 4800;
 					break;
-					case Yaesu::FT891::Commands::CatRateValue::_9600bps:
+					case Yaesu::Commands::FT891::CatRateValue::_9600bps:
 					baud = 9600;
 					break;
 				}

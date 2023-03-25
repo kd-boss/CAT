@@ -12,7 +12,7 @@ class ComPortDialog : public Fl_Window
 {
 public:
     ComPortDialog();
-    Yaesu::FT891::Commands::CatRateValue Rate;
+    Yaesu::Commands::FT891::CatRateValue Rate;
     std::string m_PortName;
     Fl_Choice* CatRateChoice;
     Fl_Input* PortName;

@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace boost;
-
+using namespace boost::placeholders;
 //
 //Class AsyncSerial
 //
@@ -139,7 +139,8 @@ void AsyncSerial::write(const char *data, size_t size)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        std::copy(data, data + size, std::back_inserter(pimpl->writeQueue));        
+        std::copy(data, data + size,std::back_inserter(pimpl->writeQueue));
+        
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
@@ -148,7 +149,8 @@ void AsyncSerial::write(const std::vector<char>& data)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        std::copy(data.begin(), data.end(), std::back_inserter(pimpl->writeQueue));
+        std::copy(std::begin(data), std::end(data),std::back_inserter(pimpl->writeQueue));
+        
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
@@ -157,7 +159,7 @@ void AsyncSerial::writeString(const std::string& s)
 {
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
-        std::copy(s.begin(), s.end(), std::back_inserter(pimpl->writeQueue));
+        std::copy(std::begin(s), std::end(s),std::back_inserter(pimpl->writeQueue));
     }
     pimpl->io.post(boost::bind(&AsyncSerial::doWrite, this));
 }
@@ -214,8 +216,8 @@ void AsyncSerial::readEnd(const boost::system::error_code& error,
 
 void AsyncSerial::doWrite()
 {
-    //If a write operation is already in progress, do nothing
-    if(pimpl->writeBuffer==0)
+   
+    if(pimpl->writeQueue.size() != 0)
     {
         lock_guard<mutex> l(pimpl->writeQueueMutex);
         pimpl->writeBufferSize=pimpl->writeQueue.size();
@@ -223,6 +225,7 @@ void AsyncSerial::doWrite()
         copy(pimpl->writeQueue.begin(),pimpl->writeQueue.end(),
                 pimpl->writeBuffer.get());
         pimpl->writeQueue.clear();
+        pimpl->writeQueue.shrink_to_fit();
         async_write(pimpl->port,asio::buffer(pimpl->writeBuffer.get(),
                 pimpl->writeBufferSize),
                 boost::bind(&AsyncSerial::writeEnd, this, asio::placeholders::error));

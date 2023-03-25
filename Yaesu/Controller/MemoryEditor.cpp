@@ -1,6 +1,8 @@
 #include "MemoryEditor.h"
 #include <fmt\format.h>
 
+
+
 void OnMemoryEditorOk( void* o, void* v)
 {
 
@@ -14,8 +16,8 @@ void OnMemoryEditorClarifierStateChange(Fl_Widget* o, void* v)
     {
         if(window->w[i][4] == o)
         {           
-           auto x = std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return ((int)e.MemoryChannel) == i; });
-           auto cl = static_cast<Yaesu::FT891::Commands::ClarifierState>(((Fl_Choice*)o)->value());
+           auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return ((int)e.MemoryChannel) == i; });
+           auto cl = static_cast<Yaesu::Commands::FT891::ClarifierState>(((Fl_Choice*)o)->value());
            x->Clarifier = cl;            
         }
     }
@@ -29,8 +31,8 @@ void OnMemoryEditorOperatingMode(Fl_Widget* o, void* v)
     {
         if(window->w[i][8] == o)
         {            
-            auto x = std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return ((int)e.MemoryChannel) == i; });
-            auto op = static_cast<Yaesu::FT891::Commands::OperationType>(((Fl_Choice*)o)->value());
+            auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return ((int)e.MemoryChannel) == i; });
+            auto op = static_cast<Yaesu::Commands::FT891::OperationType>(((Fl_Choice*)o)->value());
             x->Operation = op;
         }
     }
@@ -39,7 +41,15 @@ void OnMemoryEditorOperatingMode(Fl_Widget* o, void* v)
 void OnMemoryEditorCTCSS(Fl_Widget* o, void* v)
 {
     MemoryEditor* window = (MemoryEditor*)v;
-
+     for(int i = 0; i < 118;i++)
+    {
+        if(window->w[i][8] == o)
+        {            
+            auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return ((int)e.MemoryChannel) == i; });
+            auto op = static_cast<Yaesu::Commands::FT891::CTCSSState>(((Fl_Choice*)o)->value());
+            x->CTCSS = op;
+        }
+    }
 }
 
 
@@ -53,13 +63,13 @@ void OnMemoryEditorTag(Fl_Check_Button* o, void* v)
             if(o->value())
             {
                  window->w[i][9]->activate();
-                 std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i;})->TAG = Yaesu::FT891::Commands::TagValue::ON;
+                 std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i;})->TAG = Yaesu::Commands::FT891::TagValue::ON;
                  return;
             }   
             else
             {
                 window->w[i][9]->deactivate();
-                std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i;})->TAG = Yaesu::FT891::Commands::TagValue::OFF;
+                std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i;})->TAG = Yaesu::Commands::FT891::TagValue::OFF;
                 return;
             }
                 
@@ -75,7 +85,7 @@ void OnTagEdit(Fl_Input* o, void* v)
     {
         if(window->w[i][9] == o)
         {
-            auto x = std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
+            auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
             if(x != window->m_channels.end())
             {
                 x->TagString = std::string();
@@ -86,17 +96,17 @@ void OnTagEdit(Fl_Input* o, void* v)
     }
 }
 
-void OnModeChange(Fl_Widget* o, void* v)
+void MemEditOnModeChange(Fl_Widget* o, void* v)
 {
     MemoryEditor* window = (MemoryEditor*)v;
     for(int i = 0; i < 118;i++)
     {
         if(window->w[i][5] == o)
         {            
-            auto x = std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
+            auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
             if(x != window->m_channels.end())
             {
-                x->Mode = static_cast<Yaesu::FT891::Commands::MemoryChannelModeValue>(((Fl_Choice*)o)->value() + 1);
+                x->Mode = static_cast<Yaesu::Commands::FT891::MemoryChannelModeValue>(((Fl_Choice*)o)->value() + 1);
             }                            
             return;
         }
@@ -113,7 +123,7 @@ void OnRepeaterMode(Fl_Widget* o, void* v)
             if(window->w[i][7] == o)
             {
                 
-                window->m_newChannel->Operation = static_cast<Yaesu::FT891::Commands::OperationType>(((Fl_Choice*)o)->value() - 1);
+                window->m_newChannel->Operation = static_cast<Yaesu::Commands::FT891::OperationType>(((Fl_Choice*)o)->value() - 1);
                 
                 return;
             }
@@ -136,7 +146,7 @@ void OnFreqInput(Fl_Input* o, void* v)
     {
         if(window->w[i][2] == o)
         {
-            auto x = std::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
+            auto x = std::ranges::find_if(window->m_channels.begin(), window->m_channels.end(), [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });
             if(x != window->m_channels.end())
             {
                 x->VFOAFreq = freq;
@@ -165,8 +175,8 @@ void OnChannnelEnabled(Fl_Check_Button* o, void* v)
                 
                 if(window->m_newChannel)
                 {
-                    window->m_newChannel->MemoryChannel = static_cast<Yaesu::FT891::Commands::MemoryChannelValue>(i);
-                    window->frequencies[i] = Yaesu::FT891::Commands::DisplayFrequency(window->m_newChannel->VFOAFreq);
+                    window->m_newChannel->MemoryChannel = static_cast<Yaesu::Commands::FT891::MemoryChannelValue>(i);
+                    window->frequencies[i] = Yaesu::Commands::FT891::DisplayFrequency(window->m_newChannel->VFOAFreq);
                     window->clarifiervalues[i] = fmt::format("{}", window->m_newChannel->ClarifierFreq);
                     ((Fl_Input*)window->w[i][2])->value(window->frequencies[i].c_str());
                     ((Fl_Input*)window->w[i][2])->redraw();
@@ -179,12 +189,37 @@ void OnChannnelEnabled(Fl_Check_Button* o, void* v)
                      window->m_channels.push_back(*window->m_newChannel);                     
                      window->m_newChannel = nullptr;
                 }
+                else
+                {
+                    window->m_newChannel = new Yaesu::Commands::FT891::MemoryChannelTagValue();
+                    window->m_newChannel->MemoryChannel = static_cast<Yaesu::Commands::FT891::MemoryChannelValue>(i);
+                        window->m_channels.push_back((*(window)->m_newChannel));                    
+                }
                 
+               
                 
                 return;
             }
             else
             {
+                if(window->m_newChannel) {
+                                       
+                    if(window->m_newChannel->MemoryChannel ==  window->m_channels[i].MemoryChannel)
+                    {
+                            delete window->m_newChannel;
+                            window->m_newChannel = nullptr;
+                    }
+                    
+                   // window->m_channels.erase(window->m_channels.begin() + i);
+                    
+                }
+
+                
+                    
+                    
+                std::erase_if(window->m_channels, [i](auto e){ return static_cast<int>(e.MemoryChannel) == i; });                                 
+                
+                
                 window->w[i][1]->deactivate();
                 window->w[i][2]->deactivate();
                 window->w[i][3]->deactivate();
@@ -200,7 +235,24 @@ void OnChannnelEnabled(Fl_Check_Button* o, void* v)
     }
 }
 
-MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue> &channels, const char *L) : Fl_Scroll(X, Y, W, H, L),m_newChannel(nullptr)
+
+
+int MemoryEditor::handle(int event)
+{
+   
+    switch(event)
+    {
+        default:
+        this->redraw();
+        break;
+       
+
+    }
+    return Fl_Scroll::handle(event);
+}
+
+
+MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue> &channels, const char *L) : Fl_Scroll(X, Y, W, H, L),m_newChannel(nullptr)
 {
     int colx = 100;
     int colh = 30;
@@ -216,27 +268,29 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
         }
 
         static const char *header[10] = {
-            "", "Channel", "Freqency", "ClarifierValue", "ClarifierState",
+            "Enabled(V►M)", "Channel", "Freqency", "ClarifierValue", "ClarifierState",
             "Mode", "CTCSS", "RepeaterMode", "Name", "Channel Name"};
 
-        Fl_Tile *tile = new Fl_Tile(X, Y, colx * 10, colh * 118, "");
+        m_tile = new Fl_Tile(X, Y, colx * 10, colh * 118);
+       
         for (int i = 0; i < 10; i++)
         {
             Fl_Box *box = new Fl_Box(xx + (i * colx), yy, colx, colh, header[i]);
             box->box(FL_BORDER_BOX);
+         
         }
 
         int channelidx = 1;
         yy += colh;
-        for (int i = 1; i < (int)Yaesu::FT891::Commands::MemoryChannelValue::P9U; i++)
+        for (int i = 1; i < (int)Yaesu::Commands::FT891::MemoryChannelValue::P9U; i++)
         {
-            Yaesu::FT891::Commands::MemoryChannelTagValue val;
-            std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue>::iterator ix = m_channels.end();
-            if ((ix = std::find_if(m_channels.begin(), m_channels.end(), [i](Yaesu::FT891::Commands::MemoryChannelTagValue e)
+            Yaesu::Commands::FT891::MemoryChannelTagValue val;
+            std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue>::iterator ix = m_channels.end();
+            if ((ix = std::ranges::find_if(m_channels.begin(), m_channels.end(), [i](Yaesu::Commands::FT891::MemoryChannelTagValue e)
                                    { return static_cast<int>(e.MemoryChannel) == i; })) != m_channels.end())
             {
 
-                std::string channelString = Yaesu::FT891::Commands::DisplayMemoryChannelValue(ix->MemoryChannel);
+                std::string channelString = Yaesu::Commands::FT891::DisplayMemoryChannelValue(ix->MemoryChannel);
                 // Channel
                 channelNames.push_back(channelString.substr(7, channelString.length() - 7));
 
@@ -254,7 +308,7 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
                 xx += colx;
 
                 // Frequency
-                frequencies.push_back(Yaesu::FT891::Commands::DisplayFrequency(ix->VFOAFreq));
+                frequencies.push_back(Yaesu::Commands::FT891::DisplayFrequency(ix->VFOAFreq));
                 Fl_Input *freq = new Fl_Input(xx, yy, colx, colh);
                 freq->box(FL_BORDER_BOX);
                 freq->value(frequencies.back().c_str());
@@ -278,29 +332,30 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
 
                 xx += colx;
                 Fl_Choice *OperatingMode = new Fl_Choice(xx, yy, colx, colh, "");
-                OperatingMode->add("LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY_LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW-R", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("-", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM-N", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM-N", 0, OnModeChange, this, 0);
+                OperatingMode->add("LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY_LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW-R", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("-", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM-N", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM-N", 0,  MemEditOnModeChange, this, 0);
                 OperatingMode->value(static_cast<int>(ix->Mode) - 1);
-                OperatingMode->callback((Fl_Callback*)&OnModeChange, this);
+                
                 w[i][5] = OperatingMode;
 
                 xx += colx;
 
                 Fl_Choice *CTCSS = new Fl_Choice(xx, yy, colx, colh, "");
-                CTCSS->add("OFF", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC/DEC", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC", 0, OnMemoryEditorOperatingMode, this, 0);
+                CTCSS->add("OFF", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC/DEC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("DCS",0,OnMemoryEditorCTCSS,this,0);
                 CTCSS->value(static_cast<int>(ix->CTCSS));
                 w[i][6] = CTCSS;
 
@@ -326,10 +381,10 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
                 tag->callback((Fl_Callback *)&OnTagEdit, this);
                 tag->box(FL_BORDER_BOX);
                 w[i][9] = tag;
-                if (ix->TAG == Yaesu::FT891::Commands::TagValue::ON)
+                if (ix->TAG == Yaesu::Commands::FT891::TagValue::ON)
                     tag->value(ix->TagString.c_str());
 
-                if (ix->TAG == Yaesu::FT891::Commands::TagValue::OFF)
+                if (ix->TAG == Yaesu::Commands::FT891::TagValue::OFF)
                 {
                     tag->deactivate();
                 }
@@ -347,7 +402,7 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
 
                 xx += colx;
 
-                std::string channelName = Yaesu::FT891::Commands::DisplayMemoryChannelValue(static_cast<Yaesu::FT891::Commands::MemoryChannelValue>(i));
+                std::string channelName = Yaesu::Commands::FT891::DisplayMemoryChannelValue(static_cast<Yaesu::Commands::FT891::MemoryChannelValue>(i));
                 if (channelName.find("Channel") != std::string::npos)
                     channelName = channelName.replace(0, 7, "");
                 channelNames.push_back(channelName);
@@ -364,6 +419,8 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
                 freq->box(FL_BORDER_BOX);
                 freq->value(frequencies.back().c_str());
                 freq->deactivate();
+                freq->callback((Fl_Callback *)&OnFreqInput, this);
+                freq->when(FL_KEYUP);
                 w[i][2] = freq;
 
                 xx += colx;
@@ -380,36 +437,37 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
                 Fl_Choice *clarState = new Fl_Choice(xx, yy, colx, colh);
                 clarState->add("ON", 0, OnMemoryEditorClarifierStateChange, this, 0);
                 clarState->add("OFF", 0, OnMemoryEditorClarifierStateChange, this, 0);
-                clarState->value(static_cast<int>(Yaesu::FT891::Commands::ClarifierState::OFF));
+                clarState->value(static_cast<int>(Yaesu::Commands::FT891::ClarifierState::OFF));
                 clarState->deactivate();
                 w[i][4] = clarState;
 
                 xx += colx;
                 Fl_Choice *OperatingMode = new Fl_Choice(xx, yy, colx, colh, "");
-                OperatingMode->add("LSB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("USB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("CW", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("FM", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("AM", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("RTTY_LSB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("CW-R", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("DATA-LSB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("RTTY-USB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("-", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("FM-N", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("DATA-USB", 0, OnMemoryEditorOperatingMode, this, 0);
-                OperatingMode->add("AM-N", 0, OnMemoryEditorOperatingMode, this, 0);
+                OperatingMode->add("LSB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("USB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY_LSB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW-R", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-LSB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY-USB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("-", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM-N", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-USB", 0, MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM-N", 0, MemEditOnModeChange, this, 0);
                 OperatingMode->value(static_cast<int>(9));
-                OperatingMode->callback((Fl_Callback*)&OnModeChange, this);
+        
                 w[i][5] = OperatingMode;
                 OperatingMode->deactivate();
 
                 xx += colx;
 
                 Fl_Choice *CTCSS = new Fl_Choice(xx, yy, colx, colh, "");
-                CTCSS->add("OFF", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC/DEC", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC", 0, OnMemoryEditorOperatingMode, this, 0);
+                CTCSS->add("OFF", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC/DEC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("DCS",0,OnMemoryEditorCTCSS,this,0);
                 CTCSS->value(static_cast<int>(0));
                 CTCSS->deactivate();
                 w[i][6] = CTCSS;
@@ -417,9 +475,9 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
                 xx += colx;
 
                 Fl_Choice *RepeaterMode = new Fl_Choice(xx, yy, colx, colh, "");
-                RepeaterMode->add("Simplex", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Plus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Minus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
+                RepeaterMode->add("Simplex", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Plus Shift", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Minus Shift", 0, OnRepeaterMode, this, 0);
                 RepeaterMode->value(static_cast<int>(0));
                 RepeaterMode->deactivate();
                 RepeaterMode->callback((Fl_Callback*)&OnRepeaterMode, this);
@@ -445,7 +503,7 @@ MemoryEditor::MemoryEditor(int X, int Y, int W, int H, const std::vector<Yaesu::
             xx = X;
         }
 
-        tile->end();
+        m_tile->end();
         this->end();
     
 }
@@ -454,8 +512,8 @@ MemoryEditor::MemoryEditor(int X,
                            int Y, 
                            int W, 
                            int H, 
-                           const std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue> &channels, 
-                           Yaesu::FT891::Commands::MemoryChannelTagValue* newChannel,
+                           const std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue> &channels, 
+                           Yaesu::Commands::FT891::MemoryChannelTagValue* newChannel,
                            const char *L) : Fl_Scroll(X, Y, W, H, L), m_newChannel(newChannel)
 {
     int colx = 100;
@@ -474,33 +532,34 @@ MemoryEditor::MemoryEditor(int X,
         }
 
         static const char *header[10] = {
-            "", "Channel", "Freqency", "ClarifierValue", "ClarifierState",
+            "Enabled(V►M)", "Channel", "Freqency", "ClarifierValue", "ClarifierState",
             "Mode", "CTCSS", "RepeaterMode", "Name", "Channel Name"};
 
-        Fl_Tile *tile = new Fl_Tile(X, Y, colx * 10, colh * 118, "");
+        m_tile = new Fl_Tile(X, Y, colx * 10, colh * 118);
         for (int i = 0; i < 10; i++)
         {
             Fl_Box *box = new Fl_Box(xx + (i * colx), yy, colx, colh, header[i]);
             box->box(FL_BORDER_BOX);
+            //tile->resizable(box);
         }
 
         int channelidx = 1;
         yy += colh;
-        for (int i = 1; i < (int)Yaesu::FT891::Commands::MemoryChannelValue::P9U; i++)
+        for (int i = 1; i < (int)Yaesu::Commands::FT891::MemoryChannelValue::P9U; i++)
         {
-            Yaesu::FT891::Commands::MemoryChannelTagValue val;
-            std::vector<Yaesu::FT891::Commands::MemoryChannelTagValue>::iterator ix = m_channels.end();
-            if ((ix = std::find_if(m_channels.begin(), m_channels.end(), [i](Yaesu::FT891::Commands::MemoryChannelTagValue e)
+            
+            std::vector<Yaesu::Commands::FT891::MemoryChannelTagValue>::iterator ix = m_channels.end();
+            if ((ix = std::ranges::find_if(m_channels.begin(), m_channels.end(), [i](Yaesu::Commands::FT891::MemoryChannelTagValue e)
                                    { return static_cast<int>(e.MemoryChannel) == i; })) != m_channels.end())
             {
 
-                std::string channelString = Yaesu::FT891::Commands::DisplayMemoryChannelValue(ix->MemoryChannel);
+                std::string channelString = Yaesu::Commands::FT891::DisplayMemoryChannelValue(ix->MemoryChannel);
                 // Channel
                 channelNames.push_back(channelString.substr(7, channelString.length() - 7));
 
                 Fl_Check_Button *Enabled = new Fl_Check_Button(xx, yy, colx, colh, "");
                 Enabled->callback((Fl_Callback *)&OnChannnelEnabled, this);
-                Enabled->value(1);
+                Enabled->value(0);            
                 w[i][0] = Enabled;
 
                 xx += colx;
@@ -512,11 +571,12 @@ MemoryEditor::MemoryEditor(int X,
                 xx += colx;
 
                 // Frequency
-                frequencies.push_back(Yaesu::FT891::Commands::DisplayFrequency(ix->VFOAFreq));
+                frequencies.push_back(Yaesu::Commands::FT891::DisplayFrequency(ix->VFOAFreq));
                 Fl_Input *freq = new Fl_Input(xx, yy, colx, colh);
                 freq->box(FL_BORDER_BOX);
                 freq->value(frequencies.back().c_str());
                 freq->callback((Fl_Callback*)&OnFreqInput,this);
+                freq->deactivate();
                 w[i][2] = freq;
                 xx += colx;
 
@@ -524,6 +584,7 @@ MemoryEditor::MemoryEditor(int X,
                 clarifiervalues.push_back(fmt::format("{0}", ix->ClarifierFreq));
                 Fl_Input *clar = new Fl_Input(xx, yy, colx, colh);
                 clar->value(clarifiervalues.back().c_str());
+                clar->deactivate();
                 w[i][3] = clar;
                 xx += colx;
 
@@ -531,44 +592,48 @@ MemoryEditor::MemoryEditor(int X,
                 clarState->add("OFF", 0, OnMemoryEditorClarifierStateChange, this, 0);
                 clarState->add("ON", 0, OnMemoryEditorClarifierStateChange, this, 0);
                 clarState->value(static_cast<int>(ix->Clarifier));
+                clarState->deactivate();
                 w[i][4] = clarState;
 
                 xx += colx;
                 Fl_Choice *OperatingMode = new Fl_Choice(xx, yy, colx, colh, "");
-                OperatingMode->add("LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY_LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW-R", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("-", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM-N", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM-N", 0, OnModeChange, this, 0);
+                OperatingMode->add("LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY_LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW-R", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("-", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM-N", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM-N", 0,  MemEditOnModeChange, this, 0);
                 OperatingMode->value(static_cast<int>(ix->Mode) - 1);
-                OperatingMode->callback((Fl_Callback*)&OnModeChange, this);
+              
                 w[i][5] = OperatingMode;
 
                 xx += colx;
 
                 Fl_Choice *CTCSS = new Fl_Choice(xx, yy, colx, colh, "");
-                CTCSS->add("OFF", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC/DEC", 0, OnMemoryEditorOperatingMode, this, 0);
-                CTCSS->add("ENC", 0, OnMemoryEditorOperatingMode, this, 0);
+                CTCSS->add("OFF", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC/DEC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("ENC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("DCS",0,OnMemoryEditorCTCSS,this,0);
                 CTCSS->value(static_cast<int>(ix->CTCSS));
+                CTCSS->deactivate();
                 w[i][6] = CTCSS;
 
                 xx += colx;
 
                 Fl_Choice *RepeaterMode = new Fl_Choice(xx, yy, colx, colh, "");
-                RepeaterMode->add("Simplex", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Plus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Minus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
+                RepeaterMode->add("Simplex", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Plus Shift", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Minus Shift", 0, OnRepeaterMode, this, 0);
                 RepeaterMode->value(static_cast<int>(ix->Operation));
                 RepeaterMode->callback((Fl_Callback*)&OnRepeaterMode, this);
+                RepeaterMode->deactivate();
                 w[i][7] = RepeaterMode;
 
                 xx += colx;
@@ -576,24 +641,19 @@ MemoryEditor::MemoryEditor(int X,
                 Fl_Check_Button *TagOnOff = new Fl_Check_Button(xx, yy, colx, colh, "");
                 TagOnOff->callback((Fl_Callback *)&OnMemoryEditorTag, this);
                 TagOnOff->value(static_cast<int>(ix->TAG));
+                if(ix->TAG == Yaesu::Commands::FT891::TagValue::OFF)
+                TagOnOff->deactivate();
+
                 w[i][8] = TagOnOff;
 
                 xx += colx;
                 Fl_Input *tag = new Fl_Input(xx, yy, colx, colh);
-                tag->callback((Fl_Callback *)&OnTagEdit, this);
+                tag->callback((Fl_Callback *)&OnTagEdit, this);              
                 tag->box(FL_BORDER_BOX);
+                tag->value(ix->TagString.c_str());
                 w[i][9] = tag;
-                if (ix->TAG == Yaesu::FT891::Commands::TagValue::ON)
-                    tag->value(ix->TagString.c_str());
-
-                if (ix->TAG == Yaesu::FT891::Commands::TagValue::OFF)
-                {
+                if(ix->TAG == Yaesu::Commands::FT891::TagValue::OFF)
                     tag->deactivate();
-                }
-                else
-                {
-                    tag->activate();
-                }
             }
             else
             {
@@ -604,7 +664,7 @@ MemoryEditor::MemoryEditor(int X,
 
                 xx += colx;
 
-                std::string channelName = Yaesu::FT891::Commands::DisplayMemoryChannelValue(static_cast<Yaesu::FT891::Commands::MemoryChannelValue>(i));
+                std::string channelName = Yaesu::Commands::FT891::DisplayMemoryChannelValue(static_cast<Yaesu::Commands::FT891::MemoryChannelValue>(i));
                 if (channelName.find("Channel") != std::string::npos)
                     channelName = channelName.replace(0, 7, "");
                 channelNames.push_back(channelName);
@@ -620,6 +680,8 @@ MemoryEditor::MemoryEditor(int X,
                 Fl_Input *freq = new Fl_Input(xx, yy, colx, colh);
                 freq->box(FL_BORDER_BOX);
                 freq->value(frequencies.back().c_str());
+                freq->callback((Fl_Callback *)&OnFreqInput, this);
+                freq->when(FL_KEYUP);
                 freq->deactivate();
                 w[i][2] = freq;
 
@@ -637,25 +699,25 @@ MemoryEditor::MemoryEditor(int X,
                 Fl_Choice *clarState = new Fl_Choice(xx, yy, colx, colh);
                 clarState->add("OFF", 0, OnMemoryEditorClarifierStateChange, this, 0);
                 clarState->add("ON", 0, OnMemoryEditorClarifierStateChange, this, 0);
-                clarState->value(static_cast<int>(Yaesu::FT891::Commands::ClarifierState::OFF));
+                clarState->value(static_cast<int>(Yaesu::Commands::FT891::ClarifierState::OFF));
                 clarState->deactivate();
                 w[i][4] = clarState;
 
                 xx += colx;
                 Fl_Choice *OperatingMode = new Fl_Choice(xx, yy, colx, colh, "");
-                OperatingMode->add("LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY_LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("CW-R", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-LSB", 0, OnModeChange, this, 0);
-                OperatingMode->add("RTTY-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("-", 0, OnModeChange, this, 0);
-                OperatingMode->add("FM-N", 0, OnModeChange, this, 0);
-                OperatingMode->add("DATA-USB", 0, OnModeChange, this, 0);
-                OperatingMode->add("AM-N", 0, OnModeChange, this, 0);
+                OperatingMode->add("LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY_LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("CW-R", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-LSB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("RTTY-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("-", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("FM-N", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("DATA-USB", 0,  MemEditOnModeChange, this, 0);
+                OperatingMode->add("AM-N", 0,  MemEditOnModeChange, this, 0);
                 OperatingMode->value(static_cast<int>(9));         
                 w[i][5] = OperatingMode;
                 OperatingMode->deactivate();
@@ -666,6 +728,7 @@ MemoryEditor::MemoryEditor(int X,
                 CTCSS->add("OFF", 0, OnMemoryEditorCTCSS, this, 0);
                 CTCSS->add("ENC/DEC", 0, OnMemoryEditorCTCSS, this, 0);
                 CTCSS->add("ENC", 0, OnMemoryEditorCTCSS, this, 0);
+                CTCSS->add("DCS",0,OnMemoryEditorCTCSS,this,0);
                 CTCSS->value(static_cast<int>(0));
                 CTCSS->deactivate();
                 w[i][6] = CTCSS;
@@ -673,12 +736,13 @@ MemoryEditor::MemoryEditor(int X,
                 xx += colx;
 
                 Fl_Choice *RepeaterMode = new Fl_Choice(xx, yy, colx, colh, "");
-                RepeaterMode->add("Simplex", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Plus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
-                RepeaterMode->add("Minus Shift", 0, OnMemoryEditorOperatingMode, this, 0);
+                RepeaterMode->add("Simplex", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Plus Shift", 0, OnRepeaterMode, this, 0);
+                RepeaterMode->add("Minus Shift", 0, OnRepeaterMode, this, 0);
                 RepeaterMode->value(static_cast<int>(0));
                 RepeaterMode->deactivate();
                 RepeaterMode->callback((Fl_Callback*)&OnRepeaterMode, this);
+                
                 w[i][7] = RepeaterMode;
 
                 xx += colx;
@@ -701,7 +765,7 @@ MemoryEditor::MemoryEditor(int X,
             xx = X;
         }
 
-        tile->end();
+        m_tile->end();
         this->end();
     
 }

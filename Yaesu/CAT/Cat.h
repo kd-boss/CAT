@@ -5065,18 +5065,6 @@ namespace Yaesu
 				CTCSSState CTCSS;
 				OperationType Operation;
 				std::string Tag;
-
-				MemoryChannelTagValue() : MemoryChannel(static_cast<MemoryChannelValue>(0)),
-					VFOAFreq(0),
-					ClarifierFreq(0),
-					RIT(OnOffValue::OFF),
-					XIT(OnOffValue::OFF),
-					CTCSS(CTCSSState::OFF),
-					ChannelType(VFOChannelTypeValue::VFO),
-					Operation(OperationType::Simplex),
-					Tag(""),
-					Mode(ModeValue::LSB)
-				{}
 			};
 
 			class AntennaTunerControl
@@ -9049,7 +9037,7 @@ namespace Yaesu
 
 			struct KeyerMemoryValue
 			{
-				int ChannelNumber = 0;
+				int ChannelNumber;
 				std::string Message;
 			};
 
@@ -9076,7 +9064,7 @@ namespace Yaesu
 				CTCSSState CTCSS;
 				OperationType Operation;
 				TagValue TAG;
-				std::string TagString{};
+				std::string TagString;
 			};
 
 			struct MemoryChannelWriteValue
@@ -10781,14 +10769,14 @@ namespace Yaesu
 				OFF,
 				ON
 			};
-			
+
 			enum class EnabledDisabledValue : int
 			{
 				DISABLE,
 				ENABLE
 			};
 
-			enum class PSKModeValue: int
+			enum class PSKModeValue : int
 			{
 				BPSK,
 				QPSK
@@ -10813,7 +10801,7 @@ namespace Yaesu
 				_50Mhz,
 				ON
 			};
-	
+
 			enum class CwFrequencyDisplayType : int
 			{
 				DIRECT_FREQ,
@@ -10833,7 +10821,7 @@ namespace Yaesu
 				SUB
 			};
 
-			enum class ManualNotchType: int
+			enum class ManualNotchType : int
 			{
 				OnOff,
 				Frequency
@@ -10871,14 +10859,14 @@ namespace Yaesu
 					OnOffValue State;
 					int Frequency;
 				};
-				ManualNotchType Type;				
+				ManualNotchType Type;
 				value Value;
 			};
 
 			class VolumeLevel
 			{
 			public:
-				static std::string Set( int Value);
+				static std::string Set(int Value);
 				static std::string Read();
 				static int Answer(std::string data);
 			};
@@ -10935,9 +10923,9 @@ namespace Yaesu
 			public:
 				static std::string Set();
 			};
-			
 
-			
+
+
 			class AutoNotch
 			{
 			public:
@@ -10951,7 +10939,7 @@ namespace Yaesu
 			{
 			public:
 				static std::string Set(MainSubValue value);
-				
+
 			};
 
 
@@ -10962,13 +10950,13 @@ namespace Yaesu
 				static std::string Read();
 				static OnOffValue Answer(std::string data);
 			};
-			
+
 
 			class VFO_B_ToMemory
 			{
 			public:
 				static std::string Set();
-				
+
 			};
 
 
@@ -10979,13 +10967,13 @@ namespace Yaesu
 				static std::string Read(ManualNotchType Type);
 				static ManualNotchValue Answer(std::string data);
 			};
-			
+
 
 			class BandSelect
 			{
 			public:
 				static std::string Set(Band value);
-			
+
 			};
 
 
@@ -10993,12 +10981,12 @@ namespace Yaesu
 			{
 			public:
 				static std::string Set(MainSubValue value);
-			
+
 			};
 
 			class Busy
 			{
-			public:				
+			public:
 				static std::string Read();
 				static OnOffValue Answer(std::string data);
 			};
@@ -11036,7 +11024,7 @@ namespace Yaesu
 			public:
 				static std::string Set(ChannelDirection value);
 			};
-			
+
 			struct CTCSSToneValue
 			{
 				MainSubValue Band;
@@ -11145,7 +11133,7 @@ namespace Yaesu
 			struct DateAndTimeValue
 			{
 				DateTimeType Type;
-				std::string Value; 
+				std::string Value;
 			};
 
 
@@ -11171,12 +11159,12 @@ namespace Yaesu
 				EncoderType Type;
 				int Value = 1;
 			};
-			
+
 			class EncoderDown
 			{
 			public:
 				static std::string Set(EncoderValue value);
-				
+
 			};
 
 
@@ -11184,7 +11172,7 @@ namespace Yaesu
 			{
 			public:
 				static std::string Set(EncoderValue value);
-			
+
 			};
 
 			enum class MenuGroup : int
@@ -11262,7 +11250,7 @@ namespace Yaesu
 				LCUT_SLOPE,
 				HCUT_FREQ,
 				HCUT_SLOPE,
-				FM_OUT_LEVEL,		
+				FM_OUT_LEVEL,
 				FM_MOD_SOURCE,
 				MIC_GAIN,
 				REAR_SELECT,
@@ -11324,7 +11312,7 @@ namespace Yaesu
 				MARK_FREQUENCY,
 				SHIFT_FREQUENCY
 			};
-			
+
 			enum PSKEncDecFunction : int
 			{
 				PSK_MODE = 1,
@@ -11381,7 +11369,7 @@ namespace Yaesu
 				RTS,
 				DTR
 			};
-			
+
 			enum class ToneEncodingValue
 			{
 				OFF,
@@ -11408,13 +11396,13 @@ namespace Yaesu
 				LTRS
 			};
 
-			
+
 			class Menu
 			{
 			public:
 				class RadioSetting
 				{
-					
+
 				public:
 					class ModeSSB
 					{
@@ -11469,7 +11457,7 @@ namespace Yaesu
 							static int Answer(std::string data);
 						};
 
-						
+
 
 						class LCUT_FREQ
 						{
@@ -11795,7 +11783,7 @@ namespace Yaesu
 							static int Answer(std::string data);
 						};
 
-						
+
 
 						class FM_MOD_SOURCE
 						{
@@ -11847,7 +11835,7 @@ namespace Yaesu
 							static std::string Read();
 							static int Answer(std::string data);
 						};
-						
+
 
 						class RPT_SHIFT_50
 						{
@@ -11946,7 +11934,7 @@ namespace Yaesu
 							static std::string Read();
 							static PskToneValue Answer(std::string data);
 						};
-						
+
 
 						class DATA_SHIFT
 						{
@@ -12257,7 +12245,7 @@ namespace Yaesu
 							static std::string Read();
 							static EnableDisableValue Answer(std::string data);
 						};
-						
+
 
 						class TX_DIDDLE
 						{
@@ -12284,7 +12272,7 @@ namespace Yaesu
 				public:
 
 				};
-				
+
 				class OperationSetting
 				{
 				public:
@@ -12304,6 +12292,7 @@ namespace Yaesu
 				};
 			};
 		};
+
 
 	};	   // end Commands
 };		   // end Yeasu
