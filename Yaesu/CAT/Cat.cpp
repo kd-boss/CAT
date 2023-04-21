@@ -145,7 +145,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             ManualNotchValueType ManualNotch::Answer(std::string data)
             {
-                ManualNotchValueType ret{};
+                ManualNotchValueType ret;
                 ret.Type = static_cast<ManualNotchType>(std::stoi(data.substr(3,1)));
                 if(ret.Type == ManualNotchType::OnOff)
                 {
@@ -199,7 +199,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             CTCSSToneValue CTCSSToneFrequency::Answer(std::string data)
             {
-                CTCSSToneValue ret{};
+                CTCSSToneValue ret;
                 ret.Type = static_cast<CTCSSToneType>(std::stoi(data.substr(3,1)));
                 ret.Value = std::stoi(data.substr(4,3));
                 return ret;
@@ -245,7 +245,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             CountourValue Countour::Answer(std::string data)
             {
-                CountourValue ret{};
+                CountourValue ret;
                 ret.Type = static_cast<CountourType>(std::stoi(data.substr(3,1)));
                 switch(ret.Type)
                 {
@@ -307,7 +307,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             DimmerValue DIMMER::Answer(std::string data)
             {
-                DimmerValue ret{};
+                DimmerValue ret;
                 ret.LED = std::stoi(data.substr(4,2));
                 ret.TFT = std::stoi(data.substr(6,2));
                 return ret;
@@ -347,7 +347,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             DateTimeValue DateAndTime::Answer(std::string data)
             {
-                DateTimeValue ret{};
+                DateTimeValue ret;
                 ret.Type = static_cast<DateTimeType>(std::stoi(data.substr(2,1)));
                 ret.Value = data.substr(3,data.find(";",3));
                 return ret;
@@ -3199,7 +3199,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             InformationValue Information::Answer(std::string data)
             {
-                InformationValue ret{};
+                InformationValue ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOAFreq = std::stoi(data.substr(5, 9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -3241,7 +3241,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             KeyerMemoryValue KeyerMemory::Answer(std::string data)
             {
-                KeyerMemoryValue ret{};
+                KeyerMemoryValue ret;
                 ret.Channel = static_cast<KeyerMemoryChannel>(std::stoi(data.substr(2,1)));
                 ret.Message = data.substr(3, data.find(";") - 1);
                 return ret;
@@ -3404,7 +3404,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             MonitorLevelValue MonitorLevel::Answer(std::string data)
             {
-                MonitorLevelValue ret{};
+                MonitorLevelValue ret;
                 ret.f = static_cast<MonitorFunction>(std::stoi(data.substr(2,1)));
                 switch(ret.f)
                 {
@@ -3432,7 +3432,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             MemoryChannelTag MemoryChannelRead::Answer(std::string data)
             {
-                MemoryChannelTag ret{};
+                MemoryChannelTag ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOAFreq = std::stoi(data.substr(5, 9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -3482,7 +3482,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             MemoryChannelTag MemoryChannelWriteTag::Answer(std::string data)
             {
-                MemoryChannelTag ret{};
+                MemoryChannelTag ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOAFreq = std::stoi(data.substr(5, 9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -3593,7 +3593,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             OppositeInformationValue OppisateBandInformation::Answer(std::string data)
             {
-                OppositeInformationValue ret{};
+                OppositeInformationValue ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOBFreq = std::stoi(data.substr(5, 9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -3698,7 +3698,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             SpeechProcessorSetting SpeechProcessor::Answer(std::string data)
             {
-                SpeechProcessorSetting ret{};
+                SpeechProcessorSetting ret;
                 ret.Type = static_cast<SpeechProcessorType>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -3786,7 +3786,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             RadioInformationValue RadioInformation::Answer(std::string data)
             {
-                RadioInformationValue ret{};
+                RadioInformationValue ret;
                 ret.Type = static_cast<RadioInformationType>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -3816,7 +3816,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             
             ReadMeterValue ReadMeter::Answer(std::string data)
             {   
-                ReadMeterValue ret{};
+                ReadMeterValue ret;
                 ret.Type = static_cast<ReadMeterType>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(3,3));
                 return ret;
@@ -4122,7 +4122,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             AntennaNumberValue AntennaNumber::Answer(std::string data)
             {
-                AntennaNumberValue ret{};
+                AntennaNumberValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.value = static_cast<AntennaNumberSelection>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -4165,7 +4165,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             AutoNotchValue AutoNotch::Answer(std::string data)
             {
-                AutoNotchValue ret{};
+                AutoNotchValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.state = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -4208,7 +4208,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             CTCSSToneValue CTCSSToneFrequency::Answer(std::string data)
             {
-                CTCSSToneValue ret{};
+                CTCSSToneValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.value = std::stoi(data.substr(4,3));
                 return ret;
@@ -4253,7 +4253,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ManualNotchValue ManualNotch::Answer(std::string data)
             {
-                ManualNotchValue ret{};
+                ManualNotchValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.type = static_cast<ManualNotchValueType>(std::stoi(data.substr(3,1)));
                 ret.value = std::stoi(data.substr(4,3));
@@ -4277,7 +4277,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             BusyStateValue Busy::Answer(std::string data)
             {
-                BusyStateValue ret{};
+                BusyStateValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.state = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -4315,13 +4315,61 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ContourStateValue Contour::Answer(std::string data)
             {
-                ContourStateValue ret{};
+                ContourStateValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.type = static_cast<ContourRequestType>(std::stoi(data.substr(3,1)));
                 ret.RequestValue = std::stoi(data.substr(4,4));
                 return ret;
             }
 
+			std::string ClarifierOnOff::Set(ClarifierValue value)
+			{
+				switch (value.Type)
+				{
+				case ClarifierType::Setting:
+
+					return fmt::format("CF{:1d}0{:1d}{:1d}{:1d}000;",
+						static_cast<int>(value.Band),
+						static_cast<int>(value.Type),
+						static_cast<int>(value.Value.RXOnOff),
+						static_cast<int>(value.Value.TXOnOff)
+					);
+					break;
+				case ClarifierType::Frequency:
+					return fmt::format("CF{:1d}0{:1d}{:+05d};",
+						static_cast<int>(value.Band),
+						static_cast<int>(value.Type),
+						static_cast<int>(value.Value.Frequency)
+					);
+					break;
+				}
+				return "";
+			}
+
+			std::string ClarifierOnOff::Read(ClarifierValue value)
+			{
+				return fmt::format("CF{:1d}0{:1d};",
+					static_cast<int>(value.Band),
+					static_cast<int>(value.Type));
+			}
+
+			ClarifierValue ClarifierOnOff::Answer(std::string data)
+			{
+				ClarifierValue ret{};
+				ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2, 1)));
+				ret.Type = static_cast<ClarifierType>(std::stoi(data.substr(4, 1)));
+				switch (ret.Type)
+				{
+				case ClarifierType::Setting:
+					ret.Value.RXOnOff = static_cast<OnOffValue>(std::stoi(data.substr(5, 1)));
+					ret.Value.TXOnOff = static_cast<OnOffValue>(std::stoi(data.substr(6, 1)));
+					break;
+				case ClarifierType::Frequency:
+					ret.Value.Frequency = std::stoi(data.substr(5, 5));
+					break;
+				}
+				return ret;
+			}
             std::string CWSpot::Set(OnOffValue value)
             {
                 return fmt::format("CS{:01};",
@@ -4366,7 +4414,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             CTCSSStateValue CTCSS::Answer(std::string data)
             {
-                CTCSSStateValue ret{};
+                CTCSSStateValue ret;
                 ret.band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.type = static_cast<CTCSSType>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -4393,7 +4441,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             DimmerValue Dimmer::Answer(std::string data)
             {
-                DimmerValue ret{};
+                DimmerValue ret;
                 ret.TFTBrightness = std::stoi(data.substr(6,2));
                 ret.LEDIndicatorBrightness = std::stoi(data.substr(8,2));
                 return ret;
@@ -4432,7 +4480,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             DateTimeValue DateAndTime::Answer(std::string data)
             {
-                DateTimeValue ret{};
+                DateTimeValue ret;
                 ret.type = static_cast<DateTimeType>(std::stoi(data.substr(2,1)));
                 ret.value = data.substr(3, data.size() - 4);
                 return ret;
@@ -4484,7 +4532,7 @@ RigType IDENTIFICATION::Answer(std::string data)
                 if(data.find_last_of(';') == data.length())
                     data = data.substr(0,data.length() - 1);
 
-                EncodeMemoryValue ret{};
+                EncodeMemoryValue ret;
                 ret.format = static_cast<EncodeFormat>(std::stoi(data.substr(2,1)));
                 ret.channel = std::stoi(data.substr(3,1));
                 ret.message = data.substr(4,50);
@@ -8647,7 +8695,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             FunctionRXValue FunctionRX::Answer(std::string data)
             {
-                FunctionRXValue ret{};
+                FunctionRXValue ret;
                 ret.Main = static_cast<RXValue>(std::stoi(data.substr(2,1)));
                 ret.Sub = static_cast<RXValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -8682,7 +8730,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             AGCState AGCFunction::Answer(std::string data)
             {
-                AGCState ret{};
+                AGCState ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = static_cast<AGCStateValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -8706,7 +8754,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             InformationValue INFORMATION::Answer(std::string data)
             {
-                InformationValue ret{};
+                InformationValue ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOAFreq = std::stoi(data.substr(5,9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -8740,7 +8788,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             IFShiftValue IF_SHIFT::Answer(std::string data)
             {
-                IFShiftValue ret{};
+                IFShiftValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(4,5));
                 return ret;
@@ -8758,7 +8806,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             KeyerMemoryValue KEYER_MEMORY::Answer(std::string data)
             {
-                KeyerMemoryValue ret{};
+                KeyerMemoryValue ret;
                 ret.ChannelNumber = std::stoi(data.substr(2,1));
                 ret.Message = data.substr(3, data.length() - 4);
                 return ret;
@@ -9039,7 +9087,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ModeSettingValue OperatingMode::Answer(std::string data)
             {
-                ModeSettingValue ret{};
+                ModeSettingValue ret;
                 ret.Mode = static_cast<ModeValue>(std::stoi(data.substr(3,1),0,16));
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 return ret;
@@ -9075,7 +9123,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MonitorLevelValue MonitorLevel::Answer(std::string data)
             {
-                MonitorLevelValue ret{};
+                MonitorLevelValue ret;
                 ret.Type = static_cast<MonitorRequestType>(std::stoi(data.substr(2,1)));
                 if(ret.Type == MonitorRequestType::MONITOR_ONOFF)
                 {
@@ -9109,7 +9157,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelReadValue MemoryChannel::Answer(std::string data)
             {
-                MemoryChannelReadValue ret{};
+                MemoryChannelReadValue ret;
                 ret.MemoryChannel = static_cast<MemoryChannelValue>(std::stoi(data.substr(2,3)));
                 ret.VFOAFreq = std::stoi(data.substr(5,9));
                 ret.ClarifierFreq = std::stoi(data.substr(14,5));
@@ -9136,7 +9184,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MeterTypeValue MeterSW::Answer(std::string data)
             {
-                MeterTypeValue ret{};
+                MeterTypeValue ret;
                 ret.Main = static_cast<MainMeterType>(std::stoi(data.substr(2,1)));
                 ret.Sub = static_cast<SubMeterType>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9213,7 +9261,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelTagValue MemoryChannelTag::Answer(std::string data)
             {
-                MemoryChannelTagValue ret{};
+                MemoryChannelTagValue ret;
                 std::string channelStr = data.substr(2,3);
                 if(channelStr[0] == 'P')
                 {
@@ -9326,7 +9374,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             NarrowValue Narrow::Answer(std::string data)
             {
-                NarrowValue ret{};
+                NarrowValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9347,7 +9395,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             NoiseBlankerValue NoiseBlanker::Answer(std::string data)
             {
-                NoiseBlankerValue ret{};
+                NoiseBlankerValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9382,7 +9430,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             NoiseReductionValue NoiseReduction::Answer(std::string data)
             {
-                NoiseReductionValue ret{};
+                NoiseReductionValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9396,7 +9444,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             OppisateInformation OppisateBandInformation::Answer(std::string data)
             {
-                OppisateInformation ret{};
+                OppisateInformation ret;
                 std::string channelStr = data.substr(2,3);
                 if(channelStr[0] == 'P')
                 {
@@ -9493,7 +9541,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             OffsetValue Offset::Answer(std::string data)
             {
-                OffsetValue ret{};
+                OffsetValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OperationType>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9514,7 +9562,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             PreAmpValue PreAmp::Answer(std::string data)
             {
-                PreAmpValue ret{};
+                PreAmpValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = static_cast<PreampType>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9584,7 +9632,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SpeechProcessorValue SpeechProcessor::Answer(std::string data)
             {
-                SpeechProcessorValue ret{};
+                SpeechProcessorValue ret;
                 ret.Type = static_cast<SpeechProcessorType>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9635,7 +9683,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             AttenuatorValue RFAttenuator::Answer(std::string data)
             {
-                AttenuatorValue ret{};
+                AttenuatorValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Type = static_cast<AttenuatorType>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9663,7 +9711,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             RoofingFilterValue RoofingFilter::Answer(std::string data)
             {
-                RoofingFilterValue ret{};
+                RoofingFilterValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Type = static_cast<RoofingFilterType>(std::stoi(data.substr(3,1),0,16) - 5);
                 return ret;
@@ -9683,7 +9731,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             RFGainValue RFGain::Answer(std::string data)
             {
-                RFGainValue ret{};
+                RFGainValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Level = std::stoi(data.substr(3,3));
                 return ret;
@@ -9697,7 +9745,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             RadioInformationValue RadioInformation::Answer(std::string data)
             {
-                RadioInformationValue ret{};
+                RadioInformationValue ret;
                 ret.Type = static_cast<RadioInformationType>(std::stoi(data.substr(2,1)));
                 ret.State = static_cast<OnOffValue>(std::stoi(data.substr(3,1)));
                 return ret;
@@ -9719,7 +9767,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             NoseReductionLevelValue NoiseReductionLevel::Answer(std::string data)
             {
-                NoseReductionLevelValue ret{};
+                NoseReductionLevelValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Level = std::stoi(data.substr(3,2));
                 return ret;
@@ -9733,7 +9781,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ReadMeterValue ReadMeter::Answer(std::string data)
             {
-                ReadMeterValue ret{};
+                ReadMeterValue ret;
                 ret.Type = static_cast<ReadMeterType>(std::stoi(data.substr(2,1)));
                 ret.LeftSide = std::stoi(data.substr(3,3));
                 ret.RightSide = std::stoi(data.substr(6,3));
@@ -9842,7 +9890,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SubDialValue SubDial::Answer(std::string data)
             {
-                SubDialValue ret{};
+                SubDialValue ret;
                 ret.Dial = static_cast<SubDialKnob>(std::stoi(data.substr(2,1)));
                 if(ret.Dial == SubDialKnob::MPVD)
                 {
@@ -9867,7 +9915,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             WidthValue Width::Answer(std::string data)
             {
-                WidthValue ret{};
+                WidthValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Width = std::stoi(data.substr(4,2));
                 return ret;
@@ -9881,7 +9929,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SMeterValue S_MeterReading::Answer(std::string data)
             {
-                SMeterValue ret{};
+                SMeterValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(3,3));
                 return ret;
@@ -9901,7 +9949,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SquelchValue SquelchLevel::Answer(std::string data)
             {
-                SquelchValue ret{};
+                SquelchValue ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Value = std::stoi(data.substr(3,3));
                 return ret;
@@ -9976,7 +10024,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SpectrumScopeAnswerType SpectrumScope::Answer(std::string data)
             {
-                SpectrumScopeAnswerType ret{};
+                SpectrumScopeAnswerType ret;
                 ret.Band = static_cast<MainSubValue>(std::stoi(data.substr(2,1)));
                 ret.Function = static_cast<SpectrumScopeFunction>(std::stoi(data.substr(3,1)));
                 switch(ret.Function)
@@ -10250,7 +10298,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ManualNotchValue ManualNotch::Answer(std::string data)
             {
-                ManualNotchValue val{};
+                ManualNotchValue val;
                 val.Command = (NotchCommandType)std::stoi(data.substr(3, 1));
                 val.Value.iValue = std::stoi(data.substr(4, 3));
                 return val;
@@ -10312,7 +10360,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             CTCSSToneFreqencyValue CTCSSToneFrequency::Answer(std::string data)
             {
                 const std::string str = data;
-                CTCSSToneFreqencyValue val{};
+                CTCSSToneFreqencyValue val;
                 val.Mode = (CTCSSModeType)std::stoi(str.substr(3, 1));
                 val.Value = std::stoi(str.substr(4, 3));
                 return val;
@@ -10332,7 +10380,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             ContourValue Contour::Answer(std::string data)
             {
-                ContourValue val{};
+                ContourValue val;
                 val.Type = (ContourType)std::stoi(data.substr(3, 1));
                 val.Value.Freq = std::stoi(data.substr(4, 4));
                 return val;
@@ -14162,7 +14210,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             IfShiftResultValue IF_SHIFT::Answer(std::string data)
             {
-                IfShiftResultValue ret{};
+                IfShiftResultValue ret;
                 ret.Frequency = std::stoi(data.substr(4, 5));
                 ret.State = (IfShiftValue)std::stoi(data.substr(3, 1));
                 return ret;
@@ -14180,7 +14228,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             KeyerMemoryValue KeyerMemory::Answer(std::string data)
             {
-                KeyerMemoryValue ret{};
+                KeyerMemoryValue ret;
                 ret.ChannelNumber = std::stoi(data.substr(2, 1));
                 ret.Message = data.substr(3, data.length() - 4);
                 return ret;
@@ -14512,7 +14560,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
             InformationValue INFORMATION::Answer(std::string data)
             {
-                InformationValue retVal{};
+                InformationValue retVal;
                 std::string chStr = data.substr(2, 3);
                 if (chStr == "EMG") {
                     retVal.MemoryChannel = MemoryChannelValue::EMG;
@@ -14632,7 +14680,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string MemoryChannelRead::Read(MemoryChannelValue val)
             {
-                std::string retStr = "";
+                std::string retStr;
                 switch (val)
                 {
                 case MemoryChannelValue::P1L:
@@ -14706,7 +14754,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelReadValue MemoryChannelRead::Answer(std::string data)
             {
-                MemoryChannelReadValue retVal{};
+                MemoryChannelReadValue retVal;
                 std::string chStr = data.substr(2, 3);
                 if (chStr == "EMG") {
                     retVal.MemoryChannel = MemoryChannelValue::EMG;
@@ -15004,7 +15052,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MemoryChannelTagValue MemoryWriteTag::Answer(std::string data)
             {
-                MemoryChannelTagValue retVal{};
+                MemoryChannelTagValue retVal;
                 std::string chStr = data.substr(2, 3);
                 if (chStr == "EMG") {
                     retVal.MemoryChannel = MemoryChannelValue::EMG;
@@ -15291,7 +15339,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
             OppositeInformationValue OppositeBandInformation::Answer(std::string data)
             {
-                OppositeInformationValue retVal{};
+                OppositeInformationValue retVal;
                 std::string chStr = data.substr(2, 3);
                 if (chStr == "EMG") {
                     retVal.MemoryChannel = MemoryChannelValue::EMG;
@@ -15495,7 +15543,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             SpeechProcessorSetting SpeechProcessor::Answer(std::string data)
             {
-                SpeechProcessorSetting retVal{};
+                SpeechProcessorSetting retVal;
                 retVal.type = (SpeechProcessorType)std::stoi(data.substr(2, 1));
                 retVal.state = (SpeechProcessorState)std::stoi(data.substr(3, 1));
                 return retVal;
@@ -15579,7 +15627,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             RadioInfoVal RadioInformation::Answer(std::string data)
             {
-                RadioInfoVal ret{};
+                RadioInfoVal ret;
                 ret.Type = (InformationType)std::stoi(data.substr(2, 1),0,16);
                 ret.Value = (InformationState)std::stoi(data.substr(3, 1));
                 return ret;
@@ -15611,7 +15659,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             MeterVal ReadMeter::Answer(std::string data)
             {
-                MeterVal ret{};
+                MeterVal ret;
                 ret.Type = (ReadMeterType)std::stoi(data.substr(2, 1));
                 ret.Value = std::stoi(data.substr(3, 3));
                 return ret;
@@ -15681,7 +15729,7 @@ RigType IDENTIFICATION::Answer(std::string data)
             }
             WidthValue Width::Answer(std::string data)
             {
-                WidthValue val{};
+                WidthValue val;
                 val.State = (WidthState)std::stoi(data.substr(3, 1));
                 val.WidthCommand = std::stoi(data.substr(4, 2));
                 return val;
@@ -17494,29 +17542,29 @@ RigType IDENTIFICATION::Answer(std::string data)
 
 
 
-            std::string ClarifierOnOff::Set(ClarifierValue value)
-            {
-                switch (value.Type)
-                {
-                case ClarifierType::Setting:
+			std::string ClarifierOnOff::Set(ClarifierValue value)
+			{
+				switch (value.Type)
+				{
+				case ClarifierType::Setting:
 
-                    return fmt::format("CF{:1d}0{:1d}{:1d}{:1d}000;",
-                        static_cast<int>(value.Band),
-                        static_cast<int>(value.Type),
-                        static_cast<int>(value.Value.RXOnOff),
-                        static_cast<int>(value.Value.TXOnOff)
-                    );
-                    break;
-                case ClarifierType::Frequency:
-                    return fmt::format("CF{:1d}0{:1d}{:+5d};",
-                        static_cast<int>(value.Band),
-                        static_cast<int>(value.Type),
-                        static_cast<int>(value.Value.Frequency)
-                    );
-                    break;
-                }
-                return "";
-            }
+					return fmt::format("CF{:1d}0{:1d}{:1d}{:1d}000;",
+						static_cast<int>(value.Band),
+						static_cast<int>(value.Type),
+						static_cast<int>(value.Value.RXOnOff),
+						static_cast<int>(value.Value.TXOnOff)
+					);
+					break;
+				case ClarifierType::Frequency:
+					return fmt::format("CF{:1d}0{:1d}{:+05d};",
+						static_cast<int>(value.Band),
+						static_cast<int>(value.Type),
+						static_cast<int>(value.Value.Frequency)
+					);
+					break;
+				}
+				return "";
+			}
 
             std::string ClarifierOnOff::Read(ClarifierValue value)
             {
