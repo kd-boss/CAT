@@ -1,5 +1,5 @@
 # CAT
-Cat library for Yaesu. Currently only the FT-891, FTDX101, and FT991 with others to come. 
+Cat library for Yaesu. Currently only the FT-891, FTDX101, FTDX10 and FT991 with others to come. 
 
 This library is for serializing and de serializing the data sent to and received from the Yaesu radios. 
 
