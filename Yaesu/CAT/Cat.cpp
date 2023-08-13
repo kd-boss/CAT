@@ -9110,7 +9110,7 @@ RigType IDENTIFICATION::Answer(std::string data)
 
             std::string MonitorLevel::Set(MonitorLevelValue value)
             {
-                return fmt::format("ML{:1d}{:3d};",
+                return fmt::format("ML{:01d}{:03d};",
                     static_cast<int>(value.Type),
                     (value.Type == MonitorRequestType::MONITOR_ONOFF ? static_cast<int>(value.Value.eValue) : value.Value.iValue ));
             }
