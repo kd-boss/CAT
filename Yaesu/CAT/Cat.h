@@ -4,42 +4,23 @@
 #include <exception>
 #include <stdexcept>
 #include <type_traits>
-// VFOA to VFOB
 
-template <typename E, E first, E head>
-void advanceEnum(E &v)
-{
-	if (v == head)
-		v = first;
-}
-
-template <typename E, E first, E head, E next, E... tail>
-void advanceEnum(E &v)
-{
-	if (v == head)
-		v = next;
-	else
-		advanceEnum<E, first, next, tail...>(v);
-}
-
-template <typename E, E first, E... values>
-struct EnumValues
-{
-	static void advance(E &v)
-	{
-		advanceEnum<E, first, first, values...>(v);
-	}
-};
 
 namespace Yaesu
 {
 	enum class RigType : int
 	{
+		FT450D = 244,
+		FTDX5000 = 362,
+		FTDX3000 = 462,
+		FTDX1200_FFT = 582,
+		FTDX1200 = 583,
 		FT891 = 650,
 		FT991A = 670,
 		FTDX101D = 681,
 		FTDX101MP = 682,
-		FTDX10 = 761
+		FTDX10 = 761,
+		FT710 = 800
 	};
 
 	class IDENTIFICATION
@@ -973,8 +954,8 @@ namespace Yaesu
 
 			struct DateTimeValue
 			{
-				DateTimeType Type;
-				std::string Value;
+				DateTimeType Type{};
+				std::string Value{};
 			};
 			
 			enum class CwMemoryType : int
@@ -1237,71 +1218,71 @@ namespace Yaesu
 			struct MonitorLevelValue
 			{
 
-				MonitorFunction f;
+				MonitorFunction f{};
 				union Value
 				{
 					OnOffValue eVal;
 					int iVal;
 				};
-				Value val;
+				Value val{};
 			};
 
 			struct KeyerMemoryValue
 			{
-				KeyerMemoryChannel Channel;
-				std::string Message;
+				KeyerMemoryChannel Channel{};
+				std::string Message{};
 			};
 
 			struct MemoryChannelTag
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				ClarifierState RxClarifier;
-				ClarifierState TxClarifier;
-				ModeValue Mode;
-				VFOChannelTypeValue VFO;
-				CTCSSState CTCSS;
-				OperationType Operation;
-				std::string Tag;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState RxClarifier{};
+				ClarifierState TxClarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
+				std::string Tag{};
 			};
 
 			struct InformationValue
 			{
 				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				ClarifierState RxClarifier;
-				ClarifierState TxClarifier;
-				ModeValue Mode;
-				VFOChannelTypeValue VFO;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState RxClarifier{};
+				ClarifierState TxClarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct OppositeInformationValue
 			{
 				MemoryChannelValue MemoryChannel;
-				int VFOBFreq;
-				int ClarifierFreq;
-				ClarifierState RxClarifier;
-				ClarifierState TxClarifier;
-				ModeValue Mode;
-				VFOChannelTypeValue VFO;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				int VFOBFreq{};
+				int ClarifierFreq{};
+				ClarifierState RxClarifier{};
+				ClarifierState TxClarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct CTCSSToneValue
 			{
-				CTCSSToneType Type;
-				int Value;
+				CTCSSToneType Type{};
+				int Value{};
 			};
 
 			struct ManualNotchValueType
 			{
-				ManualNotchType Type;
-				ManualNotchValue Value;
+				ManualNotchType Type{};
+				ManualNotchValue Value{};
 			};
 
 			class VFO_A_To_VFO_B
@@ -3303,6 +3284,90 @@ namespace Yaesu
 
 		namespace FTDX101
 		{
+			enum class CommandType : int
+			{				
+				AC_AntennaTunerControl,
+				AG_AF_Gain,
+				AI_AutoInformation,				
+				AN_AntennaNumber,
+				AO_AMC_OutputLevel,
+				BC_AutoNotch,
+				BI_BreakIn,
+				BP_ManualNotch,				
+				BY_Busy,
+				CN_CTCSS_DCS_Number,
+				CO_Contour,
+				CS_CW_Spot,
+				CT_CTCSS,
+				DA_Dimmer,
+				DT_DateAndTime,
+				EM_EncodeMemory,
+				EX_Menu,
+				FA_FrequencyMain,
+				FB_FrequencySub,
+				FN_FineTuning,
+				FR_FunctionRX,
+				FS_FastStep,
+				FT_FunctionTX,
+				GT_AGCFunction,
+				ID_Identification,
+				IF_Information,
+				IS_IF_Shift,
+				KM_KeyerMemory,
+				KP_KeyerPitch,
+				KR_Keyer,
+				KS_KeySpeed,
+				LK_Lock,
+				LM_LoadMessage,
+				MC_MemoryChannel,
+				MD_Mode,
+				MG_MicGain,
+				ML_MonitorLevel,
+				MR_MemoryRead,
+				MS_MeterSwitch,
+				MT_MemoryChannelWriteTag,
+				MW_MemoryChannelWrite,
+				MX_MoxSet,
+				NA_Narrow,
+				NB_NoiseBlanker,
+				NL_NoiseBlankerLevel,
+				NR_NoiseReduction,
+				OI_OppositeBandInformation,
+				OS_RepeaterOffset,
+				PA_Preamp_IPO,
+				PB_PlayBack,
+				PC_PowerControl,
+				PL_SpeechProceesorLevel,
+				PR_SpeechProcessor,
+				PS_PowerSwitch,
+				RA_RFAttenuator,
+				RF_RoofingFilter,
+				RG_RFGain,
+				RI_RadioInformation,
+				RL_NoiseReductionLevel,
+				RM_ReadMeter,
+				RS_RadioStatus,
+				RT_Clar,
+				SC_Scan,
+				SD_SemiBreakInDelay,
+				SF_SubDial,
+				SH_Width,
+				SM_SMeter,
+				SQ_SquelchLevel,
+				ST_Split,
+				SS_SpectrumScope,
+				SY_Sync,
+				TX_TxSet,
+				UL_Unlock,
+				VD_VoxDealyTime,
+				VG_VoxGain,
+				VS_VFOSelect,
+				VT_VCT_VCTune,
+				VX_VOX,
+				XT_TXClar,
+				Unknown
+			};
+
             enum class PolarityValue : int
             {
                 NOR,
@@ -3421,6 +3486,12 @@ namespace Yaesu
 			{
 				RTTY,
 				DATA
+			};
+
+			enum class ClarifierType : int
+			{
+				Setting,
+				Frequency
 			};
 
 			enum class MenuGroup : int
@@ -4822,216 +4893,216 @@ namespace Yaesu
 			struct MonitorLevelValue
 			{
 
-				MonitorRequestType Type;
+				MonitorRequestType Type{};
 				union Value
 				{
 					OnOffValue eValue;
 					int iValue;
 				};
-				Value Value;
+				Value Value{};
 			};
 
 			struct SubDialValue
 			{
-				SubDialKnob Dial;
-				DialType Type;
+				SubDialKnob Dial{};
+				DialType Type{};
 			};
 			
 			struct SpeechProcessorValue
 			{
-				SpeechProcessorType Type;
-				OnOffValue State;
+				SpeechProcessorType Type{};
+				OnOffValue State{};
 			};
 
 			struct AttenuatorValue
 			{
-				MainSubValue Band;
-				AttenuatorType Type;
+				MainSubValue Band{};
+				AttenuatorType Type{};
 			};
 
 			struct RoofingFilterValue
 			{
-				MainSubValue Band;
-				RoofingFilterType Type;
+				MainSubValue Band{};
+				RoofingFilterType Type{};
 			};
 
 			struct RFGainValue
 			{
-				MainSubValue Band;
-				int Level;
+				MainSubValue Band{};
+				int Level{};
 			};
 
 			struct RadioInformationValue
 			{
-				RadioInformationType Type;
-				OnOffValue State;
+				RadioInformationType Type{};
+				OnOffValue State{};
 			};
 
 			struct NoiseReductionValue
 			{
-				MainSubValue Band;
-				OnOffValue State;
+				MainSubValue Band{};
+				OnOffValue State{};
 			};
 
 			struct NoseReductionLevelValue
 			{
-				MainSubValue Band;
-				int Level;
+				MainSubValue Band{};
+				int Level{};
 			};
 
 			struct ReadMeterValue
 			{
-				ReadMeterType Type;
-				int LeftSide;
-				int RightSide;
+				ReadMeterType Type{};
+				int LeftSide{};
+				int RightSide{};
 			};
 
-			struct OppisateInformation
+			struct OppositeInformation
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOBFreq;
-				int ClarifierFreq;
-				OnOffValue RIT;
-				OnOffValue XIT;
-				ModeValue Mode;
-				VFOChannelTypeValue VFOType;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOBFreq{};
+				int ClarifierFreq{};
+				OnOffValue RIT{};
+				OnOffValue XIT{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFOType{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct PreAmpValue
 			{
-				MainSubValue Band;
-				PreampType Value;
+				MainSubValue Band{};
+				PreampType Value{};
 			};
 
 			struct OffsetValue
 			{
-				MainSubValue Band;
-				OperationType State;
+				MainSubValue Band{};
+				OperationType State{};
 			};
 
 			struct MeterTypeValue
 			{
-				MainMeterType Main;
-				SubMeterType Sub;
+				MainMeterType Main{};
+				SubMeterType Sub{};
 			};
 
 			struct ModeSettingValue
 			{
-				MainSubValue Band;
-				ModeValue Mode;
+				MainSubValue Band{};
+				ModeValue Mode{};
 			};
 
 			struct KeyerMemoryValue
 			{
-				int ChannelNumber;
-				std::string Message;
+				int ChannelNumber{};
+				std::string Message{};
 			};
 
 			struct AGCSetFunction
 			{
-				MainSubValue Band;
-				AGCSetValue Value;
+				MainSubValue Band{};
+				AGCSetValue Value{};
 			};
 
 			struct AGCState
 			{
-				MainSubValue Band;
-				AGCStateValue Value;
+				MainSubValue Band{};
+				AGCStateValue Value{};
 			};
 
 			struct FunctionRXValue
 			{
-				RXValue Main;
-				RXValue Sub;
+				RXValue Main{};
+				RXValue Sub{};
 			};
 
 			struct NarrowValue
 			{
-				MainSubValue Band;
-				OnOffValue State;
+				MainSubValue Band{};
+				OnOffValue State{};
 			};
 
 			struct VolumeValue
 			{
-				MainSubValue band;
-				int VolumeLevel;
+				MainSubValue band{};
+				int VolumeLevel{};
 			};
 
 			struct AntennaNumberValue
 			{
-				MainSubValue band;
-				AntennaNumberSelection value;
+				MainSubValue band{};
+				AntennaNumberSelection value{};
 			};
 
 			struct AutoNotchValue
 			{
-				MainSubValue band;
-				OnOffValue state;
+				MainSubValue band{};
+				OnOffValue state{};
 			};
 
 			struct CTCSSToneValue
 			{
-				MainSubValue band;
-				int value;
+				MainSubValue band{};
+				int value{};
 			};
 
 			struct ManualNotchValue
 			{
-				MainSubValue band;
-				ManualNotchValueType type;
-				int value;
+				MainSubValue band{};
+				ManualNotchValueType type{};
+				int value{};
 			};
 
 			struct BusyStateValue
 			{
-				MainSubValue band;
-				OnOffValue state;
+				MainSubValue band{};
+				OnOffValue state{};
 			};
 
 			struct ContourStateValue
 			{
-				MainSubValue band;
-				ContourRequestType type;
-				int RequestValue;
+				MainSubValue band{};
+				ContourRequestType type{};
+				int RequestValue{};
 			};
 
 			struct CTCSSStateValue
 			{
-				MainSubValue band;
-				CTCSSType type;
+				MainSubValue band{};
+				CTCSSType type{};
 			};
 
 			struct DimmerValue
 			{
-				int TFTBrightness;
-				int LEDIndicatorBrightness;
+				int TFTBrightness{};
+				int LEDIndicatorBrightness{};
 			};
 
 			struct DateTimeValue
 			{
-				DateTimeType type;
-				std::string value;
+				DateTimeType type{};
+				std::string value{};
 			};
 
 			struct EncoderValue
 			{
-				EncoderType type;
-				int value;
+				EncoderType type{};
+				int value{};
 			};
 
 			struct EncodeMemoryValue
 			{
-				EncodeFormat format;
-				int channel;
-				std::string message;
+				EncodeFormat format{};
+				int channel{};
+				std::string message{};
 			};
 
 			struct NoiseBlankerValue
 			{
-				MainSubValue Band;
-				OnOffValue State;
+				MainSubValue Band{};
+				OnOffValue State{};
 			};
 
 			class MainToSub
@@ -5042,29 +5113,41 @@ namespace Yaesu
 
 			struct MemoryChannelReadValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				OnOffValue RIT;
-				OnOffValue XIT;
-				ModeValue Mode;
-				VFOChannelTypeValue ChannelType;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				OnOffValue RIT{};
+				OnOffValue XIT{};
+				ModeValue Mode{};
+				VFOChannelTypeValue ChannelType{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct MemoryChannelTagValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				OnOffValue RIT;
-				OnOffValue XIT;
-				ModeValue Mode;
-				VFOChannelTypeValue ChannelType;
-				CTCSSState CTCSS;
-				OperationType Operation;
-				std::string Tag;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				OnOffValue RIT{};
+				OnOffValue XIT{};
+				ModeValue Mode{};
+				VFOChannelTypeValue ChannelType{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
+				std::string Tag{};
+			};
+
+			struct ClarifierValue
+			{
+				MainSubValue Band{};
+				ClarifierType Type{};
+				union value {
+					OnOffValue RXOnOff;
+					OnOffValue TXOnOff;
+					int Frequency;
+				};
+				value Value{};
 			};
 
 			class AntennaTunerControl
@@ -5273,6 +5356,14 @@ namespace Yaesu
 			public:
 				static std::string Set(EncoderValue);
 				static std::string Set(EncoderType, int);
+			};
+
+			class ClarifierOnOff
+			{
+			public:
+				static std::string Set(ClarifierValue value);
+				static std::string Read(ClarifierValue value);
+				static ClarifierValue Answer(std::string data);
 			};
 
 			class Menu
@@ -7141,7 +7232,7 @@ namespace Yaesu
 			{
 			public:
 				static std::string Read();
-				static FTDX101::OppisateInformation Answer(std::string data);
+				static FTDX101::OppositeInformation Answer(std::string data);
 			};
 
 			class Offset
@@ -7599,6 +7690,78 @@ namespace Yaesu
 
 		namespace FT891
 		{
+			enum class CommandType : int
+			{
+				
+				AC ,
+				AG ,
+				AI ,			
+				BC ,
+				BI ,
+				BP ,
+				BY ,
+				CF ,
+				CN ,
+				CO ,
+				CS ,
+				CT ,
+				DA ,
+				EX ,
+				FA ,
+				FB,
+				FS ,
+				GT ,
+				ID ,
+				IF ,
+				IS ,
+				KM ,
+				KP ,
+				KR ,
+				KS,
+				LK ,
+				LM ,
+				MC ,
+				MD,
+				MG ,
+				ML ,
+				MR ,
+				MS,
+				MT,
+				MW ,
+				MX ,
+				NA ,
+				NB,
+				NL ,
+				NR ,
+				OI ,
+				OS ,
+				PA ,
+				PB,
+				PC,
+				PL ,
+				PR ,
+				PS,
+				RA ,
+				RG ,
+				RI ,			
+				RL,
+				RM,
+				RS,
+				SC,
+				SD ,
+				SH ,
+				SM ,
+				SQ ,
+				ST ,
+				SV ,
+				TS ,
+				TX ,
+				UL ,
+				VD ,
+				VG ,
+				VX ,
+				UN 
+			};
 
 			enum class KeyerMemoryChannel
 			{
@@ -8638,7 +8801,7 @@ namespace Yaesu
 				DOWN
 			};
 
-			enum class WidthState
+			enum class WidthState : int
 			{
 				OFF,
 				ON
@@ -8971,123 +9134,123 @@ namespace Yaesu
 
 			struct ManualNotchValue
 			{
-				NotchCommandType Command;
+				NotchCommandType Command{};
 				union Value
 				{
 					NotchState state;
 					int iValue;
 				};
-				Value Value;
+				Value Value{};
 			};
 
 			struct CTCSSToneFreqencyValue
 			{
-				CTCSSModeType Mode;
-				int Value;
+				CTCSSModeType Mode{};
+				int Value{};
 			};
 
 			struct DimmerValues
 			{
-				int LCD_Contrast;
-				int BacklightLevel;
-				int LCD_Level;
-				int TX_Indicator;
+				int LCD_Contrast{};
+				int BacklightLevel{};
+				int LCD_Level{};
+				int TX_Indicator{};
 			};
 
 			struct ContourValue
 			{
-				ContourType Type;
+				ContourType Type{};
 				union Value
 				{
 					ContourState state;
 					int Freq;
 				};
-				Value Value;
+				Value Value{};
 			};
 
 			struct InformationValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				ClarifierState Clarifier;
-				ModeValue Mode;
-				VFOChannelTypeValue VFO;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct OppositeInformationValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOBFreq;
-				int ClarifierFreq;
-				ClarifierState Clarifier;
-				ModeValue Mode;
-				VFOChannelTypeValue VFO;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOBFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct IfShiftResultValue
 			{
-				IfShiftValue State;
-				int Frequency;
+				IfShiftValue State{};
+				int Frequency{};
 			};
 
 			struct KeyerMemoryValue
 			{
-				int ChannelNumber;
-				std::string Message;
+				int ChannelNumber{};
+				std::string Message{};
 			};
 
 			struct MonitorLevelValue
 			{
 
-				MonitorFunction f;
+				MonitorFunction f{};
 				union Value
 				{
 					MonitorOnOffValue eVal;
 					int iVal;
 				};
-				Value val;
+				Value val{};
 			};
 
 			struct MemoryChannelTagValue
 			{
 				
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				ClarifierState Clarifier;
-				MemoryChannelModeValue Mode;
-				CTCSSState CTCSS;
-				OperationType Operation;
-				TagValue TAG;
-				std::string TagString;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				MemoryChannelModeValue Mode{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
+				TagValue TAG{};
+				std::string TagString{};
 			};
 
 			struct MemoryChannelWriteValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				ClarifierState Clarifier;
-				MemoryChannelModeValue Mode;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				MemoryChannelModeValue Mode{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct MemoryChannelReadValue
 			{
-				MemoryChannelValue MemoryChannel;
-				int VFOAFreq;
-				int ClarifierFreq;
-				VFOChannelTypeValue ChannelType;
-				ClarifierState Clarifier;
-				MemoryChannelModeValue Mode;
-				CTCSSState CTCSS;
-				OperationType Operation;
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				VFOChannelTypeValue ChannelType{};
+				ClarifierState Clarifier{};
+				MemoryChannelModeValue Mode{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
 			};
 
 			struct SpeechProcessorSetting
@@ -9182,7 +9345,7 @@ namespace Yaesu
 			{
 			public:
 				static std::string Set(ManualNotchValue val);
-				static std::string Read();
+				static std::string Read(NotchCommandType val);
 				static ManualNotchValue Answer(std::string data);
 			};
 
@@ -9294,7 +9457,7 @@ namespace Yaesu
 					_s = s;
 				}
 
-				MenuFunction ParsedFunction() { return _s; }
+				 MenuFunction ParsedFunction() const { return _s; }
 			};
 
 			class Menu
@@ -10497,6 +10660,7 @@ namespace Yaesu
 			{
 			public:
 				static std::string Set(DVSRecordingValue val);
+				static std::string SetB(int val);
 				static std::string Read();
 				static DVSRecordingValue Answer(std::string data);
 			};
@@ -10577,6 +10741,12 @@ namespace Yaesu
 				static std::string Set(int val);
 			};
 
+			class ClarUp
+			{
+			public:
+				static std::string Set(int val);
+			};
+
 			class RFGain
 			{
 			public:
@@ -10590,7 +10760,7 @@ namespace Yaesu
 			class RadioInformation
 			{
 			public:
-				enum StateType
+				enum class StateType : int
 				{
 					HI_SWR,
 					REC = 3,
@@ -10598,7 +10768,7 @@ namespace Yaesu
 					TX_LED = 10,
 					RX_LED = 11
 				};
-				enum Value
+				enum class Value : int
 				{
 					OFF,
 					ON
@@ -10752,7 +10922,7 @@ namespace Yaesu
 			public:
 				static std::string Set();
 			};
-
+		
 		}; // end FT891
 
 		namespace FTDX10
@@ -10863,7 +11033,7 @@ namespace Yaesu
 				value Value;
 			};
 
-			class VolumeLevel
+			class AF_GAIN
 			{
 			public:
 				static std::string Set(int Value);
@@ -10952,7 +11122,7 @@ namespace Yaesu
 			};
 
 
-			class VFO_B_ToMemory
+			class VFO_B_toMemoryChannel
 			{
 			public:
 				static std::string Set();
@@ -11008,6 +11178,7 @@ namespace Yaesu
 				};
 				value Value;
 			};
+
 
 
 			class ClarifierOnOff
@@ -11184,6 +11355,77 @@ namespace Yaesu
 				ExtensionSetting
 			};
 
+			enum class OperationSettingGroup : int
+			{
+				GENERAL = 1,
+				RX_DSP,
+				TX_AUDIO,
+				TX_GENERAL,
+				TUNING
+			};
+
+			enum class GeneralFunctions : int
+			{
+				NB_WIDTH = 1,
+				NB_REJECTION,
+				BEEP_LEVEL,
+				RF_SQL_VR,
+				TUNER_SELECT,
+				RS232C_RATE,
+				RS232C_TIMEOUT_TIMER,
+				CAT_RATE,
+				CAT_TIMEOUT_TIMER,
+				CAT_RTS,
+				QMB_CH,
+				MEM_GORUP,
+				QUICK_SPLIT_INPUT,
+				QUCK_SPLIT_FREQ,
+				SPLIT_FREQ_DISPLAY,
+				TX_TIMEOUT_TIMER,
+				MIC_SCAN,
+				MIC_SCAN_RESUME,
+				REF_FREQ_ADJ,
+				KEYBOARD_LANGUAGE
+			};
+
+			enum class RX_DSP_Functions : int
+			{
+				APF_WIDTH = 1,
+				CONTOUR_LEVEL,
+				CONTOUR_WIDTH,
+				IF_NOTCH_WIDTH
+			};
+
+			enum class TX_AUDIO_Functions : int
+			{
+				AMC_RELEASE_TIME = 1,
+				PRMTRC_EQ1_FREQ,
+				PRMTRC_EQ1_LEVEL,
+				PRMTRC_EQ1_BWTH,
+				PRMTRC_EQ2_FREQ,
+				PRMTRC_EQ2_LEVEL,
+				PRMTRC_EQ2_BWTH,
+				PRMTRC_EQ3_FREQ,
+				PRMTRC_EQ3_LEVEL,
+				PRMTRC_EQ3_BWTH,
+				P_PRMTRC_EQ1_FREQ,
+				P_PRMTRC_EQ1_LEVEL,
+				P_PRMTRC_EQ1_BWTH,
+				P_PRMTRC_EQ2_FREQ,
+				P_PRMTRC_EQ2_LEVEL,
+				P_PRMTRC_EQ2_BWTH,
+				P_PRMTRC_EQ3_FREQ,
+				P_PRMTRC_EQ3_LEVEL,
+				P_PRMTRC_EQ3_BWTH
+			};
+
+			enum class DisplaySettingGroup : int
+			{
+				DISPLAY = 1,
+				SCOPE,
+				EXT_MONITOR
+			};
+
 			enum class RadioSettingsType : int
 			{
 				ModeSSB = 1,
@@ -11261,6 +11503,20 @@ namespace Yaesu
 				RPT,
 				TONE_FREQ,
 				TONE_ENC
+			};
+
+			enum class CwBreakInType : int
+			{
+				SEMI,
+				FULL
+			};
+
+			enum CWWaveShapeValue : int
+			{
+				msec_1,
+				msec_2,
+				msec_4,
+				msec_6
 			};
 
 
@@ -11395,11 +11651,580 @@ namespace Yaesu
 				BLANK,
 				LTRS
 			};
+			enum class CwFreqDisplayValue : int
+			{
+				FREQ,
+				PITCH
+			};
 
+			enum class PCKeyingValue
+			{
+				OFF,
+				DAKY,
+				RTS,
+				DTR
+			};
+
+			enum class QSKDelayValue
+			{
+				msec_15,
+				msec_20,
+				msec_25,
+				msec_30
+			};
+
+			enum class KeyerType : int
+			{
+				OFF,
+				BUG,
+				ELEKEY_A,
+				ELEKEY_B,
+				ELEKEY_Y,
+				ACS
+			};
+
+			enum class DotDashType : int
+			{
+				NOR,
+				REV
+			};
+
+			enum class NumberStyleValue : int
+			{
+				_1290,
+				AUNO,
+				AUNT,
+				A2NO,
+				A2NT,
+				_12NO,
+				_12NT
+			};
+
+			enum class CWMemoryType : int
+			{
+				TEXT,
+				MESSAGE
+			};
+
+			enum class CWDecodeBW : int
+			{
+				Hz_25,
+				Hz_50,
+				Hz_100,
+				Hz_250
+			};
+			enum class NBRejectionValue : int
+			{
+				_10db,
+				_30db,
+				_50db
+			};
+
+			enum class VRType : int
+			{
+				RF,
+				SQL
+			};
+
+			enum class TunerSelectValue : int
+			{
+				INT,
+				EXT1,
+				EXT2,
+				EXT3
+			};
+
+			enum class RS232CRate : int
+			{
+				_4800bps,
+				_9600bps,
+				_19200bps,
+				_38400bps
+			};
+
+			enum class RS232CTimeOutValue : int
+			{
+				_10ms,
+				_100ms,
+				_1000ms,
+				_3000ms
+			};
+
+			enum CATRateValue : int
+			{
+				_4800bps,
+				_9600bps,
+				_19200bps,
+				_38400bps
+			};
+
+			enum CATTimeOutValue : int
+			{
+				_10ms,
+				_100ms,
+				_1000ms,
+				_3000ms
+			};
+
+			enum class CATRtsValue : int
+			{
+				DISABLE,
+				ENABLE
+			};
+
+			enum class QMBChValue : int
+			{
+				_5ch,
+				_10ch
+			};
+
+			enum class MicScanResumeType : int
+			{
+				PAUSE,
+				TIME
+			};
+
+			enum class CWSettingsType
+			{
+				ModeCW = 1,
+				Keyer,
+				DECODE_CW
+			};
+
+			enum class ModeCWSettings : int
+			{
+				AF_TREBLE_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOP,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				CW_OUT_LEVEL,
+				CW_AUTO_MODE,
+				CW_BK_IN_TYPE,
+				CW_WAVE_SHAPE,
+				CW_FREQ_DISPLAY,
+				PC_KEYING,
+				QSK_DELAY_TIME,
+				CW_INDICATOR
+			};
+
+			enum class ModeFMSettings : int
+			{
+				AF_TREBLE_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOP,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				FM_OUT_LEVEL,
+				FM_MOD_SOURCE,
+				MIC_GAIN,
+				REAR_SELECT,
+				RPT_SHIFT_28MHz,
+				RPT_SHIFT_50MHz,
+				RPT,
+				TONE_FREQ,
+				ENC_DEC
+			};
+
+			enum class KeyerSettings : int
+			{
+				KEYER_TYPE = 1,
+				KEYER_DOT_DASH,
+				CW_WEIGHT,
+				NUMBER_STYLE,
+				CONTEST_NUMBER,
+				CW_MEMORY_1,
+				CW_MEMORY_2,
+				CW_MEMORY_3,
+				CW_MEMORY_4,
+				CW_MEMORY_5,
+				REPEAT_INTERVAL
+			};
+
+
+
+			enum class TX_GENERAL_Functions : int
+			{
+				HF_MAX_POWER = 1,
+				_50M_MAX_POWER,
+				_70M_MAX_POWER,
+				AM_MAX_POWER,
+				VOX_SELECT,
+				DATA_VOX_GAIN,
+				EMERGENCY_FREQ_TX
+			};
+
+			enum class TUNING_Functions : int
+			{
+				SSB_CW_DIAL_STEP = 1,
+				RTTY_PSK_DIAL_STEP,
+				CH_STEP,
+				AM_CH_STEP,
+				FM_CH_STEP,
+				MAIN_STEPS_PER_REV,
+				MPVD_STEPS_PER_REV
+
+			};
+
+			/*enum class DisplaySettingGroup : int
+			{
+				DISPLAY = 1,
+				SCOPE,
+				EXT_MONITOR
+			};*/
+
+			enum class DisplayGroupFunctions : int
+			{
+				MY_CALL = 1,
+				MY_CALL_TIME,
+				SCREEN_SAVER,
+				DIMMER_LED,
+				MOUSE_POINTER_SPEED
+			};
+
+			enum class ScopeGroupFunctions : int
+			{
+				RBW = 1,
+				SCOPE_CTR,
+				DISP_SENSITIVITY_2D,
+				DISP_SENSITIVITY_3DSS
+			};
+
+			enum class EXT_MONITOR_Functions : int
+			{
+				EXT_DISPLAY = 1,
+				PIXEL
+			};
+
+			enum class AMCReleaseTimeValue : int
+			{
+				FAST,
+				MID,
+				SLOW
+			};
+
+			enum class DecodeCWSettings : int
+			{
+				CW_DECODE_BW = 1
+			};
+
+
+			enum class FreqHighCutValue : int
+			{
+				OFF,
+				_700hz,
+				_750hz,
+				_800hz,
+				_850hz,
+				_900hz,
+				_950hz,
+				_1000hz,
+				_1050hz,
+				_1100hz,
+				_1150hz,
+				_2000hz,
+				_2050hz,
+				_2100hz,
+				_2150hz,
+				_2200hz,
+				_2250hz,
+				_2300hz,
+				_2350hz,
+				_2400hz,
+				_2450hz,
+				_2500hz,
+				_2550hz,
+				_2600hz,
+				_2650hz,
+				_2700hz,
+				_2750hz,
+				_2800hz,
+				_2850hz,
+				_2900hz,
+				_2950hz,
+				_3000hz,
+				_3050hz,
+				_3100hz,
+				_3150hz,
+				_3200hz,
+				_3250hz,
+				_3300hz,
+				_3350hz,
+				_3400hz,
+				_3450hz,
+				_3500hz,
+				_3550hz,
+				_3600hz,
+				_3650hz,
+				_3700hz,
+				_3750hz,
+				_3800hz,
+				_3850hz,
+				_3900hz,
+				_3950hz,
+				_4000hz
+			};
+
+			enum class FreqLowCutValue : int
+			{
+				OFF,
+				_100hz,
+				_150hz,
+				_200hz,
+				_250hz,
+				_300hz,
+				_350hz,
+				_400hz,
+				_450hz,
+				_500hz,
+				_550hz,
+				_600hz,
+				_650hz,
+				_700hz,
+				_750hz,
+				_800hz,
+				_850hz,
+				_900hz,
+				_950hz,
+				_1000hz,
+
+			};
+
+
+			enum class NBWidth : int
+			{
+				_1ms,
+				_3ms,
+				_10ms
+			};
+
+			enum class APFWidthValue : int
+			{
+				NARROW,
+				MEDIUM,
+				WIDE
+			};
+
+			enum class IFNotchWidthValue : int
+			{
+				NARROW,
+				WIDE
+			};
+
+			enum FunctionTXBandValue : int
+			{
+				MAIN,
+				SUB
+			};
+
+			struct MenuFunction
+			{
+				MenuGroup group;
+				int category;
+				int function;
+			};
+
+			enum class EQ1FreqValue : int
+			{
+				OFF,
+				_100Hz,
+				_200Hz,
+				_300Hz,
+				_400Hz,
+				_500Hz,
+				_600Hz,
+				_700Hz
+			};
+
+			enum class EQ2FreqValue : int
+			{
+				OFF,
+				_700Hz,
+				_800Hz,
+				_900Hz,
+				_1000Hz,
+				_1100Hz,
+				_1200Hz,
+				_1300Hz,
+				_1400Hz,
+				_1500Hz
+			};
+
+			enum class EQ3FreqValue : int
+			{
+				OFF,
+				_1500Hz,
+				_1600Hz,
+				_1700Hz,
+				_1800Hz,
+				_1900Hz,
+				_2000Hz,
+				_2100Hz,
+				_2200Hz,
+				_2300Hz,
+				_2400Hz,
+				_2500Hz,
+				_2600Hz,
+				_2700Hz,
+				_2800Hz,
+				_2900Hz,
+				_3000Hz,
+				_3100Hz,
+				_3200Hz
+			};
+
+			enum class VoxSelectValue : int
+			{
+				MIC,
+				DATA
+			};
+
+
+			enum class MyCallTimeOutValue : int {
+				OFF,
+				s0_5,
+				s1,
+				s2,
+				s3,
+				s5
+			};
+
+			enum class ScreenSaverValue : int {
+				OFF,
+				minutes_15,
+				minutes_30,
+				minutes_60
+			};
+
+			enum class RBWValue : int {
+				HIGH,
+				MID,
+				LOW
+			};
+
+			enum class ScopeCTRValue : int {
+				FILTER,
+				CAR_POINT
+			};
+
+			enum class SensitivityValue : int {
+				NORMAL,
+				HI
+			};
+			enum class PixelValue : int {
+				x800_400,
+				x800_600
+			};
+
+			enum class DialStepValue : int {
+				Hz_5,
+				Hz_10
+			};
+
+			enum class ChannelStepValue : int {
+				kHz_1,
+				kHz_2_5,
+				kHz_5,
+				kHz_10
+			};
+
+			enum class AMChannelStepValue : int {
+				kHz_2_5,
+				kHz_5,
+				kHz_9,
+				kHz_10,
+				kHz_12_5,
+				kHz_25
+			};
+
+			enum class FMChannelStepValue : int {
+				kHz_5,
+				kHz_6_25,
+				kHz_10,
+				kHz_12_5,
+				kHz_20,
+				kHz_25
+			};
+
+			enum class MainStepsPerRevValue : int {
+				steps_250,
+				steps_500,
+				steps_1000
+			};
+
+			enum class MPVDStepsPerRevValue : int {
+				steps_250,
+				steps_500
+			};
+
+			enum class CTCSSTone : int
+			{
+				Tone_67_0,
+				Tone_69_3,
+				Tone_71_9,
+				Tone_74_4,
+				Tone_77_0,
+				Tone_79_7,
+				Tone_82_5,
+				Tone_85_4,
+				Tone_88_5,
+				Tone_91_5,
+				Tone_94_8,
+				Tone_97_4,
+				Tone_100_0,
+				Tone_103_5,
+				Tone_107_2,
+				Tone_110_9,
+				Tone_114_8,
+				Tone_118_8,
+				Tone_123_0,
+				Tone_127_3,
+				Tone_131_8,
+				Tone_136_5,
+				Tone_141_3,
+				Tone_146_2,
+				Tone_151_4,
+				Tone_156_7,
+				Tone_159_8,
+				Tone_162_2,
+				Tone_165_5,
+				Tone_167_9,
+				Tone_171_3,
+				Tone_173_8,
+				Tone_177_3,
+				Tone_179_9,
+				Tone_183_5,
+				Tone_186_2,
+				Tone_189_9,
+				Tone_192_8,
+				Tone_196_6,
+				Tone_199_5,
+				Tone_203_5,
+				Tone_206_5,
+				Tone_210_7,
+				Tone_218_1,
+				Tone_225_7,
+				Tone_229_1,
+				Tone_233_6,
+				Tone_241_8,
+				Tone_250_3,
+				Tone_254_1
+			};
 
 			class Menu
 			{
 			public:
+				MenuFunction GetFunction(const std::string&);
 				class RadioSetting
 				{
 
@@ -11462,9 +12287,9 @@ namespace Yaesu
 						class LCUT_FREQ
 						{
 						public:
-							static std::string Set(int value);
+							static std::string Set(FreqLowCutValue value);
 							static std::string Read();
-							static int Answer(std::string data);
+							static FreqLowCutValue Answer(std::string data);
 						};
 
 						class LCUT_SLOP
@@ -11478,9 +12303,9 @@ namespace Yaesu
 						class HCUT_FREQ
 						{
 						public:
-							static std::string Set(int value);
+							static std::string Set(FreqHighCutValue value);
 							static std::string Read();
-							static int Answer(std::string data);
+							static FreqHighCutValue Answer(std::string data);
 						};
 
 						class HCUT_SLOP
@@ -11858,9 +12683,9 @@ namespace Yaesu
 						class TONE_FREQ
 						{
 						public:
-							static std::string Set(int value);
+							static std::string Set(CTCSSTone value);
 							static std::string Read();
-							static int Answer(std::string data);
+							static CTCSSTone Answer(std::string data);
 						};
 
 						class TONE_ENCODING
@@ -12270,19 +13095,821 @@ namespace Yaesu
 				class CWSetting
 				{
 				public:
+					class Mode
+					{
+					public:
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
 
+						class AF_MIDDLE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(FreqLowCutValue value);
+							static std::string Read();
+							static FreqLowCutValue Answer(std::string data);
+						};
+
+						class LCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(FreqHighCutValue value);
+							static std::string Read();
+							static FreqHighCutValue Answer(std::string data);
+						};
+
+						class HCUT_SLOP
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+						class CW_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class CW_AUTO_MODE
+						{
+						public:
+							static std::string Set(CWAutoModeValue value);
+							static std::string Read();
+							static CWAutoModeValue Answer(std::string data);
+						};
+
+
+						class CW_BREAKIN_TYPE
+						{
+						public:
+							static std::string Set(CwBreakInType value);
+							static std::string Read();
+							static CwBreakInType Answer(std::string data);
+						};
+
+
+						class CW_WAVE_SHAPE
+						{
+						public:
+							static std::string Set(CWWaveShapeValue value);
+							static std::string Read();
+							static CWWaveShapeValue Answer(std::string data);
+						};
+
+
+						class CW_FREQ_DISPLAY
+						{
+						public:
+							static std::string Set(CwFreqDisplayValue value);
+							static std::string Read();
+							static CwFreqDisplayValue Answer(std::string data);
+						};
+
+
+						class PC_KEYING
+						{
+						public:
+							static std::string Set(PCKeyingValue value);
+							static std::string Read();
+							static PCKeyingValue Answer(std::string data);
+						};
+
+
+						class QSK_DELAY_TIME
+						{
+						public:
+							static std::string Set(QSKDelayValue value);
+							static std::string Read();
+							static QSKDelayValue Answer(std::string data);
+						};
+
+
+						class CW_INDICATOR
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+					};
+					class Keyer
+					{
+					public:
+
+						class KEYER_TYPE
+						{
+						public:
+							static std::string Set(KeyerType value);
+							static std::string Read();
+							static KeyerType Answer(std::string data);
+						};
+
+
+						class KEYER_DOT_DASH
+						{
+						public:
+							static std::string Set(DotDashType value);
+							static std::string Read();
+							static DotDashType Answer(std::string data);
+						};
+
+
+						class CW_WEIGHT
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class NUMBER_STYLE
+						{
+						public:
+							static std::string Set(NumberStyleValue value);
+							static std::string Read();
+							static NumberStyleValue Answer(std::string data);
+						};
+
+						class CONTEST_NUMBER
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class CW_MEMORY_1
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_2
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_3
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_4
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_5
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+
+						class REPEAT_INTERVAL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+					};
+					class DECODE
+					{
+					public:
+						class CW_DECODE_BW
+						{
+						public:
+							static std::string Set(CWDecodeBW value);
+							static std::string Read();
+							static CWDecodeBW Answer(std::string data);
+						};
+					};
 				};
 
 				class OperationSetting
 				{
 				public:
+					class General
+					{
+					public:
+
+						class NB_WIDTH
+						{
+						public:
+							static std::string Set(NBWidth value);
+							static std::string Read();
+							static NBWidth Answer(std::string data);
+						};
+
+
+						class NB_REJECTION
+						{
+						public:
+							static std::string Set(NBRejectionValue value);
+							static std::string Read();
+							static NBRejectionValue Answer(std::string data);
+						};
+
+
+						class BEEP_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RF_SQL_VR
+						{
+						public:
+							static std::string Set(VRType value);
+							static std::string Read();
+							static VRType Answer(std::string data);
+						};
+
+
+						class TUNER_SELECT
+						{
+						public:
+							static std::string Set(TunerSelectValue value);
+							static std::string Read();
+							static TunerSelectValue Answer(std::string data);
+						};
+
+
+						class RS232C_RATE
+						{
+						public:
+							static std::string Set(RS232CRate value);
+							static std::string Read();
+							static RS232CRate Answer(std::string data);
+						};
+
+
+						class RS232C_TIMOUT_TIMER
+						{
+						public:
+							static std::string Set(RS232CTimeOutValue value);
+							static std::string Read();
+							static RS232CTimeOutValue Answer(std::string data);
+						};
+
+
+						class CAT_RATE
+						{
+						public:
+							static std::string Set(CATRateValue value);
+							static std::string Read();
+							static CATRateValue Answer(std::string data);
+						};
+
+
+						class CAT_TIMEOUT_TIMER
+						{
+						public:
+							static std::string Set(CATTimeOutValue value);
+							static std::string Read();
+							static CATTimeOutValue Answer(std::string data);
+						};
+
+
+						class CAT_RTS
+						{
+						public:
+							static std::string Set(EnableDisableValue value);
+							static std::string Read();
+							static EnableDisableValue Answer(std::string data);
+						};
+
+
+					};
+					class RX_DSP
+					{
+					public:
+
+						class APF_WIDTH
+						{
+						public:
+							static std::string Set(APFWidthValue value);
+							static std::string Read();
+							static APFWidthValue Answer(std::string data);
+						};
+
+						class CONTOUR_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class CONTOUR_WIDTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class IF_NOTCH_WIDTH
+						{
+						public:
+							static std::string Set(IFNotchWidthValue value);
+							static std::string Read();
+							static IFNotchWidthValue Answer(std::string data);
+						};
+					};
+					class TX_AUDIO
+					{
+					public:
+
+						class AMC_RELEASE_TIME
+						{
+						public:
+							static std::string Set(AMCReleaseTimeValue value);
+							static std::string Read();
+							static AMCReleaseTimeValue Answer(std::string data);
+						};
+
+
+
+						class PRMTRC_EQ1_FREQ
+						{
+						public:
+							static std::string Set(EQ1FreqValue value);
+							static std::string Read();
+							static EQ1FreqValue Answer(std::string data);
+						};
+
+
+						class PRMTRC_EQ1_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class PRMTRC_EQ1_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ2_FREQ
+						{
+						public:
+							static std::string Set(EQ2FreqValue value);
+							static std::string Read();
+							static EQ2FreqValue Answer(std::string data);
+						};
+
+						class PRMTRC_EQ2_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class PRMTRC_EQ2_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ3_FREQ
+						{
+						public:
+							static std::string Set(EQ3FreqValue value);
+							static std::string Read();
+							static EQ3FreqValue Answer(std::string data);
+						};
+
+						class PRMTRC_EQ3_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class PRMTRC_EQ3_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class P_PRMTRC_EQ1_FREQ
+						{
+						public:
+							static std::string Set(EQ1FreqValue value);
+							static std::string Read();
+							static EQ1FreqValue Answer(std::string data);
+						};
+
+
+						class P_PRMTRC_EQ1_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class P_PRMTRC_EQ1_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ2_FREQ
+						{
+						public:
+							static std::string Set(EQ2FreqValue value);
+							static std::string Read();
+							static EQ2FreqValue Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ2_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class P_PRMTRC_EQ2_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ3_FREQ
+						{
+						public:
+							static std::string Set(EQ3FreqValue value);
+							static std::string Read();
+							static EQ3FreqValue Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ3_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class P_PRMTRC_EQ3_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+					};
+					class TX_GENERAL
+					{
+					public:
+
+						class MAX_POWER_HF
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_50M
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_70M
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_AM
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class VOX_SELECT
+						{
+						public:
+							static std::string Set(VoxSelectValue value);
+							static std::string Read();
+							static VoxSelectValue Answer(std::string data);
+						};
+
+
+						class DATA_VOX_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class EMERGENCY_FREQ_TX
+						{
+						public:
+							static std::string Set(EnableDisableValue value);
+							static std::string Read();
+							static EnableDisableValue Answer(std::string data);
+						};
+					};
+					class TUNING
+					{
+					public:
+
+						class SSB_CW_DIAL_STEP
+						{
+						public:
+							static std::string Set(DialStepValue value);
+							static std::string Read();
+							static DialStepValue Answer(std::string data);
+						};
+
+						class RTTY_PSK_DIAL_STEP
+						{
+						public:
+							static std::string Set(DialStepValue value);
+							static std::string Read();
+							static DialStepValue Answer(std::string data);
+						};
+
+
+						class CH_STEP
+						{
+						public:
+							static std::string Set(ChannelStepValue value);
+							static std::string Read();
+							static ChannelStepValue Answer(std::string data);
+						};
+
+
+						class AM_CH_STEP
+						{
+						public:
+							static std::string Set(AMChannelStepValue value);
+							static std::string Read();
+							static AMChannelStepValue Answer(std::string data);
+						};
+
+
+						class FM_CH_STEP
+						{
+						public:
+							static std::string Set(FMChannelStepValue value);
+							static std::string Read();
+							static FMChannelStepValue Answer(std::string data);
+						};
+
+
+						class MAIN_STEPS_PER_REV
+						{
+						public:
+							static std::string Set(MainStepsPerRevValue value);
+							static std::string Read();
+							static MainStepsPerRevValue Answer(std::string data);
+						};
+
+
+						class MPVD_STEPS_PER_REV
+						{
+						public:
+							static std::string Set(MPVDStepsPerRevValue value);
+							static std::string Read();
+							static MPVDStepsPerRevValue Answer(std::string data);
+						};
+					};
 
 				};
+
 
 				class DisplaySetting
 				{
 				public:
+					class DISPLAY
+					{
+					public:
 
+						class MY_CALL
+						{
+						public:
+							static std::string Set(std::string value);
+							static std::string Read();
+							static std::string Answer(std::string data);
+						};
+
+
+						class MY_CALL_TIME
+						{
+						public:
+							static std::string Set(MyCallTimeOutValue value);
+							static std::string Read();
+							static MyCallTimeOutValue Answer(std::string data);
+						};
+
+
+						class SCREEN_SAVER
+						{
+						public:
+							static std::string Set(ScreenSaverValue value);
+							static std::string Read();
+							static ScreenSaverValue Answer(std::string data);
+						};
+
+
+						class DIMMER_LED
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MOUSE_POINTER_SPEED
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+					};
+					class SCOPE
+					{
+					public:
+
+						class RBW
+						{
+						public:
+							static std::string Set(RBWValue value);
+							static std::string Read();
+							static RBWValue Answer(std::string data);
+						};
+
+
+						class SCOPE_CTR
+						{
+						public:
+							static std::string Set(ScopeCTRValue value);
+							static std::string Read();
+							static ScopeCTRValue Answer(std::string data);
+						};
+
+
+						class DISP_SENSITIVITY_2D
+						{
+						public:
+							static std::string Set(SensitivityValue value);
+							static std::string Read();
+							static SensitivityValue Answer(std::string data);
+						};
+
+						class DISP_SENSITIVITY_3DSS
+						{
+						public:
+							static std::string Set(SensitivityValue value);
+							static std::string Read();
+							static SensitivityValue Answer(std::string data);
+						};
+
+					};
+					class EXT_MONITOR
+					{
+					public:
+
+						class EXT_DISPLAY
+						{
+						public:
+							static std::string Set(EnableDisableValue value);
+							static std::string Read();
+							static EnableDisableValue Answer(std::string data);
+						};
+
+
+						class PIXEL
+						{
+						public:
+							static std::string Set(PixelValue value);
+							static std::string Read();
+							static PixelValue Answer(std::string data);
+						};
+					};
 				};
 
 				class ExtensionSetting
@@ -12291,10 +13918,6770 @@ namespace Yaesu
 
 				};
 			};
-		};
 
+
+
+			class FREQUENCY_VFO_A
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class FREQUENCY_VFO_B
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class FINE_TUNING
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class FUNCTION_TX
+			{
+			public:
+				static std::string Set(FunctionTXBandValue value);
+				static std::string Read();
+				static FunctionTXBandValue Answer(std::string data);
+			};
+
+			enum class AgcFunctionValue : int {
+				OFF,
+				FAST,
+				MID,
+				SLOW,
+				AUTO
+			};
+
+			enum class AgcSettingResult : int {
+				OFF,
+				FAST,
+				MID,
+				SLOW,
+				AUTO_FAST,
+				AUTO_MID,
+				AUTO_SLOW
+			};
+
+
+			class AGC_FUNCTION
+			{
+			public:
+				static std::string Set(AgcFunctionValue value);
+				static std::string Read();
+				static AgcSettingResult Answer(std::string data);
+			};
+			enum class MemoryChannelValue
+			{
+				_1 = 1,
+				_2,
+				_3,
+				_4,
+				_5,
+				_6,
+				_7,
+				_8,
+				_9,
+				_10,
+				_11,
+				_12,
+				_13,
+				_14,
+				_15,
+				_16,
+				_17,
+				_18,
+				_19,
+				_20,
+				_21,
+				_22,
+				_23,
+				_24,
+				_25,
+				_26,
+				_27,
+				_28,
+				_29,
+				_30,
+				_31,
+				_32,
+				_33,
+				_34,
+				_35,
+				_36,
+				_37,
+				_38,
+				_39,
+				_40,
+				_41,
+				_42,
+				_43,
+				_44,
+				_45,
+				_46,
+				_47,
+				_48,
+				_49,
+				_50,
+				_51,
+				_52,
+				_53,
+				_54,
+				_55,
+				_56,
+				_57,
+				_58,
+				_59,
+				_60,
+				_61,
+				_62,
+				_63,
+				_64,
+				_65,
+				_66,
+				_67,
+				_68,
+				_69,
+				_70,
+				_71,
+				_72,
+				_73,
+				_74,
+				_75,
+				_76,
+				_77,
+				_78,
+				_79,
+				_80,
+				_81,
+				_82,
+				_83,
+				_84,
+				_85,
+				_86,
+				_87,
+				_88,
+				_89,
+				_90,
+				_91,
+				_92,
+				_93,
+				_94,
+				_95,
+				_96,
+				_97,
+				_98,
+				_99,
+				P1L,
+				P1U,
+				P2L,
+				P2U,
+				P3L,
+				P3U,
+				P4L,
+				P4U,
+				P5L,
+				P5U,
+				P6L,
+				P6U,
+				P7L,
+				P7U,
+				P8L,
+				P8U,
+				P9L,
+				P9U,
+				_5351_5mhz = 501,
+				_5354mhz,
+				_5357mhz,
+				_5360mhz,
+				_5363mhz,
+				_5366mhz,
+				EMG = 600
+
+			};
+			enum class ClarifierState : int
+			{
+				OFF,
+				ON
+			};
+
+			enum class ModeValue
+			{
+				LSB = 1,
+				USB,
+				CW_U,
+				FM,
+				AM,
+				RTTY_L,
+				CW_L,
+				DATA_L,
+				RTTY_U,
+				DATA_FM,
+				FM_N,
+				DATA_U,
+				AM_N,
+				PSK,
+				DATA_FM_N
+			};
+
+			enum class VFOChannelTypeValue : int
+			{
+				VFO,
+				Memory,
+				MemoryTune,
+				QuickMemoryBank,
+				PMS = 5
+
+			};
+
+			enum class CTCSSState : int
+			{
+				OFF,
+				CTCSS_ENC_DEC,
+				CTCSS_ENC
+			};
+
+			enum class OperationType : int
+			{
+				Simplex,
+				PlusShift,
+				MinusShift
+			};
+
+			struct InformationValue
+			{
+				MemoryChannelValue MemoryChannel;
+				int VFOAFreq;
+				int ClarifierFreq;
+				ClarifierState RxClarifier;
+				ClarifierState TxClarifier;
+				ModeValue Mode;
+				VFOChannelTypeValue VFO;
+				CTCSSState CTCSS;
+				OperationType Operation;
+			};
+
+
+			class INFORMATION
+			{
+			public:
+				static std::string Read();
+				static InformationValue Answer(std::string data);
+			};
+
+
+			class IF_SHIFT
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			struct KeyerMemoryValue
+			{
+				int MemoryChannelNumber;
+				std::string Message;
+			};
+
+
+			class KEYER_MEMORY
+			{
+			public:
+				static std::string Set(KeyerMemoryValue value);
+				static std::string Read(int Channel);
+				static KeyerMemoryValue Answer(std::string data);
+			};
+
+
+			class KEY_PITCH
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class KEYER
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class KEY_SPEED
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class CwKeyingValue : int
+			{
+				Memory_1 = 1,
+				Memory_2,
+				Memory_3,
+				Memory_4,
+				Memory_5,
+				Message_1,
+				Message_2,
+				Message_3,
+				Message_4,
+				Message_5
+			};
+
+
+			class CW_KEYING
+			{
+			public:
+				static std::string Set(CwKeyingValue value);
+
+			};
+
+
+			class LOCK
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum DVSValue : int {
+				Stop,
+				CH1,
+				CH2,
+				CH3,
+				CH4,
+				CH5
+			};
+
+
+			class LOAD_MESSAGE
+			{
+			public:
+				static std::string Set(DVSValue value);
+				static std::string Read();
+				static DVSValue Answer(std::string data);
+			};
+
+
+			class MEMORY_CHANNEL_TO_VFO_A
+			{
+			public:
+				static std::string Set();
+			};
+
+			class MEMORY_CHANNEL_TO_VFO_B
+			{
+			public:
+				static std::string Set();
+			};
+
+
+			class MEMORY_CHANNEL
+			{
+			public:
+				static std::string Set(MemoryChannelValue value);
+				static std::string Read();
+				static MemoryChannelValue Answer(std::string data);
+			};
+
+			struct OperatingModeValue
+			{
+				MainSubValue Band;
+				ModeValue Mode;
+			};
+
+
+			class OPERATING_MODE
+			{
+			public:
+				static std::string Set(OperatingModeValue value);
+				static std::string Read(MainSubValue value);
+				static OperatingModeValue Answer(std::string data);
+			};
+
+
+			class MIC_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class MonitorLevelType : int
+			{
+				ON_OFF,
+				LEVEL
+			};
+
+			struct MonitorLevelValue
+			{
+				MonitorLevelType Type;
+				union {
+					OnOffValue e_value;
+					int i_value;
+				} Value;
+			};
+
+
+			class MONITOR_LEVEL
+			{
+			public:
+				static std::string Set(MonitorLevelValue value);
+				static std::string Read(MonitorLevelType value);
+				static MonitorLevelValue Answer(std::string data);
+			};
+
+			enum class MemoryChannelType : int
+			{
+				VFO,
+				Memory
+			};
+
+			struct MemoryChannel
+			{
+				MemoryChannelValue	Channel;
+				int Frequency;
+				int Clarifier;
+				OnOffValue RXClarifier;
+				OnOffValue TXClarifier;
+				ModeValue Mode;
+				MemoryChannelType Type;
+				CTCSSState CTCSS;
+				OperationType Operation;
+			};
+
+			struct MemoryChannelTag
+			{
+				MemoryChannelValue	Channel;
+				int Frequency;
+				int Clarifier;
+				OnOffValue RXClarifier;
+				OnOffValue TXClarifier;
+				ModeValue Mode;
+				MemoryChannelType Type;
+				CTCSSState CTCSS;
+				OperationType Operation;
+				std::string TAG;
+			};
+
+			class MEMORY_CHANNEL_READ
+			{
+			public:
+
+				static std::string Read(MemoryChannelValue channel);
+				static MemoryChannel Answer(std::string data);
+			};
+
+			enum class MeterType : int
+			{
+				PO,
+				COMP,
+				ALC,
+				VDD,
+				ID,
+				SWR
+			};
+
+			class METER_SW
+			{
+			public:
+				static std::string Set(MeterType value);
+				static std::string Read();
+				static MeterType Answer(std::string data);
+			};
+
+
+			class MEMORY_CHANNEL_TAG
+			{
+			public:
+				static std::string Set(MemoryChannelTag value);
+				static std::string Read(MemoryChannelValue value);
+				static MemoryChannelTag Answer(std::string data);
+			};
+
+
+			class MEMORY_CHANNEL_WRITE
+			{
+			public:
+				static std::string Set(MemoryChannel value);
+			};
+
+
+			class MOX_SET
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class NARROW
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class NOISE_BLANKER_STATUS
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class NOISE_BLANKER_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class NOISE_REDUCTION
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class OPPOSITE_BAND_INFORMATION
+			{
+			public:
+
+				static std::string Read();
+				static InformationValue Answer(std::string data);
+			};
+
+			struct RepeaterShiftValue {
+				MainSubValue Band;
+				OperationType Operation;
+			};
+
+			class REPEATER_SHIFT
+			{
+			public:
+				static std::string Set(RepeaterShiftValue value);
+				static std::string Read(MainSubValue value);
+				static RepeaterShiftValue Answer(std::string data);
+			};
+
+			enum class PreAmpType : int
+			{
+				IPO,
+				AMP_1,
+				AMP_2
+			};
+
+			class PRE_AMP
+			{
+			public:
+				static std::string Set(PreAmpType value);
+				static std::string Read();
+				static PreAmpType Answer(std::string data);
+			};
+
+			class PLAY_BACK
+			{
+			public:
+				static std::string Set(DVSValue value);
+				static std::string Read();
+				static DVSValue Answer(std::string data);
+			};
+
+			class POWER_CONTROL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class SPEECH_PROCESSOR_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SpeechProcessorType : int
+			{
+				SpeechProcessor,
+				ParametricMicrophoneEqualizer
+			};
+
+			struct SpeechProcessorValue
+			{
+				SpeechProcessorType Type;
+				OnOffValue State;
+			};
+
+			class SPEECH_PROCESSOR
+			{
+			public:
+				static std::string Set(SpeechProcessorValue value);
+				static std::string Read(SpeechProcessorType value);
+				static SpeechProcessorValue Answer(std::string data);
+			};
+
+			class POWER_SWITCH
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class QMB_STORE
+			{
+			public:
+				static std::string Set();
+			};
+
+			class QMB_RECALL
+			{
+			public:
+				static std::string Set();
+			};
+
+			class QMB_SPLIT
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class RFAttenuatorValue : int
+			{
+				OFF,
+				db_6,
+				db_12,
+				db_18
+			};
+
+			class RF_ATTENUATOR
+			{
+			public:
+				static std::string Set(RFAttenuatorValue value);
+				static std::string Read();
+				static RFAttenuatorValue Answer(std::string data);
+			};
+
+			class CLAR_CLEAR
+			{
+			public:
+				static std::string Set();
+			};
+
+			class CLAR_DOWN
+			{
+			public:
+				static std::string Set(int Hz);
+			};
+
+			enum RoofingFilterValue
+			{
+				kHz_12 = 1,
+				kHz_3,
+				Hz_500 = 4,
+				Hz_300
+			};
+
+			class ROOFING_FILTER
+			{
+			public:
+				static std::string Set(RoofingFilterValue value);
+				static std::string Read();
+				static RoofingFilterValue Answer(std::string data);
+			};
+
+			class RF_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class RadioInformationType : int
+			{
+				HIGH_SWR,
+				REC = 3,
+				PLAY,
+				NO_TX = 13
+			};
+
+			struct RadioInformationValue
+			{
+				RadioInformationType Type;
+				OnOffValue State;
+			};
+
+			class RADIO_INFORMATION
+			{
+			public:
+				static std::string Read(RadioInformationType type);
+				static RadioInformationValue Answer(std::string data);
+			};
+
+			class NOISE_REDUCTION_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class ReadMeterType : int
+			{
+				CURRENT,
+				S,
+				COMP = 3,
+				ALC,
+				PO,
+				SWR,
+				IDD,
+				VDD
+			};
+
+			struct ReadMeterValue
+			{
+				ReadMeterType Type;
+				int value;
+			};
+
+			class READ_METER
+			{
+			public:
+
+				static std::string Read(ReadMeterType type);
+				static ReadMeterValue Answer(std::string data);
+			};
+
+			enum class RadioStatusValue : int
+			{
+				NORMAL_MODE,
+				MENU_MODE
+			};
+
+			class RADIO_STATUS
+			{
+			public:
+
+				static std::string Read();
+				static RadioStatusValue Answer(std::string data);
+			};
+
+			class CLAR
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class RX_CLARIFIER_PLUS_OFFSET
+			{
+			public:
+				static std::string Set(int value);
+			};
+
+			enum class ScanType : int
+			{
+				OFF,
+				UP,
+				DOWN
+			};
+
+			class SCAN
+			{
+			public:
+				static std::string Set(ScanType value);
+				static std::string Read();
+				static ScanType Answer(std::string data);
+			};
+
+			enum class CWBreakInDelayValue : int {
+				msec_30,
+				msec_50,
+				msec_100,
+				msec_150,
+				msec_200,
+				msec_250,
+				msec_300,
+				msec_400,
+				msec_500,
+				msec_600,
+				msec_700,
+				msec_800,
+				msec_900,
+				msec_1000,
+				msec_1100,
+				msec_1200,
+				msec_1300,
+				msec_1400,
+				msec_1500,
+				msec_1600,
+				msec_1700,
+				msec_1800,
+				msec_1900,
+				msec_2000,
+				msec_2100,
+				msec_2200,
+				msec_2300,
+				msec_2400,
+				msec_2500,
+				msec_2600,
+				msec_2700,
+				msec_2800,
+				msec_2900,
+				msec_3000
+			};
+
+			class CW_BREAK_IN_DELAY_TIME
+			{
+			public:
+				static std::string Set(CWBreakInDelayValue value);
+				static std::string Read();
+				static CWBreakInDelayValue Answer(std::string data);
+			};
+
+			enum class SubDialKnob : int
+			{
+				MPVD,
+				FUNC
+			};
+
+			enum class SubDialMPVDFunction : int
+			{
+				CLAR = 1,
+				SUB = 3,
+				CS,
+				STEP = 8,
+				MCH
+			};
+
+			enum class SubDialFUNFunction : int
+			{
+				RF_POWER,
+				MONI_LEVEL,
+				VOX_GAIN = 4,
+				VOX_DELAY,
+				ANTI_VOX,
+				GROUP = 9,
+				PEAK = 12,
+				COLOR,
+				S_LEVEL,
+				PROC_LEVEL,
+				MIC_GAIN,
+				CW_SPEED,
+				CW_PITCH,
+				BK_IN_DELAY,
+				AMC_LEVEL,
+				CONTRAST = 22,
+				DIMMER
+			};
+
+			struct SubDialValue
+			{
+				SubDialKnob Knob;
+				union {
+					SubDialMPVDFunction as_MPVD;
+					SubDialFUNFunction as_FUNC;
+				} KnobValue;
+			};
+
+			class SUB_DIAL_FUNCTION
+			{
+			public:
+				static std::string Set(SubDialValue value);
+				static std::string Read(SubDialKnob value);
+				static SubDialValue Answer(std::string data);
+			};
+
+			class WIDTH
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class S_METER_READING
+			{
+			public:
+
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class SQUELCH_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SpectrumScopeAspect : int
+			{
+				SPEED,
+				PEAK,
+				MARKER,
+				COLOR,
+				LEVEL,
+				SPAN,
+				MODE,
+				OSCILLOSCOPE,
+				HOLD
+			};
+
+			enum class SpectrumScopeSpeedValue : int
+			{
+				SLOW1,
+				SLOW2,
+				FAST1,
+				FAST2,
+				FAST3
+			};
+
+			enum class SpectrumScopePeakValue : int
+			{
+				LV1,
+				LV2,
+				LV3,
+				LV4,
+				LV5
+			};
+
+			enum class SpectrumScopeColorValue : int
+			{
+				COLOR_1,
+				COLOR_2,
+				COLOR_3,
+				COLOR_4,
+				COLOR_5,
+				COLOR_6,
+				COLOR_7,
+				COLOR_8,
+				COLOR_9,
+				COLOR_10,
+				COLOR_11
+			};
+
+			enum class SpectrumScopeSpanValue : int
+			{
+				kHz_1,
+				kHz_2,
+				kHz_5,
+				kHz_10,
+				kHz_20,
+				kHz_50,
+				kHz_100,
+				kHz_200,
+				kHz_500,
+				MHz_1
+			};
+
+			enum class SpectrumScopeModeValue : int
+			{
+				CENTER_3DSS,
+				CURSOR_3DSS,
+				FIX_3DSS,
+				CENTER_L_WF,
+				CENTER_N_WF,
+				CENTER_S_WF,
+				CURSOR_L_WF,
+				CURSOR_N_WF,
+				CURSOR_S_WF,
+				FIX_L_WF,
+				FIX_N_WF,
+				FIX_S_WF
+			};
+
+			enum class SpectrumScopeOscilloscpeFFTATTValue : int
+			{
+				ATT_0db,
+				ATT_10db,
+				ATT_20db,
+			};
+
+			enum class SpectrumScopeOscilloscopeOSCATTValue : int
+			{
+				ATT_0db,
+				ATT_10db,
+				ATT_20db
+			};
+
+			enum class SpectrumScopeOscilloscopeOSCTimeValue : int
+			{
+				msec_1,
+				msec_3,
+				msec_10,
+				msec_30,
+				msec_100,
+				msec_300
+			};
+
+			struct SpectrumScopeValue
+			{
+				SpectrumScopeAspect Type;
+				union {
+					struct {
+						SpectrumScopeOscilloscpeFFTATTValue att_fft;
+						SpectrumScopeOscilloscopeOSCATTValue att_osc;
+						SpectrumScopeOscilloscopeOSCTimeValue time_osc;
+					} v_oscilloscope;
+					SpectrumScopeSpeedValue v_speed;
+					SpectrumScopePeakValue v_peak;
+					OnOffValue v_marker;
+					SpectrumScopeColorValue v_color;
+					int v_level;
+					SpectrumScopeSpanValue v_span;
+					SpectrumScopeModeValue v_mode;
+					OnOffValue v_hold;
+				} Value;
+			};
+
+			class SPECTRUM_SCOPE
+			{
+			public:
+				static std::string Set(SpectrumScopeValue value);
+				static std::string Read(SpectrumScopeAspect Type);
+				static SpectrumScopeValue Answer(std::string data);
+			};
+
+			enum class SplitValue : int
+			{
+				OFF,
+				ON,
+				kh5_up
+			};
+
+			class SPLIT
+			{
+			public:
+				static std::string Set(SplitValue value);
+				static std::string Read();
+				static SplitValue Answer(std::string data);
+			};
+
+			class SWAP_VFO
+			{
+			public:
+				static std::string Set();
+			};
+
+			class TXW
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum class TxSetValue : int
+			{
+				Radio_Off_Cat_Off,
+				Radio_Off_Cat_On,
+				Radio_On_Cat_Off
+			};
+
+			class TX_SET
+			{
+			public:
+				static std::string Set(TxSetValue value);
+				static std::string Read();
+				static TxSetValue Answer(std::string data);
+			};
+
+			class MIC_UP
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class VoxDelayTime : int
+			{
+				msec_30,
+				msec_50,
+				msec_100,
+				msec_150,
+				msec_200,
+				msec_250,
+				msec_300,
+				msec_400,
+				msec_500,
+				msec_600,
+				msec_700,
+				msec_800,
+				msec_900,
+				msec_1000,
+				msec_1100,
+				msec_1200,
+				msec_1300,
+				msec_1400,
+				msec_1500,
+				msec_1600,
+				msec_1700,
+				msec_1800,
+				msec_1900,
+				msec_2000,
+				msec_2100,
+				msec_2200,
+				msec_2300,
+				msec_2400,
+				msec_2500,
+				msec_2600,
+				msec_2700,
+				msec_2800,
+				msec_2900,
+				msec_3000
+			};
+
+			class VOX_DELAY
+			{
+			public:
+				static std::string Set(VoxDelayTime value);
+				static std::string Read();
+				static VoxDelayTime Answer(std::string data);
+			};
+
+			class VOX_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class MAIN_TO_MEM
+			{
+			public:
+				static std::string Set();
+
+			};
+
+			enum class VFOSelectValue : int
+			{
+				VFO_A,
+				VFO_B
+			};
+
+			class TX_CLAR
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class ZERO_IN
+			{
+			public:
+				static std::string Set();
+
+			};
+		}; // end FTDX10
+
+		namespace FT710
+		{
+			enum class AntennaTunerType : int
+			{
+				internal_external = 0,
+				ATAS = 2
+			};
+
+			enum class AntennaTunerState : int
+			{
+				OFF,
+				ON,
+				Start
+			};
+
+			enum class AntennaTunerFunction : int
+			{
+				Stop,
+				FrequencyUp,
+				FrequencyDown,
+				Start
+			};
+
+			enum class OnOffValue : int
+			{
+				OFF,
+				ON
+			};
+
+			enum class AESSFunction : int
+			{
+				Level = 1,
+				CutOffFrequency
+			};
+
+			enum class AESSCutOffFrequency : int
+			{
+				_700Hz = 1,
+				_1000Hz
+			};
+
+			enum class MainSubValue : int
+			{
+				MainBand = 0,
+				SubBand
+			};
+
+			enum class ManualNotchFunction : int
+			{
+				OnOff,
+				Frequency
+			};
+
+			enum class BandValue : int
+			{
+				_160m = 0,
+				_80m,
+				_60m,
+				_40m,
+				_30m,
+				_20m,
+				_17m,
+				_15m,
+				_12m,
+				_10m,
+				_6m,
+				_70m
+			};
+
+			enum class ClarifierFunction : int
+			{
+				Setting,
+				Frequency
+			};
+
+			enum class UpDownValue : int
+			{
+				UP,
+				DOWN
+			};
+
+			enum class CountourFunction : int
+			{
+				ContourOnOff,
+				ContourFrequency,
+				APFOnOff,
+				APFFrequency
+			};
+
+			enum class CTCSSFunction : int
+			{
+				OFF,
+				ENC_ON_DEC_ON,
+				ENC_ON_DEC_OFF
+			};
+
+			enum class MenuGroup : int
+			{
+				RadioSetting = 1,
+				CWSetting,
+				OperationSetting,
+				DisplaySetting,
+				ExtensionSetting = 6,
+
+			};
+
+			enum class RadioSettingsGroup : int
+			{
+				Mode_SSB = 1,
+				Mode_AM,
+				Mode_FM,
+				Mode_PSK_DATA,
+				Mode_RTTY
+			};
+
+			enum class CWSettingsGroup : int
+			{
+				Mode_CW = 1,
+				Keyer
+			};
+
+			enum class OperationSettingsGroup : int
+			{
+				General = 1,
+				RX_DSP,
+				TX_AUDIO,
+				TX_GENERAL,
+				TUNING
+			};
+
+			enum class DisplaySettingsGroup : int
+			{
+				Display = 1,
+				Scope,
+				VFO_IND_COLOR,
+				EXT_Monitor
+			};
+
+			enum class ModeSSBMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				TX_BPF_SEL,
+				MOD_SOURCE,
+				USB_MOD_GAIN,
+				REAR_MOD_GAIN,
+				RPTT_SELECT,
+				NAR_WIDTH,
+				CW_AUTO_MODE
+			};
+
+			enum class ModeAMMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				TX_BPF_SEL,
+				MOD_SOURCE,
+				USB_MOD_GAIN,
+				REAR_MOD_GAIN,
+				RPTT_SELECT
+			};
+
+
+			enum class ModeFMMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				TX_BPF_SEL,
+				MOD_SOURCE,
+				USB_MOD_GAIN,
+				REAR_MOD_GAIN,
+				RPTT_SELECT,
+				RPT_SHIFT,
+				RPT_SHIFT_28,
+				RPT_SHIFT_50,
+				ENC_DEC,
+				TONE_FREQ
+			};
+
+			enum class ModePSK_DATAMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				TX_BPF_SEL,
+				MOD_SOURCE,
+				USB_MOD_GAIN,
+				REAR_MOD_GAIN,
+				RPTT_SELECT,
+				NAR_WIDTH,
+				PSK_TONE,
+				DATA_SHIFT
+			};
+
+			enum class ModeRTTYMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				RPTT_SELECT,
+				NAR_WIDTH,
+				MARK_FREQUENCY,
+				SHIFT_FREQUENCY,
+				POLARITY_TX
+			};
+
+			enum class ModeCWMenuFunction : int
+			{
+				AF_TREBEL_GAIN = 1,
+				AF_MIDDLE_TONE_GAIN,
+				AF_BASS_GAIN,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				RPTT_SELECT,
+				NAR_WIDTH,
+				PC_KEYING,
+				CW_BK_IN_TYPE,
+				CW_WAVE_SHAPE,
+				CW_FREQ_DISPLAY,
+				QSK_DELAY_TIME,
+				CW_INDICATOR
+			};
+
+			enum class KeyerMenuFunction : int
+			{
+				KEYER_TYPE = 1,
+				KEYER_DOT_DASH,
+				CW_WEIGHT,
+				NUMBER_STYLE,
+				CONTEST_NUMBER,
+				CW_MEMORY_1,
+				CW_MEMORY_2,
+				CW_MEMORY_3,
+				CW_MEMORY_4,
+				CW_MEMORY_5,
+				REPEAT_INTERVAL
+			};
+
+			enum class GeneralMenuFunction : int
+			{
+				BEEP_LEVEL = 1,
+				RF_SQL_VR,
+				TUN_LIN_PORT_SELECT,
+				TUNER_TYPE_SELECT,
+				CAT_1_RATE,
+				CAT_1_TIME_OUT_TIMER,
+				CAT_1_CAT_3_STOP_BIT,
+				CAT_2_RATE,
+				CAT_2_TIME_OUT_TIMER,
+				CAT_3_RATE,
+				CAT_3_TIME_OUT_TIMER,
+				QMB_CH,
+				BAND_STACK,
+				MEM_GROUP,
+				TX_TIME_OUT_TIMER,
+				MIC_SCAN,
+				MIC_SCAN_RESUME,
+				REF_FREQ_ADJ,
+				KEYBOARD_LANGUAGE,
+				MIC_P1,
+				MIC_P2,
+				MIC_P3,
+				MIC_P4,
+				MIC_UP,
+				MIC_DOWN,
+				SCU_LAN10
+			};
+
+			enum class RX_DSP_MenuFunctions : int
+			{
+				IF_NOTCH_WIDTH = 1,
+				NB_REJECTION,
+				NB_WIDTH,
+				APF_WIDTH,
+				CONTOUR_LEVEL,
+				CONTOUR_WIDTH
+			};
+
+			enum class TXAudioMenuFunctions : int
+			{
+				AMC_RELEASE_TIME = 1,
+				PRMTRC_EQ1_FREQ,
+				PRMTRC_EQ1_LEVEL,
+				PRMTRC_EQ1_BWTH,
+				PRMTRC_EQ2_FREQ,
+				PRMTRC_EQ2_LEVEL,
+				PRMTRC_EQ2_BWTH,
+				PRMTRC_EQ3_FREQ,
+				PRMTRC_EQ3_LEVEL,
+				PRMTRC_EQ3_BWTH,
+				P_PRMTRC_EQ1_FREQ,
+				P_PRMTRC_EQ1_LEVEL,
+				P_PRMTRC_EQ1_BWTH,
+				P_PRMTRC_EQ2_FREQ,
+				P_PRMTRC_EQ2_LEVEL,
+				P_PRMTRC_EQ2_BWTH,
+				P_PRMTRC_EQ3_FREQ,
+				P_PRMTRC_EQ3_LEVEL,
+				P_PRMTRC_EQ3_BWTH
+			};
+
+			enum class TXGeneralMenuFunctions : int
+			{
+				HF_MAX_POWER = 1,
+				_50M_MAX_POWER,
+				_70M_MAX_POWER,
+				AM_MAX_POWER,
+				VOX_SELECT,
+				EMERGENCY_FREQ_TX,
+				TX_INHIBIT,
+				METER_DETECTOR
+			};
+
+			enum class TuningMenuFunctions : int
+			{
+				SSB_CW_DIAL_STEP = 1,
+				RTTY_PSK_DIAL_STEP,
+				CH_STEP,
+				AM_CH_STEP,
+				FM_CH_STEP,
+				MAIN_STEPS_PER_REV
+			};
+
+
+			enum class DisplayMenuFunctions : int
+			{
+				MY_CALL = 1,
+				MY_CALL_TIME,
+				POP_UP_TIME,
+				SCREEN_SAVER,
+				DIMMER_LED,
+				MOUSE_POINTER_SPEED
+			};
+
+			enum class ScopeMenuFunctions : int
+			{
+				RBW = 1,
+				SCOPE_CTR,
+				DISP_SENSITIVITY_2D,
+				DISP_SENSITIVITY_3DSS
+			};
+
+			enum class ColorMenuFunctions : int
+			{
+				VMI_COLOR_VFO_A = 1,
+				VMI_COLOR_VFO_B,
+				VMI_COLOR_MEMORY,
+				VMI_COLOR_CLAR,
+			};
+
+			enum class ExternalMonitorMenuFunctions : int
+			{
+				EXT_DISPLAY = 1,
+				PIXEL
+			};
+
+			enum class ExtensionSettingGroup : int
+			{
+				PRESET1 = 1,
+				PRESET2,
+				PRESET3,
+				PRESET4,
+				PRESET5
+			};
+
+			enum class PresetMenuFunction : int
+			{
+				PRESET_NAME = 1,
+				CAT_1_RATE,
+				CAT_1_TIME_OUT_TIMER,
+				CAT_1_CAT_3_STOP_BIT,
+				AGC_FAST_DELAY,
+				AGC_MID_DELAY,
+				AGC_SLOW_DELAY,
+				LCUT_FREQ,
+				LCUT_SLOPE,
+				HCUT_FREQ,
+				HCUT_SLOPE,
+				USB_OUT_LEVEL,
+				REAR_OUT_LEVEL,
+				TX_BPF_SEL,
+				MOD_SOURCE,
+				USB_MOD_GAIN,
+				REAR_MOD_GAIN,
+				RPTT_SELECT
+			};
+
+			enum class VoxSelectValue : int
+			{
+				MIC,
+				USB,
+				REAR
+			};
+
+			enum class MeterDetectorValue : int
+			{
+				AVERAGE,
+				PEAK
+			};
+
+			enum class AMCReleaseTimeValue : int
+			{
+				FAST,
+				MID,
+				SLOW
+			};
+
+			enum class EQ1FrequencyValue : int
+			{
+				OFF,
+				_100,
+				_200,
+				_300,
+				_400,
+				_500,
+				_600,
+				_700
+			};
+
+			enum class EQ2FrequencyValue : int
+			{
+				OFF,
+				_700,
+				_800,
+				_900,
+				_1000,
+				_1100,
+				_1200,
+				_1300,
+				_1400,
+				_1500
+			};
+
+			enum class EQ3FrequencyValue : int
+			{
+				OFF,
+				_1500,
+				_1600,
+				_1700,
+				_1800,
+				_1900,
+				_2000,
+				_2100,
+				_2200,
+				_2300,
+				_2400,
+				_2500,
+				_2600,
+				_2700,
+				_2800,
+				_2900,
+				_3000,
+				_3100,
+				_3200
+			};
+
+			enum class IFNotchWidthValue : int
+			{
+				NARROW,
+				WIDE
+			};
+
+			enum class NBWidthValue : int
+			{
+				NARROW,
+				MEDIUM,
+				WIDE
+			};
+
+			enum class NBRejectionValue : int
+			{
+				LOW,
+				MID,
+				HIGH
+			};
+
+			enum class APFWidthValue : int
+			{
+				NARROW,
+				MEDIUM,
+				WIDE
+			};
+
+			enum class RF_SQL_VRValue : int
+			{
+				RF,
+				SQL,
+				SQL_FM
+			};
+
+			enum class TunerLinPortValue :int
+			{
+				EXT_TUNER,
+				LINEAR,
+				CAT_3,
+				GPO
+			};
+
+			enum class TunerTypeValue : int
+			{
+				INT,
+				INT_FAST,
+				EXT,
+				ATAS
+			};
+
+			enum class CAT_Rate : int
+			{
+				_4800bps,
+				_9600bps,
+				_19200bps,
+				_38400bps,
+				_115200bps
+			};
+
+			enum class CAT_TimeOutValue :int
+			{
+				_10msec,
+				_100msec,
+				_1000msec,
+				_3000msec
+			};
+
+			enum class CAT_StopBitType : int
+			{
+				_1_bit,
+				_2_bit
+			};
+
+			enum class QMBChannelValue : int
+			{
+				_5ch,
+				_10ch
+			};
+
+			enum class TimeOutValue : int
+			{
+				OFF,
+				_1,
+				_2,
+				_3,
+				_4,
+				_5,
+				_6,
+				_7,
+				_8,
+				_9,
+				_10,
+				_11,
+				_12,
+				_13,
+				_14,
+				_15,
+				_16,
+				_17,
+				_18,
+				_19,
+				_20,
+				_21,
+				_22,
+				_23,
+				_24,
+				_25,
+				_26,
+				_27,
+				_28,
+				_29,
+				_30
+			};
+
+			enum class ScanResumeType : int
+			{
+				PAUSE,
+				TIME
+			};
+
+			enum class KeyboardLanguageType : int
+			{
+				JAPANESE,
+				ENGLISH_US,
+				ENGLISH_UK,
+				FRENCH,
+				FRENCH_CA,
+				GERMAN,
+				PORTUGUESE,
+				PORTUGUESE_BR,
+				SPANISH,
+				SPANISH_LATAM,
+				ITALIAN
+			};
+
+			enum class MicButtonType : int
+			{
+				LOCK,
+				QMB,
+				A_B,
+				V_M,
+				TUNER,
+				VOX_MOX,
+				MODE,
+				ZIN_SPOT,
+				SPLIT,
+				FINE,
+				NAR,
+				NB,
+				DNR,
+				FREQ_UP,
+				FREQ_DOWN,
+				BAND_UP,
+				BAND_DOWN,
+				ATT,
+				IPO,
+				DNF,
+				AGC
+			};
+
+			enum class SlopeValue : int
+			{
+				_6dBoct,
+				_18dBoct
+			};
+
+			enum class DialStepValue : int
+			{
+				_5Hz,
+				_10Hz,
+				_20Hz
+			};
+
+			enum class ChannelStepValue : int
+			{
+				_1Khz,
+				_2_5Khz,
+				_5Khz,
+				_10Khz
+			};
+
+			enum class AMChannelStepValue : int
+			{
+				_2_5Khz,
+				_5Khz,
+				_10Khz
+			};
+
+			enum class FMChannelStepValue : int
+			{
+				_5Khz,
+				_6_25Khz,
+				_10Khz,
+				_12_5Khz,
+				_25Khz
+			};
+
+			enum class StepsPerRevValue : int
+			{
+				_50,
+				_100,
+				_200
+			};
+
+			enum class MyCallTimeValue : int
+			{
+				OFF,
+				Sec_1,
+				Sec_2,
+				Sec_3,
+				Sec_4,
+				Sec_5
+			};
+
+			enum class PopUpTimeValue : int
+			{
+				FAST,
+				MID,
+				SLOW
+			};
+
+
+			enum class ScreenSaverValue : int
+			{
+				OFF,
+				minutes_15,
+				minutes_30,
+				minutes_60
+			};
+
+			enum class RBWTimeValue : int
+			{
+				HIGH,
+				MID,
+				LOW
+			};
+
+			enum class ScopeCenterValue : int
+			{
+				FILTER,
+				CARRIER_POINT
+			};
+
+			enum class DisplaySensitivityValue : int
+			{
+				NORMAL,
+				HI
+			};
+
+			enum class TriColorValue : int
+			{
+				BLUE,
+				GREEN,
+				WHITE,
+				NONE
+			};
+
+			enum class SingleColorValue : int
+			{
+				RED,
+				NONE
+			};
+
+			enum class PixelValue : int
+			{
+				_800x480,
+				_800x600
+			};
+
+			enum class HCutFreq : int
+			{
+				OFF,
+				_700Hz,
+				_750Hz,
+				_800Hz,
+				_850Hz,
+				_900Hz,
+				_950Hz,
+				_1000Hz,
+				_1050Hz,
+				_1100Hz,
+				_1150Hz,
+				_1200Hz,
+				_1250Hz,
+				_1300Hz,
+				_1350Hz,
+				_1400Hz,
+				_1450Hz,
+				_1500Hz,
+				_1550Hz,
+				_1600Hz,
+				_1650Hz,
+				_1700Hz,
+				_1750Hz,
+				_1800Hz,
+				_1850Hz,
+				_1900Hz,
+				_1950Hz,
+				_2000Hz,
+				_2050Hz,
+				_2100Hz,
+				_2150Hz,
+				_2200Hz,
+				_2250Hz,
+				_2300Hz,
+				_2350Hz,
+				_2400Hz,
+				_2450Hz,
+				_2500Hz,
+				_2550Hz,
+				_2600Hz,
+				_2650Hz,
+				_2700Hz,
+				_2750Hz,
+				_2800Hz,
+				_2850Hz,
+				_2900Hz,
+				_2950Hz,
+				_3000Hz,
+				_3050Hz,
+				_3100Hz,
+				_3150Hz,
+				_3200Hz,
+				_3250Hz,
+				_3300Hz,
+				_3350Hz,
+				_3400Hz,
+				_3450Hz,
+				_3500Hz,
+				_3550Hz,
+				_3600Hz,
+				_3650Hz,
+				_3700Hz,
+				_3750Hz,
+				_3800Hz,
+				_3850Hz,
+				_3900Hz,
+				_3950Hz,
+				_4000Hz
+			};
+
+			enum class LCUTFreq : int
+			{
+				OFF,
+				_100Hz,
+				_150Hz,
+				_200Hz,
+				_250Hz,
+				_300Hz,
+				_350Hz,
+				_400Hz,
+				_450Hz,
+				_500Hz,
+				_550Hz,
+				_600Hz,
+				_650Hz,
+				_700Hz,
+				_750Hz,
+				_800Hz,
+				_850Hz,
+				_900Hz,
+				_950Hz,
+				_1000Hz
+			};
+
+			enum class RPTTSelectValue : int
+			{
+				OFF,
+				RTS,
+				DTR,
+				DAKY
+			};
+
+			enum class NarrowWidthValue : int
+			{
+				_300Hz,
+				_400Hz,
+				_600Hz,
+				_850Hz,
+				_1100Hz,
+				_1200Hz,
+				_1500Hz,
+				_1650Hz,
+				_1800Hz,
+				_1950Hz,
+				_2100Hz,
+				_2250Hz,
+				_2400Hz,
+				_2450Hz,
+				_2500Hz,
+				_2600Hz,
+				_2700Hz,
+				_2800Hz,
+				_2900Hz,
+				_3000Hz,
+				_3200Hz,
+				_3500Hz,
+				_4000Hz
+			};
+
+			enum class PSKToneValue : int
+			{
+				_1000Hz,
+				_1500Hz,
+				_2000Hz
+			};
+
+			enum class DataWidthValue : int
+			{
+				_50,
+				_100,
+				_150,
+				_200,
+				_250,
+				_300,
+				_350,
+				_400,
+				_450,
+				_500,
+				_600,
+				_800,
+				_1200,
+				_1400,
+				_1700,
+				_2000,
+				_2400,
+				_3000,
+				_3200,
+				_3500,
+				_4000
+			};
+
+
+			enum class TXBandPassValue : int
+			{
+				_50_3050,
+				_100_2900,
+				_200_2800,
+				_300_2700,
+				_400_2600
+			};
+
+			enum class CWAutoModeValue : int
+			{
+				OFF,
+				_50Mhz,
+				ON
+			};
+
+			enum class ModulationSourceValue : int
+			{
+				MIC,
+				USB,
+				REAR,
+				AUTO
+			};
+
+			enum class RepeaterShiftValue : int
+			{
+				NegativeOffset,
+				Simplex,
+				PositiveOffset
+			};
+
+			enum class EncoderTypeValue : int
+			{
+				OFF,
+				ENC,
+				TSQ
+			};
+
+			enum class CTCSSTone : int
+			{
+				Tone_67_0,
+				Tone_69_3,
+				Tone_71_9,
+				Tone_74_4,
+				Tone_77_0,
+				Tone_79_7,
+				Tone_82_5,
+				Tone_85_4,
+				Tone_88_5,
+				Tone_91_5,
+				Tone_94_8,
+				Tone_97_4,
+				Tone_100_0,
+				Tone_103_5,
+				Tone_107_2,
+				Tone_110_9,
+				Tone_114_8,
+				Tone_118_8,
+				Tone_123_0,
+				Tone_127_3,
+				Tone_131_8,
+				Tone_136_5,
+				Tone_141_3,
+				Tone_146_2,
+				Tone_151_4,
+				Tone_156_7,
+				Tone_159_8,
+				Tone_162_2,
+				Tone_165_5,
+				Tone_167_9,
+				Tone_171_3,
+				Tone_173_8,
+				Tone_177_3,
+				Tone_179_9,
+				Tone_183_5,
+				Tone_186_2,
+				Tone_189_9,
+				Tone_192_8,
+				Tone_196_6,
+				Tone_199_5,
+				Tone_203_5,
+				Tone_206_5,
+				Tone_210_7,
+				Tone_218_1,
+				Tone_225_7,
+				Tone_229_1,
+				Tone_233_6,
+				Tone_241_8,
+				Tone_250_3,
+				Tone_254_1
+			};
+
+			enum class MarkFrequency : int
+			{
+				_1275Hz = 1,
+				_2125Hz
+			};
+
+			enum class ShiftFrequency : int
+			{
+				_170Hz = 1,
+				_200Hz,
+				_425Hz,
+				_850Hz
+			};
+
+			enum class Polarity_TX : int
+			{
+				NOR,
+				REV
+			};
+
+			enum class CWBreakInType : int
+			{
+				SEMI,
+				FULL
+			};
+
+			enum class CWWaveShape : int
+			{
+				_4msec,
+				_6msec,
+				_8msec
+			};
+
+			enum class CWFreqencyDisplayValue : int
+			{
+				DirectFrequency,
+				PitchOffset
+			};
+
+			enum class QSKDelayTimeValue : int
+			{
+				_15msec,
+				_20msec,
+				_25msec,
+				_30msec
+			};
+
+			enum class KeyerTypeValue : int
+			{
+				OFF,
+				BUG,
+				ELEKEY_A,
+				ELEKEY_B,
+				ELEKEY_Y,
+				ACS
+			};
+
+			enum class KeyerDotDashValue : int
+			{
+				NOR,
+				REV
+			};
+
+			enum class CWWeightValue : int
+			{
+				_25 = 25,
+				_26,
+				_27,
+				_28,
+				_29,
+				_30,
+				_31,
+				_32,
+				_33,
+				_34,
+				_35,
+				_36,
+				_37,
+				_38,
+				_39,
+				_40,
+				_41,
+				_42,
+				_43,
+				_44,
+				_45
+			};
+
+			enum class NumberStyleValue : int
+			{
+				_1290,
+				AUNO,
+				AUNT,
+				A2NO,
+				A2NT,
+				_12NO,
+				_12NT
+			};
+
+			enum class CWMemoryType : int
+			{
+				TEXT,
+				MESSAGE
+			};
+
+			enum class FineTuningValue : int
+			{
+				OFF,
+				ON,
+				FAST
+			};
+
+			enum class HighLowValue : int
+			{
+				LOW,
+				HIGH
+			};
+
+			struct GPOutParam
+			{
+				HighLowValue A;
+				HighLowValue B;
+				HighLowValue C;
+				HighLowValue D;
+			};
+
+			struct CTCSSParam
+			{
+				MainSubValue band;
+				CTCSSFunction function;
+			};
+
+			struct DimmerParam
+			{
+				int TFT_Contrast;
+				int TFT_Brightness;
+				int LED_Indicators_Brightness;
+			};
+
+			union CountourValue
+			{
+				OnOffValue State;
+				int Frequency;
+			};
+
+			struct ContourParam
+			{
+				CountourFunction function;
+				CountourValue value;
+			};
+
+			struct ClarifierSetting
+			{
+				OnOffValue RX;
+				OnOffValue TX;
+			};
+
+			union ClarifierValue
+			{
+				ClarifierSetting setting;
+				int frequency;
+			};
+
+			struct ClarifierParam
+			{
+				MainSubValue Band;
+				ClarifierFunction Function;
+				ClarifierValue Value;
+			};
+
+			struct ClarifierReadParam
+			{
+				MainSubValue Band;
+				ClarifierFunction Function;
+			};
+
+			union ManualNotchValue
+			{
+				OnOffValue OnOff;
+				int Frequency;
+			};
+
+			union AESSValue
+			{
+				int Level;
+				AESSCutOffFrequency CutOff;
+			};
+
+			struct ManualNotchParam
+			{
+				ManualNotchFunction function;
+				ManualNotchValue value;
+			};
+
+			struct AESSParam
+			{
+				AESSFunction function;
+				AESSValue value;
+			};
+
+			struct AntennaTunerParam
+			{
+				AntennaTunerType type;
+				AntennaTunerState state;
+				AntennaTunerFunction function;
+			};
+
+			class VFO_A_TO_VFO_B
+			{
+			public:
+				static std::string Set();
+			};
+
+			class AntennaTunerControl
+			{
+			public:
+				static std::string Set(AntennaTunerParam value);
+				static std::string Read();
+				static AntennaTunerParam Answer(std::string data);
+			};
+
+			class AF_Gain
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class AutoInformation
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(const std::string& data);
+			};
+
+			class VFO_A_TO_MemoryChannel
+			{
+			public:
+				static std::string Set();
+			};
+
+			class AMCOutputLevel
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class AESS
+			{
+			public:
+				static std::string Set(AESSParam value);
+				static std::string Read(AESSFunction value);
+				static AESSParam Answer(std::string data);
+			};
+
+			class AntiVoxLevel
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			class VFO_B_TO_VFO_A
+			{
+			public:
+				static std::string Set();
+			};
+
+			class AutoNotch
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class BandDown
+			{
+			public:
+				static std::string Set(MainSubValue value);
+			};
+
+			class BreakIn
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class VFO_B_ToMemoryChannel
+			{
+			public:
+				static std::string Set();
+			};
+
+			class ManualNotch
+			{
+			public:
+				static std::string Set(ManualNotchParam value);
+				static std::string Read(ManualNotchFunction value);
+				static ManualNotchParam Answer(std::string data);
+			};
+
+			class BandSelect
+			{
+			public:
+				static std::string Set(BandValue value);
+			};
+
+			class BandUp
+			{
+			public:
+				static std::string Set(MainSubValue value);
+			};
+
+			class ClarifierOnOff
+			{
+			public:
+				static std::string Set(ClarifierParam value);
+				static std::string Read(ClarifierReadParam value);
+				static ClarifierParam Answer(std::string data);
+			};
+
+			class ChannelUpDown
+			{
+			public:
+				static std::string Set(UpDownValue value);
+			};
+
+			struct CTCSSToneValue
+			{
+				MainSubValue Band;
+				CTCSSTone Tone;
+			};
+
+			class CTCSSToneFrequency
+			{
+			public:
+				static std::string Set(CTCSSToneValue value);
+				static std::string Read(MainSubValue value);
+				static CTCSSToneValue Answer(std::string data);
+			};
+
+			class Contour
+			{
+			public:
+				static std::string Set(ContourParam value);
+				static std::string Read(CountourFunction value);
+				static ContourParam Answer(std::string data);
+			};
+
+			class CWSpot
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class CTCSS
+			{
+			public:
+				static std::string Set(CTCSSParam value);
+				static std::string Read(MainSubValue value);
+				static CTCSSParam Answer(std::string data);
+			};
+
+			class Dimmer
+			{
+			public:
+				static std::string Set(DimmerParam value);
+				static std::string Read();
+				static DimmerParam Answer(std::string data);
+			};
+
+			class MicDown
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class DateTimeType
+			{
+				Date,
+				Time
+			};
+
+			struct DateTimeParam
+			{
+				DateTimeType type;
+				std::string value;
+			};
+
+
+			class DateTime
+			{
+			public:
+				static std::string Set(DateTimeParam value);
+				static std::string Read(DateTimeType value);
+				static DateTimeParam Answer(std::string data);
+			};
+
+
+			class Menu
+			{
+			public:
+				class RadioSetting
+				{
+				public:
+					class ModeSSB
+					{
+					public:
+
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+						class NAR_WIDTH
+						{
+						public:
+							static std::string Set(NarrowWidthValue value);
+							static std::string Read();
+							static NarrowWidthValue Answer(std::string data);
+						};
+
+						class CW_AUTO_MODE
+						{
+						public:
+							static std::string Set(CWAutoModeValue value);
+							static std::string Read();
+							static CWAutoModeValue Answer(std::string data);
+						};
+					};
+
+					class ModeAM
+					{
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+
+					class ModeFM
+					{
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+
+						class RPT_SHIFT
+						{
+						public:
+							static std::string Set(RepeaterShiftValue value);
+							static std::string Read();
+							static RepeaterShiftValue Answer(std::string data);
+						};
+
+
+						class RPT_SHIFT_28MHz
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RPT_SHIFT_50MHz
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class ENC_DEC
+						{
+						public:
+							static std::string Set(EncoderTypeValue value);
+							static std::string Read();
+							static EncoderTypeValue Answer(std::string data);
+						};
+
+
+						class TONE_FREQ
+						{
+						public:
+							static std::string Set(CTCSSTone value);
+							static std::string Read();
+							static CTCSSTone Answer(std::string data);
+						};
+					};
+
+					class ModePSK_DATA
+					{
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+
+						class NAR_WIDTH
+						{
+						public:
+							static std::string Set(DataWidthValue value);
+							static std::string Read();
+							static DataWidthValue Answer(std::string data);
+						};
+
+
+						class PSK_TONE
+						{
+						public:
+							static std::string Set(PSKToneValue value);
+							static std::string Read();
+							static PSKToneValue Answer(std::string data);
+						};
+
+
+						class DATA_SHIFT
+						{
+						public:
+							///<summary>Shift values are a multiple of 10. 
+							///Set will ensure the data sent to the radio is a multiple of 10
+							///and will not exceed the maximum of 3000 or the minimum of 0.  
+							/// </summary>
+							static std::string Set(int value);
+							/// <summary>
+							/// Creates the request for the DATA SHIFT value from the radio.
+							/// </summary>
+							/// <returns>std::string containing the request data</returns>
+							static std::string Read();
+							/// <summary>
+							/// Parses the response from the radio, and provides the shift value
+							/// </summary>
+							/// <param name="data">Pass the data received from the radio in this paramater</param>
+							/// <returns>an int with the value stored in the radio</returns>
+							static int Answer(std::string data);
+						};
+
+					};
+
+					class ModeRTTY
+					{
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+						class NAR_WIDTH
+						{
+						public:
+							static std::string Set(DataWidthValue value);
+							static std::string Read();
+							static DataWidthValue Answer(std::string data);
+						};
+
+
+						class MARK_FREQUENCY
+						{
+						public:
+							static std::string Set(MarkFrequency value);
+							static std::string Read();
+							static MarkFrequency Answer(std::string data);
+						};
+
+
+						class SHIFT_FREQUENCY
+						{
+						public:
+							static std::string Set(ShiftFrequency value);
+							static std::string Read();
+							static ShiftFrequency Answer(std::string data);
+						};
+
+
+						class POLARITY_TX
+						{
+						public:
+							static std::string Set(Polarity_TX value);
+							static std::string Read();
+							static Polarity_TX Answer(std::string data);
+						};
+
+
+					};
+
+				};
+
+				class CWSetting
+				{
+				public:
+					class ModeCW
+					{
+					public:
+						class AF_TREBEL_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_MIDDLE_TONE_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AF_BASS_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+						class NAR_WIDTH
+						{
+						public:
+							static std::string Set(DataWidthValue value);
+							static std::string Read();
+							static DataWidthValue Answer(std::string data);
+						};
+
+
+						class PC_KEYING
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+
+
+						class CW_BK_IN_TYPE
+						{
+						public:
+							static std::string Set(CWBreakInType value);
+							static std::string Read();
+							static CWBreakInType Answer(std::string data);
+						};
+
+
+						class CW_WAVE_SHAPE
+						{
+						public:
+							static std::string Set(CWWaveShape value);
+							static std::string Read();
+							static CWWaveShape Answer(std::string data);
+						};
+
+						class CW_FREQ_DISPLAY
+						{
+						public:
+							static std::string Set(CWFreqencyDisplayValue value);
+							static std::string Read();
+							static CWFreqencyDisplayValue Answer(std::string data);
+						};
+
+						class QSK_DELAY_TIME
+						{
+						public:
+							static std::string Set(QSKDelayTimeValue value);
+							static std::string Read();
+							static QSKDelayTimeValue Answer(std::string data);
+						};
+
+						class CW_INDICATOR
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+					};
+
+					class Keyer
+					{
+
+						class KEYER_TYPE
+						{
+						public:
+							static std::string Set(KeyerTypeValue value);
+							static std::string Read();
+							static KeyerTypeValue Answer(std::string data);
+						};
+
+
+						class KEYER_DOT_DASH
+						{
+						public:
+							static std::string Set(KeyerDotDashValue value);
+							static std::string Read();
+							static KeyerDotDashValue Answer(std::string data);
+						};
+
+
+						class CW_WEIGHT
+						{
+						public:
+							static std::string Set(CWWeightValue value);
+							static std::string Read();
+							static CWWeightValue Answer(std::string data);
+						};
+
+
+						class NUMBER_STYLE
+						{
+						public:
+							static std::string Set(NumberStyleValue value);
+							static std::string Read();
+							static NumberStyleValue Answer(std::string data);
+						};
+
+
+						class CONTEST_NUMBER
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class CW_MEMORY_1
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+
+						class CW_MEMORY_2
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_3
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_4
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+						class CW_MEMORY_5
+						{
+						public:
+							static std::string Set(CWMemoryType value);
+							static std::string Read();
+							static CWMemoryType Answer(std::string data);
+						};
+
+
+						class REPEAT_INTERVAL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+					};
+				};
+
+				class OperationSetting
+				{
+				public:
+					class GENERAL
+					{
+					public:
+
+						class BEEP_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class RF_SQL_VR
+						{
+						public:
+							static std::string Set(RF_SQL_VRValue value);
+							static std::string Read();
+							static RF_SQL_VRValue Answer(std::string data);
+						};
+
+
+						class TUN_LIN_PORT_SELECT
+						{
+						public:
+							static std::string Set(TunerLinPortValue value);
+							static std::string Read();
+							static TunerLinPortValue Answer(std::string data);
+						};
+
+
+						class TUNER_TYPE_SELECT
+						{
+						public:
+							static std::string Set(TunerTypeValue value);
+							static std::string Read();
+							static TunerTypeValue Answer(std::string data);
+						};
+
+
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+
+						class CAT_2_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+						class CAT_2_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_3_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+						class CAT_3_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue	 value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+
+						class QMB_CH
+						{
+						public:
+							static std::string Set(QMBChannelValue value);
+							static std::string Read();
+							static QMBChannelValue Answer(std::string data);
+						};
+
+
+						class BAND_STACK
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+						class MEM_GROUP
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+
+						class TX_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(TimeOutValue value);
+							static std::string Read();
+							static TimeOutValue Answer(std::string data);
+						};
+
+						class MIC_SCAN
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+
+						class MIC_SCAN_RESUME
+						{
+						public:
+							static std::string Set(ScanResumeType value);
+							static std::string Read();
+							static ScanResumeType Answer(std::string data);
+						};
+
+
+						class REF_FREQ_ADJ
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class KEYBOARD_LANGUAGE
+						{
+						public:
+							static std::string Set(KeyboardLanguageType value);
+							static std::string Read();
+							static KeyboardLanguageType Answer(std::string data);
+						};
+
+
+						class MIC_P1
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+
+						class MIC_P2
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+						class MIC_P3
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+						class MIC_P4
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+
+						class MIC_UP
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+
+						class MIC_DOWN
+						{
+						public:
+							static std::string Set(MicButtonType value);
+							static std::string Read();
+							static MicButtonType Answer(std::string data);
+						};
+
+
+						class SCU_LAN10
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+					};
+
+					class RX_DSP
+					{
+					public:
+
+						class IF_NOTCH_WIDTH
+						{
+						public:
+							static std::string Set(IFNotchWidthValue value);
+							static std::string Read();
+							static IFNotchWidthValue Answer(std::string data);
+						};
+
+
+						class NB_REJECTION
+						{
+						public:
+							static std::string Set(NBRejectionValue value);
+							static std::string Read();
+							static NBRejectionValue Answer(std::string data);
+						};
+
+
+						class NB_WIDTH
+						{
+						public:
+							static std::string Set(NBWidthValue value);
+							static std::string Read();
+							static NBWidthValue Answer(std::string data);
+						};
+
+
+						class APF_WIDTH
+						{
+						public:
+							static std::string Set(APFWidthValue value);
+							static std::string Read();
+							static APFWidthValue Answer(std::string data);
+						};
+
+
+						class CONTOUR_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class CONTOUR_WIDTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+					};
+
+					class TX_AUDIO
+					{
+					public:
+
+						class AMC_RELEASE_TIME
+						{
+						public:
+							static std::string Set(AMCReleaseTimeValue value);
+							static std::string Read();
+							static AMCReleaseTimeValue Answer(std::string data);
+						};
+
+
+						class PRMTRC_EQ1_FREQ
+						{
+						public:
+							static std::string Set(EQ1FrequencyValue value);
+							static std::string Read();
+							static EQ1FrequencyValue Answer(std::string data);
+						};
+
+						class PRMTRC_EQ1_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ1_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ2_FREQ
+						{
+						public:
+							static std::string Set(EQ2FrequencyValue value);
+							static std::string Read();
+							static EQ2FrequencyValue Answer(std::string data);
+						};
+
+						class PRMTRC_EQ2_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ2_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ3_FREQ
+						{
+						public:
+							static std::string Set(EQ3FrequencyValue value);
+							static std::string Read();
+							static EQ3FrequencyValue Answer(std::string data);
+						};
+
+						class PRMTRC_EQ3_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class PRMTRC_EQ3_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class P_PRMTRC_EQ1_FREQ
+						{
+						public:
+							static std::string Set(EQ1FrequencyValue value);
+							static std::string Read();
+							static EQ1FrequencyValue Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ1_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ1_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ2_FREQ
+						{
+						public:
+							static std::string Set(EQ2FrequencyValue value);
+							static std::string Read();
+							static EQ2FrequencyValue Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ2_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ2_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ3_FREQ
+						{
+						public:
+							static std::string Set(EQ3FrequencyValue value);
+							static std::string Read();
+							static EQ3FrequencyValue Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ3_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class P_PRMTRC_EQ3_BWTH
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+					};
+
+					class TX_GENERAL
+					{
+					public:
+
+						class MAX_POWER_HF
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_50M
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_70M
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MAX_POWER_AM
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class VOX_SELECT
+						{
+						public:
+							static std::string Set(VoxSelectValue value);
+							static std::string Read();
+							static VoxSelectValue Answer(std::string data);
+						};
+
+
+						class EMERGENCY_FREQ_TX
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+
+						class TX_INHIBIT
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+
+						class METER_DETECTOR
+						{
+						public:
+							static std::string Set(MeterDetectorValue value);
+							static std::string Read();
+							static MeterDetectorValue Answer(std::string data);
+						};
+					};
+
+					class TUNING
+					{
+					public:
+
+
+						class SSB_CW_DIALSTEP
+						{
+						public:
+							static std::string Set(DialStepValue value);
+							static std::string Read();
+							static DialStepValue Answer(std::string data);
+						};
+
+
+						class RTTY_PSK_DIAL_STEP
+						{
+						public:
+							static std::string Set(DialStepValue value);
+							static std::string Read();
+							static DialStepValue Answer(std::string data);
+						};
+
+
+						class CH_STEP
+						{
+						public:
+							static std::string Set(ChannelStepValue value);
+							static std::string Read();
+							static ChannelStepValue Answer(std::string data);
+						};
+
+
+						class AM_CH_STEP
+						{
+						public:
+							static std::string Set(AMChannelStepValue value);
+							static std::string Read();
+							static AMChannelStepValue Answer(std::string data);
+						};
+
+
+						class FM_CH_STEP
+						{
+						public:
+							static std::string Set(FMChannelStepValue value);
+							static std::string Read();
+							static FMChannelStepValue Answer(std::string data);
+						};
+
+
+						class MAIN_STEPS_PER_REV
+						{
+						public:
+							static std::string Set(StepsPerRevValue value);
+							static std::string Read();
+							static StepsPerRevValue Answer(std::string data);
+						};
+					};
+				};
+
+				class DisplaySetting
+				{
+				public:
+					class DISPLAY
+					{
+					public:
+
+						class MY_CALL
+						{
+						public:
+							static std::string Set(std::string value);
+							static std::string Read();
+							static std::string Answer(std::string data);
+						};
+
+
+						class MY_CALL_TIME
+						{
+						public:
+							static std::string Set(MyCallTimeValue value);
+							static std::string Read();
+							static MyCallTimeValue Answer(std::string data);
+						};
+
+
+						class POP_UP_TIME
+						{
+						public:
+							static std::string Set(PopUpTimeValue value);
+							static std::string Read();
+							static PopUpTimeValue Answer(std::string data);
+						};
+
+
+						class SCREEN_SAVER
+						{
+						public:
+							static std::string Set(ScreenSaverValue value);
+							static std::string Read();
+							static ScreenSaverValue Answer(std::string data);
+						};
+
+
+						class DIMMER_LED
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class MOUSE_POINTER_SPEED
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+					};
+
+					class SCOPE
+					{
+					public:
+
+						class RBW
+						{
+						public:
+							static std::string Set(RBWTimeValue	 value);
+							static std::string Read();
+							static RBWTimeValue Answer(std::string data);
+						};
+
+
+						class SCOPE_CTR
+						{
+						public:
+							static std::string Set(ScopeCenterValue value);
+							static std::string Read();
+							static ScopeCenterValue Answer(std::string data);
+						};
+
+
+						class DISP_SENSITIVITY_2D
+						{
+						public:
+							static std::string Set(DisplaySensitivityValue value);
+							static std::string Read();
+							static DisplaySensitivityValue Answer(std::string data);
+						};
+
+
+						class DISP_SENSITIVITY_3DSS
+						{
+						public:
+							static std::string Set(DisplaySensitivityValue value);
+							static std::string Read();
+							static DisplaySensitivityValue Answer(std::string data);
+						};
+
+					};
+
+					class VFO_IND_COLOR
+					{
+					public:
+
+						class VMI_COLOR_VFO_A
+						{
+						public:
+							static std::string Set(TriColorValue value);
+							static std::string Read();
+							static TriColorValue Answer(std::string data);
+						};
+
+
+						class VMI_COLOR_VFO_B
+						{
+						public:
+							static std::string Set(TriColorValue value);
+							static std::string Read();
+							static TriColorValue Answer(std::string data);
+						};
+
+
+						class VMI_COLOR_MEMORY
+						{
+						public:
+							static std::string Set(TriColorValue value);
+							static std::string Read();
+							static TriColorValue Answer(std::string data);
+						};
+
+
+						class VMI_COLOR_CLAR
+						{
+						public:
+							static std::string Set(SingleColorValue value);
+							static std::string Read();
+							static SingleColorValue Answer(std::string data);
+						};
+
+					};
+
+					class EXT_MONITOR
+					{
+					public:
+
+						class EXT_DISPLAY
+						{
+						public:
+							static std::string Set(OnOffValue value);
+							static std::string Read();
+							static OnOffValue Answer(std::string data);
+						};
+
+
+						class PIXEL
+						{
+						public:
+							static std::string Set(PixelValue value);
+							static std::string Read();
+							static PixelValue Answer(std::string data);
+						};
+
+					};
+				};
+
+				class ExtensionSetting
+				{
+				public:
+					class PRESET1
+					{
+					public:
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+
+					class PRESET2
+					{
+					public:
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+					class PRESET3
+					{
+					public:
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+					class PRESET4
+					{
+					public:
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+					class PRESET5
+					{
+					public:
+						class CAT_1_RATE
+						{
+						public:
+							static std::string Set(CAT_Rate value);
+							static std::string Read();
+							static CAT_Rate Answer(std::string data);
+						};
+
+
+						class CAT_1_TIME_OUT_TIMER
+						{
+						public:
+							static std::string Set(CAT_TimeOutValue value);
+							static std::string Read();
+							static CAT_TimeOutValue Answer(std::string data);
+						};
+
+						class CAT_1_CAT_3_STOP_BIT
+						{
+						public:
+							static std::string Set(CAT_StopBitType value);
+							static std::string Read();
+							static CAT_StopBitType Answer(std::string data);
+						};
+
+						class AGC_FAST_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_MID_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class AGC_SLOW_DELAY
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+						class LCUT_FREQ
+						{
+						public:
+							static std::string Set(LCUTFreq value);
+							static std::string Read();
+							static LCUTFreq Answer(std::string data);
+						};
+
+
+						class LCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class HCUT_FREQ
+						{
+						public:
+							static std::string Set(HCutFreq value);
+							static std::string Read();
+							static HCutFreq Answer(std::string data);
+						};
+
+
+						class HCUT_SLOPE
+						{
+						public:
+							static std::string Set(SlopeValue value);
+							static std::string Read();
+							static SlopeValue Answer(std::string data);
+						};
+
+
+						class USB_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class REAR_OUT_LEVEL
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+
+						class TX_BPF_SELECT
+						{
+						public:
+							static std::string Set(TXBandPassValue value);
+							static std::string Read();
+							static TXBandPassValue Answer(std::string data);
+						};
+
+						class MOD_SOURCE
+						{
+						public:
+							static std::string Set(ModulationSourceValue value);
+							static std::string Read();
+							static ModulationSourceValue Answer(std::string data);
+						};
+
+						class USB_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class REAR_MOD_GAIN
+						{
+						public:
+							static std::string Set(int value);
+							static std::string Read();
+							static int Answer(std::string data);
+						};
+
+						class RPTT_SELECT
+						{
+						public:
+							static std::string Set(RPTTSelectValue value);
+							static std::string Read();
+							static RPTTSelectValue Answer(std::string data);
+						};
+
+					};
+				};
+			};
+
+
+			class FREQUENCY_VFO_A
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class FREQUENCY_VFO_B
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class FINE_TUNING
+			{
+			public:
+				static std::string Set(FineTuningValue value);
+				static std::string Read();
+				static FineTuningValue Answer(std::string data);
+			};
+
+
+			class FUNCTION_TX
+			{
+			public:
+				static std::string Set(MainSubValue value);
+				static std::string Read();
+				static MainSubValue Answer(std::string data);
+			};
+
+
+			class GP_OUT
+			{
+			public:
+				static std::string Set(GPOutParam value);
+				static std::string Read();
+				static GPOutParam Answer(std::string data);
+			};
+
+			enum class AGCSetValue : int
+			{
+				OFF,
+				FAST,
+				MID,
+				SLOW,
+				AUTO
+			};
+
+			enum class AGCAnswerValue : int
+			{
+				OFF,
+				FAST,
+				MID,
+				SLOW,
+				AUTO_FAST,
+				AUTO_MID,
+				AUTO_SLOW
+			};
+
+
+			class AGC_FUNCTION
+			{
+			public:
+				static std::string Set(AGCSetValue value);
+				static std::string Read();
+				static AGCAnswerValue Answer(std::string data);
+			};
+
+			enum class MemoryChannelValue
+			{
+				_0,
+				_1,
+				_2,
+				_3,
+				_4,
+				_5,
+				_6,
+				_7,
+				_8,
+				_9,
+				_10,
+				_11,
+				_12,
+				_13,
+				_14,
+				_15,
+				_16,
+				_17,
+				_18,
+				_19,
+				_20,
+				_21,
+				_22,
+				_23,
+				_24,
+				_25,
+				_26,
+				_27,
+				_28,
+				_29,
+				_30,
+				_31,
+				_32,
+				_33,
+				_34,
+				_35,
+				_36,
+				_37,
+				_38,
+				_39,
+				_40,
+				_41,
+				_42,
+				_43,
+				_44,
+				_45,
+				_46,
+				_47,
+				_48,
+				_49,
+				_50,
+				_51,
+				_52,
+				_53,
+				_54,
+				_55,
+				_56,
+				_57,
+				_58,
+				_59,
+				_60,
+				_61,
+				_62,
+				_63,
+				_64,
+				_65,
+				_66,
+				_67,
+				_68,
+				_69,
+				_70,
+				_71,
+				_72,
+				_73,
+				_74,
+				_75,
+				_76,
+				_77,
+				_78,
+				_79,
+				_80,
+				_81,
+				_82,
+				_83,
+				_84,
+				_85,
+				_86,
+				_87,
+				_88,
+				_89,
+				_90,
+				_91,
+				_92,
+				_93,
+				_94,
+				_95,
+				_96,
+				_97,
+				_98,
+				_99,
+				P1L,
+				P1U,
+				P2L,
+				P2U,
+				P3L,
+				P3U,
+				P4L,
+				P4U,
+				P5L,
+				P5U,
+				P6L,
+				P6U,
+				P7L,
+				P7U,
+				P8L,
+				P8U,
+				P9L,
+				P9U,
+				_5351_5mhz = 501,
+				_5354mhz,
+				_5357mhz,
+				_5360mhz,
+				_5363mhz,
+				_5366mhz,
+				EMG = 600
+
+			};
+
+			enum class ClarifierState : int
+			{
+				OFF,
+				ON
+			};
+
+			enum class ModeValue : int
+			{
+				LSB = 1,
+				USB,
+				CW_U,
+				FM,
+				AM,
+				RTTY_LSB,
+				CW_L,
+				DATA_LSB,
+				RTTY_USB,
+				DATA_FM,
+				FM_N,
+				DATA_USB,
+				AM_N,
+				PSK,
+				DATA_FM_N
+			};
+
+			enum class VFOChannelTypeValue : int
+			{
+				VFO,
+				Memory,
+				MemoryTune,
+				QuickMemeoryBank,
+				PMS = 5,
+			};
+
+			enum class CTCSSState : int
+			{
+				OFF,
+				CTCSS_ENC_DEC,
+				CTCSS_ENC,
+			};
+
+			enum class OperationType : int
+			{
+				Simplex,
+				PlusShift,
+				MinusShift
+			};
+
+			struct InformationValue
+			{
+				MemoryChannelValue MemoryChannel{};
+				int VFOAFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				ClarifierState TXClarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
+			};
+
+			struct OInformationValue
+			{
+				MemoryChannelValue MemoryChannel{};
+				int VFOBFreq{};
+				int ClarifierFreq{};
+				ClarifierState Clarifier{};
+				ClarifierState TXClarifier{};
+				ModeValue Mode{};
+				VFOChannelTypeValue VFO{};
+				CTCSSState CTCSS{};
+				OperationType Operation{};
+			};
+			class INFORMATION
+			{
+			public:
+				static std::string Read();
+				static InformationValue Answer(std::string data);
+			};
+
+
+			class IF_SHIFT
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			struct KeyerMemoryValue
+			{
+				int ChannelNumber{};
+				std::string Message{};
+			};
+
+
+			class KEYER_MEMORY
+			{
+			public:
+				static std::string Set(KeyerMemoryValue value);
+				static std::string Read(int MemoryChannelNumber);
+				static KeyerMemoryValue Answer(std::string data);
+			};
+
+			enum class KeyPitchValue
+			{
+				_300Hz,
+				_310Hz,
+				_320Hz,
+				_330Hz,
+				_340Hz,
+				_350Hz,
+				_360Hz,
+				_370Hz,
+				_380Hz,
+				_390Hz,
+				_400Hz,
+				_410Hz,
+				_420Hz,
+				_430Hz,
+				_440Hz,
+				_450Hz,
+				_460Hz,
+				_470Hz,
+				_480Hz,
+				_490Hz,
+				_500Hz,
+				_510Hz,
+				_520Hz,
+				_530Hz,
+				_540Hz,
+				_550Hz,
+				_560Hz,
+				_570Hz,
+				_580Hz,
+				_590Hz,
+				_600Hz,
+				_610Hz,
+				_620Hz,
+				_630Hz,
+				_640Hz,
+				_650Hz,
+				_660Hz,
+				_670Hz,
+				_680Hz,
+				_690Hz,
+				_700Hz,
+				_710Hz,
+				_720Hz,
+				_730Hz,
+				_740Hz,
+				_750Hz,
+				_760Hz,
+				_770Hz,
+				_780Hz,
+				_790Hz,
+				_800Hz,
+				_810Hz,
+				_820Hz,
+				_830Hz,
+				_840Hz,
+				_850Hz,
+				_860Hz,
+				_870Hz,
+				_880Hz,
+				_890Hz,
+				_900Hz,
+				_910Hz,
+				_920Hz,
+				_930Hz,
+				_940Hz,
+				_950Hz,
+				_960Hz,
+				_970Hz,
+				_980Hz,
+				_990Hz,
+				_1000Hz,
+				_1010Hz,
+				_1020Hz,
+				_1030Hz,
+				_1040Hz,
+				_1050Hz
+
+			};
+
+			class KEY_PITCH
+			{
+			public:
+				static std::string Set(KeyPitchValue value);
+				static std::string Read();
+				static KeyPitchValue Answer(std::string data);
+			};
+
+
+			class KEYER
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class KEY_SPEED
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			enum class CWKeyingValue : int
+			{
+				STOP,
+				Memory1_playback,
+				Memory2_playback,
+				Memory3_playback,
+				Memory4_playback,
+				memory5_playback
+			};
+
+			struct CWKeyingParam
+			{
+				CWMemoryType type;
+				CWKeyingValue PlayBackValue;
+			};
+
+
+			class CW_KEYING
+			{
+			public:
+				static std::string Set(CWKeyingParam value);
+			};
+
+
+			class LOCK
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum class LoadMessageType : int
+			{
+				MESSAGE,
+				RECORD
+			};
+
+			enum class LoadMessageChannel : int
+			{
+				STOP,
+				CH1,
+				CH2,
+				CH3,
+				CH4,
+				CH5
+			};
+
+			enum class LoadMessageRecordingValue : int
+			{
+				STOP,
+				START
+			};
+
+			union LoadMessageValue
+			{
+				LoadMessageChannel channel;
+				LoadMessageRecordingValue recording;
+			};
+
+			struct LoadMessageParam
+			{
+				LoadMessageType type;
+				LoadMessageValue value;
+			};
+
+
+			class LOAD_MESSAGE
+			{
+			public:
+				static std::string Set(LoadMessageParam value);
+				static std::string Read(LoadMessageType type);
+				static LoadMessageParam Answer(std::string data);
+			};
+
+
+			class MEMORY_CHANNEL_TO_VFO_A
+			{
+			public:
+				static std::string Set();
+			};
+
+			class MEMORY_CHANNEL_TO_VFO_B
+			{
+			public:
+				static std::string Set();
+			};
+
+
+			class MEMORY_CHANNEL
+			{
+			public:
+				static std::string Set(MemoryChannelValue value);
+				static std::string Read();
+				static MemoryChannelValue Answer(std::string data);
+			};
+
+			struct OperatingModeParam
+			{
+				MainSubValue band;
+				ModeValue mode;
+			};
+
+
+			class OPERATING_MODE
+			{
+			public:
+				static std::string Set(OperatingModeParam value);
+				static std::string Read(MainSubValue band);
+				static OperatingModeParam Answer(std::string data);
+			};
+
+
+			class MIC_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			struct MemoryChannel
+			{
+				MemoryChannelValue channel;
+				int Frequency;
+				int Clarifier;
+				OnOffValue RX_Clarifier;
+				OnOffValue TX_CLarifier;
+				ModeValue mode;
+				VFOChannelTypeValue ChannelType;
+				CTCSSState CTCSS_State;
+				OperationType Operation;
+			};
+
+			class MEMORY_CHANNEL_READ
+			{
+			public:
+
+				static std::string Read(MemoryChannelValue value);
+				static MemoryChannel Answer(std::string data);
+			};
+
+			enum class MeterType : int
+			{
+				PO,
+				COMP,
+				ALC,
+				VDD,
+				ID,
+				SWR
+			};
+
+
+			class METER_SW
+			{
+			public:
+				static std::string Set(MeterType value);
+				static std::string Read();
+				static MeterType Answer(std::string data);
+			};
+
+			struct MemoryChannelTagParam
+			{
+				MemoryChannelValue channel;
+				OnOffValue TagState;
+				std::string tagString;
+			};
+
+
+			class MEMORY_CHANNEL_TAG_WRITE
+			{
+			public:
+				static std::string Set(MemoryChannelTagParam value);
+				static std::string Read(MemoryChannelValue channel);
+				MemoryChannelTagParam Answer(std::string data);
+			};
+
+
+			class MEMORY_CHANNEL_WRITE
+			{
+			public:
+				static std::string Set(MemoryChannel value);
+
+			};
+
+
+			class NARROW
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class NOISE_BLANKER
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class NOISE_BLANKER_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class NOISE_REDUCTION
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class OPPOSITE_BAND_INFORMATION
+			{
+			public:
+
+				static std::string Read();
+				static OInformationValue Answer(std::string data);
+			};
+
+			struct OffsetParam
+			{
+				MainSubValue band;
+				OperationType operation;
+			};
+
+			class OFFSET
+			{
+			public:
+				static std::string Set(OffsetParam value);
+				static std::string Read(MainSubValue band);
+				static OffsetParam Answer(std::string data);
+			};
+
+			enum class PreAmpValue : int
+			{
+				IPO,
+				AMP_1,
+				AMP_2
+			};
+
+
+			class PRE_AMP
+			{
+			public:
+				static std::string Set(PreAmpValue value);
+				static std::string Read();
+				static PreAmpValue Answer(std::string data);
+			};
+
+
+			class PLAY_BACK
+			{
+			public:
+				static std::string Set(LoadMessageChannel value);
+				static std::string Read();
+				static LoadMessageChannel Answer(std::string data);
+			};
+
+
+			class POWER_CONTROL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class SPEECH_PROCESSOR_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SpeechProcessorType : int
+			{
+				SpeechProcessor,
+				ParametricMicrophoneEqualizer
+			};
+
+			struct SpeechProcessorParam
+			{
+				SpeechProcessorType type;
+				OnOffValue state;
+			};
+
+
+			class SPEECH_PROCESSOR
+			{
+			public:
+				static std::string Set(SpeechProcessorParam value);
+				static std::string Read(SpeechProcessorType type);
+				static SpeechProcessorParam Answer(std::string data);
+			};
+
+
+			class POWER_SWITCH
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class QMB_STORE
+			{
+			public:
+				static std::string Set();
+			};
+
+			class QMB_RECALL
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class RFAttenuatorValue : int
+			{
+				OFF,
+				dB6,
+				dB12,
+				dB18
+			};
+
+
+			class RF_ATTENUATOR
+			{
+			public:
+				static std::string Set(RFAttenuatorValue value);
+				static std::string Read();
+				static RFAttenuatorValue Answer(std::string data);
+			};
+
+
+			class RF_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SWRStatusValue : int
+			{
+				Normal,
+				Hi_SWR
+			};
+
+			enum class RecordingStateValue : int
+			{
+				Stop,
+				Recording,
+				Playing
+			};
+
+			enum class TransceiverStateValue : int
+			{
+				RX,
+				TX,
+				TX_INHIBIT
+			};
+
+			enum class AntennaTunerStateValue : int
+			{
+				Stopped,
+				Tuning
+			};
+
+			enum class ScanningStateValue : int
+			{
+				Stopped,
+				Scanning,
+				Paused
+			};
+
+			enum class SquelchStateValue : int
+			{
+				Closed,
+				Open
+			};
+
+			struct RadioInformationParam
+			{
+				SWRStatusValue SWRState;
+				RecordingStateValue RecordingState;
+				TransceiverStateValue TransceiverState;
+				AntennaTunerStateValue AntennaTunerState;
+				ScanningStateValue ScanningState;
+				SquelchStateValue SquelchState;
+			};
+
+
+			class RADIO_INFORMATION
+			{
+			public:
+				static std::string Read();
+				static RadioInformationParam Answer(std::string data);
+			};
+
+
+			class NOISE_REDUCTION_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			enum class ReadMeterType : int
+			{
+				None,
+				S,
+				COMP = 3,
+				ALC,
+				PO,
+				SQR,
+				IDD,
+				VDD
+			};
+
+			struct ReadMeterParam
+			{
+				ReadMeterType meter;
+				int value;
+			};
+
+
+			class READ_METER
+			{
+			public:
+				static std::string Read(ReadMeterType meter);
+				static ReadMeterParam Answer(std::string data);
+			};
+
+			enum class ScanValue : int
+			{
+				OFF,
+				UP,
+				DOWN
+			};
+
+
+			class SCAN
+			{
+			public:
+				static std::string Set(ScanValue value);
+				static std::string Read();
+				static ScanValue Answer(std::string data);
+			};
+
+
+			class CW_BREAK_IN_DELAY_TIME
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SubDialKnob : int
+			{
+				FUNC,
+				DSP
+			};
+
+			enum class SubDialFunction : int
+			{
+				SCOPE_LEVEL = 1,
+				PEAK,
+				COLOR,
+				CONTRAST,
+				DIMMER,
+				M_GROUP,
+				MIC_GAIN,
+				PROC_LEVEL,
+				AMC_LEVEL,
+				VOX_GAIN,
+				ANTI_VOX,
+				RF_POWER,
+				MONI_LEVEL,
+				CW_SPEED,
+				CW_PITCH,
+				BK_DELAY
+			};
+
+			enum class SubDialDsp : int
+			{
+				SHIFT = 1,
+				WIDTH,
+				NOTCH,
+				CONTOUR,
+				APF
+			};
+
+			union SubDialValue
+			{
+				SubDialFunction function;
+				SubDialDsp dsp;
+			};
+
+			struct SubDialParam
+			{
+				SubDialKnob knob;
+				SubDialValue value;
+			};
+
+
+			class SUB_DIAL_FUNCTION
+			{
+			public:
+				static std::string Set(SubDialParam value);
+				static std::string Read(SubDialKnob knob);
+				static SubDialParam Answer(std::string data);
+			};
+
+			class WIDTH
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class S_METER_READING
+			{
+			public:
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class SQUELCH_LEVEL
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+			enum class SpectrumScopeFunction : int
+			{
+				SPEED,
+				PEAK,
+				MARKER,
+				COLOR,
+				LEVEL,
+				SPAN,
+				MODE,
+				AF_FFT_OSCILLOSCOPE
+			};
+
+			enum class SpectrumScopeSpeed : int
+			{
+				SLOW1,
+				SLOW2,
+				FAST1,
+				FAST2,
+				FAST3,
+				STOP
+			};
+
+			enum class SpectrumScopePeak : int
+			{
+				LVL1,
+				LVL2,
+				LVL3,
+				LVL4,
+				LVL5
+			};
+
+
+			enum class SpectrumScopeColor : int
+			{
+				COLOR_1,
+				COLOR_2,
+				COLOR_3,
+				COLOR_4,
+				COLOR_5,
+				COLOR_6,
+				COLOR_7,
+				COLOR_8,
+				COLOR_10,
+				COLOR_11,
+			};
+
+			enum class SpectrumScopeSpan : int
+			{
+				kHz_1,
+				kHz_2,
+				kHz_5,
+				kHz_10,
+				kHz_20,
+				kHz_50,
+				kHz_100,
+				kHz_200,
+				kHz_500,
+				MHz_1
+			};
+
+			enum class SpectrumScopeMode : int
+			{
+				CENTER_3DSS,
+				CURSOR_3DSS,
+				FIX_3DSS,
+				CENTER_WATERFALL_EXPANDED,
+				CENTER_WATERFALL_NORMAL,
+				CURSOR_WATERFALL_EXPANDED = 6,
+				CURSOR_WATERFALL_NORMAL,
+				FIXED_WATERFALL_EXPANDED = 9,
+				FIXED_WATERFALL_NORMAL
+			};
+
+			enum class SpectrumScopeOscilloscopeType : int
+			{
+				AF_FFT_0dB,
+				AF_FFT_10dB,
+				AF_FFT_20dB,
+			};
+
+			enum class OSCLevelType : int
+			{
+				ATT_0dB,
+				ATT_10dB,
+				ATT_20dB
+			};
+
+			enum class OSCTime : int
+			{
+				msec_1,
+				msec_3,
+				msec_10,
+				msec_30,
+				msec_100,
+				msec_300
+			};
+
+			struct OscilloscopeValue
+			{
+				SpectrumScopeOscilloscopeType type;
+				OSCLevelType level;
+				OSCTime time;
+			};
+
+			union SpectrumScopeValue
+			{
+				SpectrumScopeSpeed speed;
+				SpectrumScopePeak peak;
+				OnOffValue marker;
+				SpectrumScopeColor color;
+				float level;
+				SpectrumScopeSpan span;
+				SpectrumScopeMode mode;
+				OscilloscopeValue value;
+			};
+
+			struct SpectrumScopeParam
+			{
+				SpectrumScopeFunction function;
+				SpectrumScopeValue value;
+			};
+
+
+			class SPECTRUM_SCOPE
+			{
+			public:
+				static std::string Set(SpectrumScopeParam value);
+				static std::string Read(SpectrumScopeFunction function);
+				static SpectrumScopeParam Answer(std::string data);
+			};
+
+
+			class SPLIT
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			class SWAP_VFO
+			{
+			public:
+				static std::string Set();
+			};
+
+
+			class TXW
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+			enum class TXSetValue : int
+			{
+				RADIO_OFF_CAT_OFF,
+				RADIO_OFF_CAT_ON,
+				RADIO_ON_CAT_OFF
+			};
+
+
+			class TX_SET
+			{
+			public:
+				static std::string Set(TXSetValue value);
+				static std::string Read();
+				static TXSetValue Answer(std::string data);
+			};
+
+			class MIC_UP
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class VoxDealyTimeValue : int
+			{
+				msec_30,
+				msec_50,
+				msec_100,
+				msec_150,
+				msec_200,
+				msec_250,
+				msec_300,
+				msec_310,
+				msec_320,
+				msec_330,
+				msec_340,
+				msec_350,
+				msec_360,
+				msec_370,
+				msec_380,
+				msec_390,
+				msec_400,
+				msec_410,
+				msec_420,
+				msec_430,
+				msec_440,
+				msec_450,
+				msec_460,
+				msec_470,
+				msec_480,
+				msec_490,
+				msec_500,
+				msec_510,
+				msec_520,
+				msec_530,
+				msec_540,
+				msec_550,
+				msec_560,
+				msec_570,
+				msec_580,
+				msec_590,
+				msec_600,
+				msec_610,
+				msec_620,
+				msec_630,
+				msec_640,
+				msec_650,
+				msec_660,
+				msec_670,
+				msec_680,
+				msec_690,
+				msec_700,
+				msec_710,
+				msec_720,
+				msec_730,
+				msec_740,
+				msec_750,
+				msec_760,
+				msec_770,
+				msec_780,
+				msec_790,
+				msec_800,
+				msec_810,
+				msec_820,
+				msec_830,
+				msec_840,
+				msec_850,
+				msec_860,
+				msec_870,
+				msec_880,
+				msec_890,
+				msec_900,
+				msec_910,
+				msec_920,
+				msec_930,
+				msec_940,
+				msec_950,
+				msec_960,
+				msec_970,
+				msec_980,
+				msec_990,
+				msec_1000,
+				msec_1010,
+				msec_1020,
+				msec_1030,
+				msec_1040,
+				msec_1050,
+				msec_1060,
+				msec_1070,
+				msec_1080,
+				msec_1090,
+				msec_1100,
+				msec_1110,
+				msec_1120,
+				msec_1130,
+				msec_1140,
+				msec_1150,
+				msec_1160,
+				msec_1170,
+				msec_1180,
+				msec_1190,
+				msec_1200,
+				msec_1210,
+				msec_1220,
+				msec_1230,
+				msec_1240,
+				msec_1250,
+				msec_1260,
+				msec_1270,
+				msec_1280,
+				msec_1290,
+				msec_1300,
+				msec_1310,
+				msec_1320,
+				msec_1330,
+				msec_1340,
+				msec_1350,
+				msec_1360,
+				msec_1370,
+				msec_1380,
+				msec_1390,
+				msec_1400,
+				msec_1410,
+				msec_1420,
+				msec_1430,
+				msec_1440,
+				msec_1450,
+				msec_1460,
+				msec_1470,
+				msec_1480,
+				msec_1490,
+				msec_1500,
+				msec_1510,
+				msec_1520,
+				msec_1530,
+				msec_1540,
+				msec_1550,
+				msec_1560,
+				msec_1570,
+				msec_1580,
+				msec_1590,
+				msec_1600,
+				msec_1610,
+				msec_1620,
+				msec_1630,
+				msec_1640,
+				msec_1650,
+				msec_1660,
+				msec_1670,
+				msec_1680,
+				msec_1690,
+				msec_1700,
+				msec_1710,
+				msec_1720,
+				msec_1730,
+				msec_1740,
+				msec_1750,
+				msec_1760,
+				msec_1770,
+				msec_1780,
+				msec_1790,
+				msec_1800,
+				msec_1810,
+				msec_1820,
+				msec_1830,
+				msec_1840,
+				msec_1850,
+				msec_1860,
+				msec_1870,
+				msec_1880,
+				msec_1890,
+				msec_1900,
+				msec_1910,
+				msec_1920,
+				msec_1930,
+				msec_1940,
+				msec_1950,
+				msec_1960,
+				msec_1970,
+				msec_1980,
+				msec_1990,
+				msec_2000,
+				msec_2010,
+				msec_2020,
+				msec_2030,
+				msec_2040,
+				msec_2050,
+				msec_2060,
+				msec_2070,
+				msec_2080,
+				msec_2090,
+				msec_2100,
+				msec_2110,
+				msec_2120,
+				msec_2130,
+				msec_2140,
+				msec_2150,
+				msec_2160,
+				msec_2170,
+				msec_2180,
+				msec_2190,
+				msec_2200,
+				msec_2210,
+				msec_2220,
+				msec_2230,
+				msec_2240,
+				msec_2250,
+				msec_2260,
+				msec_2270,
+				msec_2280,
+				msec_2290,
+				msec_2300,
+				msec_2310,
+				msec_2320,
+				msec_2330,
+				msec_2340,
+				msec_2350,
+				msec_2360,
+				msec_2370,
+				msec_2380,
+				msec_2390,
+				msec_2400,
+				msec_2410,
+				msec_2420,
+				msec_2430,
+				msec_2440,
+				msec_2450,
+				msec_2460,
+				msec_2470,
+				msec_2480,
+				msec_2490,
+				msec_2500,
+				msec_2510,
+				msec_2520,
+				msec_2530,
+				msec_2540,
+				msec_2550,
+				msec_2560,
+				msec_2570,
+				msec_2580,
+				msec_2590,
+				msec_2600,
+				msec_2610,
+				msec_2620,
+				msec_2630,
+				msec_2640,
+				msec_2650,
+				msec_2660,
+				msec_2670,
+				msec_2680,
+				msec_2690,
+				msec_2700,
+				msec_2710,
+				msec_2720,
+				msec_2730,
+				msec_2740,
+				msec_2750,
+				msec_2760,
+				msec_2770,
+				msec_2780,
+				msec_2790,
+				msec_2800,
+				msec_2810,
+				msec_2820,
+				msec_2830,
+				msec_2840,
+				msec_2850,
+				msec_2860,
+				msec_2870,
+				msec_2880,
+				msec_2890,
+				msec_2900,
+				msec_2910,
+				msec_2920,
+				msec_2930,
+				msec_2940,
+				msec_2950,
+				msec_2960,
+				msec_2970,
+				msec_2980,
+				msec_2990,
+				msec_3000
+			};
+
+
+			class VOX_DELAY_TIME
+			{
+			public:
+				static std::string Set(VoxDealyTimeValue value);
+				static std::string Read();
+				static VoxDealyTimeValue Answer(std::string data);
+			};
+
+			enum class FirmwareVersionType : int
+			{
+				MAIN_CPU,
+				DISPLAY_CPU,
+				SDR,
+				DSP
+			};
+
+			struct FirmwareVersionParam
+			{
+				FirmwareVersionType type;
+				int MajorValue;
+				int MinorValue;
+			};
+
+			class FIRMWARE_VERSION
+			{
+			public:
+
+				static std::string Read(FirmwareVersionType type);
+				static FirmwareVersionParam Answer(std::string data);
+			};
+
+
+			class VOX_GAIN
+			{
+			public:
+				static std::string Set(int value);
+				static std::string Read();
+				static int Answer(std::string data);
+			};
+
+
+			class VFO_MEMORY_CHANNEL
+			{
+			public:
+				static std::string Set();
+			};
+
+			enum class BandVFOValue : int
+			{
+				MAIN_BAND_VFO_A,
+				MAIN_BAND_VFO_B
+			};
+
+
+			class VFO_SELECT
+			{
+			public:
+				static std::string Set(BandVFOValue value);
+				static std::string Read();
+				static BandVFOValue Answer(std::string data);
+			};
+
+
+			class VOX_STATUS
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class TX_CLAR
+			{
+			public:
+				static std::string Set(OnOffValue value);
+				static std::string Read();
+				static OnOffValue Answer(std::string data);
+			};
+
+
+			class ZERO_IN
+			{
+			public:
+				static std::string Set();
+			};
+		}
 
 	};	   // end Commands
 };		   // end Yeasu
 
-#endif
+#endif CAT_H
