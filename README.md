@@ -1,30 +1,30 @@
 # CAT
-Cat library for Yaesu. Currently only the FT-891, FTDX101, FTDX10 and FT991 with others to come. 
+Cat library for Yaesu. Currently, only the FT-891, FTDX101, FTDX10, and FT991, along with others, are to come. 
 
-This library is for serializing and de serializing the data sent to and received from the Yaesu radios. 
+This library is for serializing and de-serializing the data sent to and received from the Yaesu radios. 
 
 Motivation:
-Currently there's a few projects that encompass this functionality but they're limited in scope. HamLib for instance controls a radio just fine, but won't write memory channels. Chirp does, but won't let you change the dimmer level on your FT-891's buttons on the fly. I want to make my own programs to control my radios at home and in the field on low power devices such as a Rasbperry PI. Perhaps you do as well, or have other interesting idea's for your radio, and I'd like to hear about them. If you're using this library for your projects feel free to email me and tell me about them (ky4ct@arrl.net). 
+Currently, a few projects encompass this functionality, but they need more scope. HamLib, for instance, controls a radio just fine but won't write memory channels. Chirp does, but it won't let you change the dimmer level on your FT-891 buttons on the fly. I want to make my own programs to control my radios at home and in the field on low-power devices such as a Raspberry PI. You may do as well, or have other exciting ideas for your radio, and I'd like to hear about them. If you use this library for your projects, please email me (kd5eax@hotmail.com). 
 
-It's in standard C++, the only prerequisites for building the library into your own project is the [fmt library](https://github.com/fmtlib/fmt), or if your compiler already supports std::format a global find/replace in the header and cpp file and you won't even need the libfmt. 
+It's in standard C++. The only prerequisites for building the library into your project is the [fmt library](https://github.com/fmtlib/fmt), or if your compiler already supports std::format a global find/replace in the header and cpp file and you won't even need the libfmt. 
 
 The library has a standard structure. 
 
-namespace Yeasu::Commands holds all the rig specific commands, structures and enums grouped by their namespace
+Namespace Yeasu::Commands holds all the rig-specific commands, structures, and enums grouped by their namespace
 
 Yaesu::Commands::FT891 
 Yaesu::Commands::FT991
 Yaesu::Commands::FTDX101
 
-there's Set, Read, and Answer for all of the commands of a radio that support each function. Some commands only have a Set, such as switching between VFOA and VFOB. 
+There are Set, Read, and Answer for all of the radio commands that support each function. Some commands only have a Set, such as switching between VFOA and VFOB. 
 
 Read commands always request a response from the radio.
-Answer commands always take the response of a Read Command sent to the radio and returns the approperate type.
+Answer commands always take the response of a Read Command sent to the radio and return the appropriate type.
 Set commands set some state of the radio. 
 
 
 
-namespace Yaesu handles figuring out what radio it's talking to with the IDENTIFICATION commands and the RigType enum. As new radio's are added, the RigType enum will be expanded. This is particularly useful with the FTDX101 series as many feilds are 200 on the MP model and only 100 on the D model. The following is a simple illiustration of how to use this library and boost::asio with the FT891 to set the meter type of the display. 
+Namespace Yaesu handles figuring out what radio it's talking to with the IDENTIFICATION commands and the RigType enum. As new radios are added, the RigType enum will be expanded. This is particularly useful with the FTDX101 series, as many fields are 200 on the MP model and only 100 on the D model. The following is a simple illustration of how to use this library and boost::asio with the FT891 to set the meter type of the display. 
 
 
 ```
